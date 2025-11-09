@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction - FinTrackr</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="income_expense_forms.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .form-switch { display:flex; gap:8px; align-items:center; }
+        .form-switch button { padding:6px 10px; border:1px solid #e2e8f0; background:#fff; border-radius:8px; cursor:pointer; }
+        .form-switch button.active { background:#4F46E5; color:#fff; border-color:#4F46E5; }
+    </style>
+    </head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>FinTrackr</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>MAIN MENU</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                        <li><a href="dashboard.html#budget"><i class="fas fa-chart-pie"></i><span>Budget</span></a></li>
+                        <li><a href="dashboard.html#transactions"><i class="fas fa-exchange-alt"></i><span>Transactions</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Add Transaction</h1>
+                </div>
+                <div class="header-right">
+                    <button class="back-btn" onclick="window.location.href='dashboard.html#transactions'">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </header>
+
+            <section class="add-transaction-section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Enter Transaction Details</h2>
+                        <p>Quickly add an income or expense</p>
+                    </div>
+
+                    <div class="form-switch" style="margin-bottom:12px;">
+                        <button id="switchIncome" class="active" type="button">Income</button>
+                        <button id="switchExpense" type="button">Expense</button>
+                    </div>
+
+                    <form class="transaction-form" id="transactionForm">
+                        <input type="hidden" id="txType" name="type" value="income">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="txAmount">Amount *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <input type="number" id="txAmount" name="amount" placeholder="0.00" required min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txDate">Date *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-calendar"></i>
+                                    <input type="date" id="txDate" name="date" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txCategory">Category *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-tag"></i>
+                                    <select id="txCategory" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="salary">Salary</option>
+                                        <option value="business">Business</option>
+                                        <option value="food">Food & Dining</option>
+                                        <option value="transport">Transportation</option>
+                                        <option value="shopping">Shopping</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txAccount">Account</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-university"></i>
+                                    <input type="text" id="txAccount" name="account" placeholder="e.g., Savings">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="txDescription">Description</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-comment"></i>
+                                <textarea id="txDescription" name="description" placeholder="Additional details..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn" onclick="window.location.href='dashboard.html#transactions'">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Transaction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function showNotification(message, type) {
+            const el = document.createElement('div');
+            el.className = `notification ${type}`;
+            el.innerHTML = `<div class="notification-content"><i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}"></i><span>${message}</span></div>`;
+            Object.assign(el.style, {position:'fixed',top:'20px',right:'20px',padding:'16px',borderRadius:'8px',background:'#fff',boxShadow:'0 4px 12px rgba(0,0,0,.15)',zIndex:'1000'});
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),3000);
+        }
+
+        document.getElementById('txDate').valueAsDate = new Date();
+
+        const switchIncome = document.getElementById('switchIncome');
+        const switchExpense = document.getElementById('switchExpense');
+        const txType = document.getElementById('txType');
+        const txCategory = document.getElementById('txCategory');
+
+        function setType(type) {
+            txType.value = type;
+            switchIncome.classList.toggle('active', type==='income');
+            switchExpense.classList.toggle('active', type==='expense');
+        }
+
+        switchIncome.addEventListener('click', ()=> setType('income'));
+        switchExpense.addEventListener('click', ()=> setType('expense'));
+
+        document.getElementById('transactionForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            try {
+                const form = new FormData(this);
+                const data = {
+                    type: form.get('type'),
+                    amount: parseFloat(form.get('amount')),
+                    date: form.get('date'),
+                    category: form.get('category'),
+                    account: form.get('account'),
+                    description: form.get('description')
+                };
+
+                if (isNaN(data.amount) || data.amount <= 0) throw new Error('Please enter a valid amount');
+                if (!data.category) throw new Error('Please select a category');
+
+                // Save to localStorage alongside existing lists
+                if (data.type === 'income') {
+                    const incomes = JSON.parse(localStorage.getItem('incomes')||'[]');
+                    incomes.push({ id: Date.now(), amount: data.amount, date: data.date, type: data.category||'income', source: data.account, description: data.description });
+                    localStorage.setItem('incomes', JSON.stringify(incomes));
+                } else {
+                    const expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
+                    expenses.push({ id: Date.now(), amount: data.amount, date: data.date, category: data.category||'other', merchant: data.account, description: data.description });
+                    localStorage.setItem('expenses', JSON.stringify(expenses));
+                }
+
+                showNotification('Transaction added successfully!','success');
+                setTimeout(()=>{ window.location.href = 'dashboard.html#transactions'; }, 1200);
+            } catch(err){
+                showNotification(err.message,'error');
+            }
+        });
+    </script>
+</body>
+</html>
+
+

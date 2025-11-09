@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FinTrackr</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="js/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>FinTrackr</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>MAIN MENU</h4>
+                    <ul>
+                        <li class="active">
+                            <a href="#dashboard">
+                                <i class="fas fa-home"></i>
+                                <span>FinBoard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#budget">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Budget</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#accounts">
+                                <i class="fas fa-university"></i>
+                                <span>Accounts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#goals">
+                                <i class="fas fa-bullseye"></i>
+                                <span>Goals</span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="#investments">
+                                <i class="fas fa-chart-area"></i>
+                                <span>Investments</span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="#reports">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#transactions">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Transactions</span>
+                            </a>
+                        </li>
+                        
+                        
+                       
+                       
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="upgrade-card">
+                    <h4>Upgrade to Pro</h4>
+                    <p>Get access to premium features and unlimited accounts</p>
+                    <button class="upgrade-btn">Upgrade Now</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>FinBoard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search Finance.....">
+                    </div>
+                    <div class="header-actions">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Welcome Section -->
+            <section id="dashboard" class="welcome-section">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h2 class="welcome-heading">Welcome back!</h2>
+                        <p>Here is your financial condition as of <span id="welcomeDate"></span>.</p>
+                        <div class="quick-actions">
+                            <button class="action-btn primary">Add Income</button>
+                            <button class="action-btn secondary">View Reports</button>
+                        </div>
+                    </div>
+                    <div class="total-balance">
+                        <div class="balance-card">
+                            <div class="balance-main">
+                                <div class="balance-item-main">
+                                    <h3>₹0</h3>
+                                    <p>Total Balance</p>
+                                </div>
+                                <div class="balance-item-main">
+                                    <h3>₹0</h3>
+                                    <p>Total Investment</p>
+                                </div>
+                            </div>
+                            <div class="balance-details">
+                                <div class="balance-item">
+                                    <span class="label">Income</span>
+                                    <span class="amount">₹0</span>
+                                </div>
+                                <div class="balance-item">
+                                    <span class="label">Expenses</span>
+                                    <span class="amount">₹0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Cards -->
+            <section id="stats" class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card income">
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>₹0</h3>
+                            <p>Monthly Income</p>
+                            <span class="stat-change positive">+0%</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card expense">
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>₹0</h3>
+                            <p>Monthly Expenses</p>
+                            <span class="stat-change negative">+0%</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card savings">
+                        <div class="stat-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>₹0</h3>
+                            <p>Monthly Savings</p>
+                            <span class="stat-change positive">+0%</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card investment">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>₹0</h3>
+                            <p>Total Investments</p>
+                            <span class="stat-change positive">+0%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Income and Expense Section -->
+            <section id="budget" class="income-expense-section">
+                <div class="income-expense-grid">
+                    <!-- Income Sources -->
+                    <div class="income-sources">
+                        <div class="section-header">
+                            <h2>Income Sources</h2>
+                            <div class="header-actions">
+                                <select class="time-filter">
+                                    <option value="this-month">This Month</option>
+                                    <option value="last-month">Last Month</option>
+                                    <option value="this-year">This Year</option>
+                                </select>
+                                <button class="add-income-btn">
+                                    <i class="fas fa-plus"></i>
+                                    Add Income
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="income-chart">
+                            <div class="chart-container">
+                                <div class="chart-bars">
+                                    <div class="chart-bar" style="height: 0%">
+                                        <span class="bar-label">Jan</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 0%">
+                                        <span class="bar-label">Feb</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 0%">
+                                        <span class="bar-label">Mar</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 0%">
+                                        <span class="bar-label">Apr</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 0%">
+                                        <span class="bar-label">May</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="income-list">
+                            <!-- No income data yet -->
+                        </div>
+                    </div>
+
+                    <!-- Expense Tracking -->
+                    <div class="expense-tracking">
+                        <div class="section-header">
+                            <h2>Expense Tracking</h2>
+                            <div class="header-actions">
+                                <button class="filter-btn">
+                                    <i class="fas fa-filter"></i>
+                                    Filter
+                                </button>
+                                <button class="add-expense-btn">
+                                    <i class="fas fa-plus"></i>
+                                    Add Expense
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="expense-categories">
+                            <h3>Expense Categories</h3>
+                            <div class="category-list">
+                                <!-- No expense data yet -->
+                            </div>
+                        </div>
+
+                        <div class="monthly-trend">
+                            <h3>Monthly Trend</h3>
+                            <div class="trend-chart">
+                                <div class="trend-bars">
+                                    <div class="trend-bar" style="height: 0%">
+                                        <span class="trend-label">Jan</span>
+                                    </div>
+                                    <div class="trend-bar" style="height: 0%">
+                                        <span class="trend-label">Feb</span>
+                                    </div>
+                                    <div class="trend-bar" style="height: 0%">
+                                        <span class="trend-label">Mar</span>
+                                    </div>
+                                    <div class="trend-bar" style="height: 0%">
+                                        <span class="trend-label">Apr</span>
+                                    </div>
+                                    <div class="trend-bar" style="height: 0%">
+                                        <span class="trend-label">May</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-transactions">
+                            <h3>Recent Transactions</h3>
+                            <div class="transaction-list">
+                                <!-- No transactions yet -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Accounts Section -->
+            <section id="accounts" class="accounts-section">
+                <div class="section-header">
+                    <h2>Your Accounts</h2>
+                    <button class="add-account-btn">
+                        <i class="fas fa-plus"></i>
+                        Add Account
+                    </button>
+                </div>
+
+                <div class="accounts-grid">
+                    <p>No accounts yet. Add your first account to get started!</p>
+                </div>
+            </section>
+
+            <!-- Financial Goals Section -->
+            <section id="goals" class="financial-goals-section">
+                <div class="section-header">
+                    <h2>Financial Goals</h2>
+                    <button class="add-goal-btn">
+                        <i class="fas fa-plus"></i>
+                        Add Goal
+                    </button>
+                </div>
+
+                <div class="goals-grid">
+                    <!-- No financial goals yet -->
+                </div>
+
+                <div class="goal-performance">
+                    <h3>Goal Performance Analytics</h3>
+                    <div class="performance-metrics">
+                        <div class="metric-item">
+                            <div class="metric-number">0</div>
+                            <div class="metric-label">Active Goals</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-number">₹0</div>
+                            <div class="metric-label">Monthly Savings</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-number">0</div>
+                            <div class="metric-label">Avg Months to Goal</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Multi-Currency Portfolio Section -->
+            <section class="multi-currency-section">
+                <div class="section-header">
+                    <h2>Multi-Currency Portfolio</h2>
+                    <div class="header-actions">
+                        <select class="currency-filter">
+                            <option value="all">All Currencies</option>
+                            <option value="inr">INR</option>
+                            <option value="usd">USD</option>
+                            <option value="eur">EUR</option>
+                            <option value="gbp">GBP</option>
+                        </select>
+                        <button class="add-currency-btn">
+                            <i class="fas fa-plus"></i>
+                            Add Currency
+                        </button>
+                    </div>
+                </div>
+
+                <div class="currency-grid">
+                        <div class="currency-card inr">
+                        <div class="currency-flag">₹</div>
+                        <div class="currency-content">
+                            <h3>INR</h3>
+                            <div class="currency-amount">₹0</div>
+                            <div class="currency-label">Indian Rupee</div>
+                            <div class="currency-change positive">+0%</div>
+                        </div>
+                    </div>
+
+                    <div class="currency-card usd">
+                        <div class="currency-flag">$</div>
+                        <div class="currency-content">
+                            <h3>USD</h3>
+                            <div class="currency-amount">$0</div>
+                            <div class="currency-label">US Dollar</div>
+                            <div class="currency-change positive">+0%</div>
+                        </div>
+                    </div>
+
+                    <div class="currency-card eur">
+                        <div class="currency-flag">€</div>
+                        <div class="currency-content">
+                            <h3>EUR</h3>
+                            <div class="currency-amount">€0</div>
+                            <div class="currency-label">Euro</div>
+                            <div class="currency-change negative">+0%</div>
+                        </div>
+                    </div>
+
+                    <div class="currency-card gbp">
+                        <div class="currency-flag">£</div>
+                        <div class="currency-content">
+                            <h3>GBP</h3>
+                            <div class="currency-amount">£0</div>
+                            <div class="currency-label">British Pound</div>
+                            <div class="currency-change positive">+0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exchange-trends">
+                    <h3>Exchange Rate Trends</h3>
+                    <div class="trends-container">
+                        <div class="trends-chart">
+                            <div class="chart-lines">
+                                <svg viewBox="0 0 400 200" class="trend-svg">
+                                    <path d="M20,180 Q60,160 100,140 T180,120 T260,100 T340,80" stroke="#4F46E5" stroke-width="2" fill="none"/>
+                                    <path d="M20,160 Q60,150 100,130 T180,110 T260,120 T340,110" stroke="#10B981" stroke-width="2" fill="none"/>
+                                    <path d="M20,170 Q60,155 100,145 T180,135 T260,125 T340,115" stroke="#F59E0B" stroke-width="2" fill="none"/>
+                                    <path d="M20,165 Q60,158 100,148 T180,138 T260,128 T340,118" stroke="#EF4444" stroke-width="2" fill="none"/>
+                                </svg>
+                            </div>
+                            <div class="chart-labels">
+                                <span>Jan 24</span>
+                                <span>Mar 24</span>
+                                <span>May 24</span>
+                                <span>Jul 24</span>
+                                <span>Now</span>
+                            </div>
+                        </div>
+                        <div class="trends-legend">
+                            <div class="legend-item">
+                                <div class="legend-color inr"></div>
+                                <span>INR</span>
+                                <span class="legend-value">72.5%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color usd"></div>
+                                <span>USD</span>
+                                <span class="legend-value">15.2%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color eur"></div>
+                                <span>EUR</span>
+                                <span class="legend-value">8.7%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color gbp"></div>
+                                <span>GBP</span>
+                                <span class="legend-value">3.6%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Investment Portfolio Section -->
+            <section id="investments" class="investment-portfolio-section">
+                <div class="section-header">
+                    <h2>Investment Portfolio</h2>
+                    <div class="header-actions">
+                        <select class="portfolio-filter">
+                            <option value="all">All Holdings</option>
+                            <option value="stocks">Stocks</option>
+                            <option value="mutual-funds">Mutual Funds</option>
+                            <option value="bonds">Bonds</option>
+                        </select>
+                        <button class="add-investment-btn">
+                            <i class="fas fa-plus"></i>
+                            Add Investment
+                        </button>
+                    </div>
+                </div>
+
+                <div class="portfolio-overview">
+                    <div class="portfolio-stats">
+                        <div class="stat-card total-value">
+                            <h3>₹0</h3>
+                            <p>Total Portfolio Value</p>
+                            <span class="change positive">+₹0 (0%)</span>
+                        </div>
+                        <div class="stat-card day-change">
+                            <h3>₹0</h3>
+                            <p>Today's Change</p>
+                            <span class="change positive">+0%</span>
+                        </div>
+                        <div class="stat-card total-return">
+                            <h3>₹0</h3>
+                            <p>Total Return</p>
+                            <span class="change positive">+0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-content">
+                    <div class="holdings-list">
+                        <h3>Your Holdings</h3>
+                        <div class="portfolio-table">
+                            <div class="table-header">
+                                <span>Stock/Fund</span>
+                                <span>Quantity</span>
+                                <span>Price</span>
+                                <span>Value</span>
+                                <span>Change</span>
+                            </div>
+                            <!-- No holdings yet -->
+                        </div>
+                    </div>
+
+                    <div class="portfolio-chart">
+                        <h3>Portfolio Performance</h3>
+                        <div class="chart-container">
+                            <svg viewBox="0 0 400 200" class="performance-svg">
+                                <defs>
+                                    <linearGradient id="portfolioGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:0.3" />
+                                        <stop offset="100%" style="stop-color:#4F46E5;stop-opacity:0" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M20,160 Q60,140 100,120 T180,100 T260,80 T380,60" stroke="#4F46E5" stroke-width="3" fill="none"/>
+                                <path d="M20,160 Q60,140 100,120 T180,100 T260,80 T380,60 L380,180 L20,180 Z" fill="url(#portfolioGradient)"/>
+                            </svg>
+                            <div class="chart-labels">
+                                <span>6M</span>
+                                <span>3M</span>
+                                <span>1M</span>
+                                <span>1W</span>
+                                <span>Now</span>
+                            </div>
+                        </div>
+                        <div class="performance-summary">
+                            <div class="summary-item">
+                                <span class="label">Best Performer</span>
+                                <span class="value">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Worst Performer</span>
+                                <span class="value">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Financial Advisor Section -->
+            <section class="ai-advisor-section">
+                <div class="section-header">
+                    <h2>AI Financial Advisor</h2>
+                    <div class="header-actions">
+                        <select class="advice-filter">
+                            <option value="all">All Advice</option>
+                            <option value="investment">Investment</option>
+                            <option value="savings">Savings</option>
+                            <option value="budget">Budget</option>
+                        </select>
+                        <button class="ask-advisor-btn">
+                            <i class="fas fa-robot"></i>
+                            Ask Advisor
+                        </button>
+                    </div>
+                </div>
+
+                <div class="advisor-content">
+                    <div class="recommendations">
+                        <h3>Personalized Recommendations</h3>
+                        <div class="recommendation-list">
+                            <div class="recommendation-item priority-high">
+                                <div class="rec-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="rec-content">
+                                    <h4>Emergency Fund Alert</h4>
+                                    <p>Your emergency fund is below the recommended 6 months of expenses. Consider increasing your monthly savings to reach your goal faster.</p>
+                                    <div class="rec-actions">
+                                        <button class="action-btn primary">Set Auto-Save</button>
+                                        <button class="action-btn secondary">Learn More</button>
+                                    </div>
+                                </div>
+                                <div class="rec-priority">High Priority</div>
+                            </div>
+
+                            <div class="recommendation-item priority-medium">
+                                <div class="rec-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="rec-content">
+                                    <h4>Portfolio Diversification</h4>
+                                    <p>Your portfolio is heavily weighted towards technology stocks. Consider diversifying into healthcare and consumer goods sectors to reduce risk.</p>
+                                    <div class="rec-actions">
+                                        <button class="action-btn primary">View Suggestions</button>
+                                        <button class="action-btn secondary">Dismiss</button>
+                                    </div>
+                                </div>
+                                <div class="rec-priority">Medium Priority</div>
+                            </div>
+
+                            <div class="recommendation-item priority-low">
+                                <div class="rec-icon">
+                                    <i class="fas fa-piggy-bank"></i>
+                                </div>
+                                <div class="rec-content">
+                                    <h4>Tax Saving Opportunity</h4>
+                                    <p>You can save in taxes by investing in ELSS mutual funds before March 31st. This also helps with long-term wealth creation.</p>
+                                    <div class="rec-actions">
+                                        <button class="action-btn primary">Explore ELSS</button>
+                                        <button class="action-btn secondary">Remind Later</button>
+                                    </div>
+                                </div>
+                                <div class="rec-priority">Low Priority</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-insights">
+                        <h3>AI Insights</h3>
+                        <div class="insights-container">
+                            <div class="insight-card spending">
+                                <div class="insight-header">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <h4>Spending Pattern</h4>
+                                </div>
+                                <p>Your dining expenses increased by 23% this month. Consider meal planning to optimize your food budget.</p>
+                                <div class="insight-score">
+                                    <span class="score-label">Optimization Score</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 65%"></div>
+                                    </div>
+                                    <span class="score-value">65/100</span>
+                                </div>
+                            </div>
+
+                            <div class="insight-card investment">
+                                <div class="insight-header">
+                                    <i class="fas fa-chart-area"></i>
+                                    <h4>Investment Health</h4>
+                                </div>
+                                <p>Your portfolio performance is 12% above market average. Great job on your stock selections!</p>
+                                <div class="insight-score">
+                                    <span class="score-label">Performance Score</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 88%"></div>
+                                    </div>
+                                    <span class="score-value">88/100</span>
+                                </div>
+                            </div>
+
+                            <div class="insight-card goals">
+                                <div class="insight-header">
+                                    <i class="fas fa-bullseye"></i>
+                                    <h4>Goal Progress</h4>
+                                </div>
+                                <p>You're on track to achieve your house down payment goal 3 months earlier than planned. Consider increasing your vacation fund allocation.</p>
+                                <div class="insight-score">
+                                    <span class="score-label">Goal Achievement</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 78%"></div>
+                                    </div>
+                                    <span class="score-value">78/100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="advisor-chat">
+                            <div class="chat-header">
+                                <div class="advisor-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="advisor-info">
+                                    <h4>FinBot</h4>
+                                    <p>Your AI Financial Assistant</p>
+                                </div>
+                                <div class="chat-status online">
+                                    <span>Online</span>
+                                </div>
+                            </div>
+                            <div class="chat-preview">
+                                <p>Hi! I've analyzed your financial data and have some personalized recommendations. Would you like to discuss your investment strategy?</p>
+                                <button class="chat-btn">
+                                    <i class="fas fa-comment"></i>
+                                    Start Chat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Financial Reports & Analytics Section -->
+            <section id="reports" class="financial-reports-section">
+                <div class="section-header">
+                    <h2>Financial Reports & Analytics</h2>
+                    <div class="header-actions">
+                        <select class="report-period">
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                        <button class="export-report-btn">
+                            <i class="fas fa-download"></i>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-content">
+                    <div class="income-expense-trend">
+                        <h3>Income vs Expense Trend</h3>
+                        <div class="trend-chart-container">
+                            <svg viewBox="0 0 500 250" class="trend-chart-svg">
+                                <defs>
+                                    <linearGradient id="incomeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3" />
+                                        <stop offset="100%" style="stop-color:#10B981;stop-opacity:0" />
+                                    </linearGradient>
+                                    <linearGradient id="expenseGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#EF4444;stop-opacity:0.3" />
+                                        <stop offset="100%" style="stop-color:#EF4444;stop-opacity:0" />
+                                    </linearGradient>
+                                </defs>
+                                <!-- Income Line -->
+                                <path d="M50,200 Q100,180 150,160 T250,140 T350,120 T450,100" stroke="#10B981" stroke-width="3" fill="none"/>
+                                <path d="M50,200 Q100,180 150,160 T250,140 T350,120 T450,100 L450,220 L50,220 Z" fill="url(#incomeGradient)"/>
+                                <!-- Expense Line -->
+                                <path d="M50,210 Q100,190 150,180 T250,170 T350,160 T450,150" stroke="#EF4444" stroke-width="3" fill="none"/>
+                                <path d="M50,210 Q100,190 150,180 T250,170 T350,160 T450,150 L450,220 L50,220 Z" fill="url(#expenseGradient)"/>
+                            </svg>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color income"></div>
+                                    <span>Income</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color expense"></div>
+                                    <span>Expenses</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="category-breakdown">
+                        <h3>Category-wise Spending</h3>
+                        <div class="breakdown-container">
+                            <div class="donut-chart">
+                                <svg viewBox="0 0 200 200" class="donut-svg">
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#e2e8f0" stroke-width="20"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#10B981" stroke-width="20" 
+                                            stroke-dasharray="125.6 377" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#F59E0B" stroke-width="20" 
+                                            stroke-dasharray="100.5 377" stroke-dashoffset="-125.6" transform="rotate(-90 100 100)"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#EF4444" stroke-width="20" 
+                                            stroke-dasharray="75.4 377" stroke-dashoffset="-226.1" transform="rotate(-90 100 100)"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#8B5CF6" stroke-width="20" 
+                                            stroke-dasharray="50.2 377" stroke-dashoffset="-301.5" transform="rotate(-90 100 100)"/>
+                                </svg>
+                                <div class="donut-center">
+                                    <div class="total-amount">₹0</div>
+                                    <div class="total-label">Total Spent</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-legend">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color food"></div>
+                                    <div class="breakdown-details">
+                                        <span class="category">Food & Dining</span>
+                                        <span class="amount">₹0</span>
+                                        <span class="percentage">0%</span>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color transport"></div>
+                                    <div class="breakdown-details">
+                                        <span class="category">Transportation</span>
+                                        <span class="amount">₹0</span>
+                                        <span class="percentage">0%</span>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color shopping"></div>
+                                    <div class="breakdown-details">
+                                        <span class="category">Shopping</span>
+                                        <span class="amount">₹0</span>
+                                        <span class="percentage">0%</span>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color entertainment"></div>
+                                    <div class="breakdown-details">
+                                        <span class="category">Entertainment</span>
+                                        <span class="amount">₹0</span>
+                                        <span class="percentage">0%</span>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color others"></div>
+                                    <div class="breakdown-details">
+                                        <span class="category">Others</span>
+                                        <span class="amount">₹0</span>
+                                        <span class="percentage">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="financial-summary">
+                    <div class="summary-cards">
+                        <div class="summary-card net-worth">
+                            <h4>Net Worth Growth</h4>
+                            <div class="summary-value">+₹0</div>
+                            <div class="summary-change positive">+0% this year</div>
+                        </div>
+                        <div class="summary-card savings-rate">
+                            <h4>Savings Rate</h4>
+                            <div class="summary-value">0%</div>
+                            <div class="summary-change positive">+0% vs last month</div>
+                        </div>
+                        <div class="summary-card investment-return">
+                            <h4>Investment Returns</h4>
+                            <div class="summary-value">+0%</div>
+                            <div class="summary-change positive">Above market average</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Transactions Section -->
+            <section id="transactions" class="recent-transactions-section">
+                <div class="section-header">
+                    <h2>Recent Transactions</h2>
+                    <div class="header-actions">
+                        <select class="time-filter">
+                            <option value="7days">Last 7 days</option>
+                            <option value="30days">Last 30 days</option>
+                            <option value="90days">Last 90 days</option>
+                        </select>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="add-transaction-btn">
+                            <i class="fas fa-plus"></i>
+                            Add Transaction
+                        </button>
+                    </div>
+                </div>
+
+                <div class="transactions-container">
+                    <div class="transactions-list">
+                        <!-- No transactions yet -->
+                    </div>
+
+                    <div class="load-more-container">
+                        <button class="load-more-btn">
+                            <i class="fas fa-chevron-down"></i>
+                            Load More Transactions
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 FinTrackr. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- API Configuration and Service Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense - FinTrackr</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="income_expense_forms.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>FinTrackr</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>MAIN MENU</h4>
+                    <ul>
+                        <li>
+                            <a href="dashboard.html">
+                                <i class="fas fa-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#accounts">
+                                <i class="fas fa-university"></i>
+                                <span>Accounts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#transactions">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Transactions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#goals">
+                                <i class="fas fa-bullseye"></i>
+                                <span>Goals</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#budget">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Budget</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#investments">
+                                <i class="fas fa-chart-area"></i>
+                                <span>Investments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#reports">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Add Expense</h1>
+                </div>
+                <div class="header-right">
+                    <button class="back-btn" onclick="window.location.href='dashboard.html#budget'">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </header>
+
+            <!-- Add Expense Form -->
+            <section class="add-expense-section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Enter Expense Details</h2>
+                        <p>Add a new expense to track your spending</p>
+                    </div>
+
+                    <form class="expense-form" id="expenseForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="expenseAmount">Amount *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <input type="number" id="expenseAmount" name="amount" placeholder="0.00" required min="0" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expenseDate">Date *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-calendar"></i>
+                                    <input type="date" id="expenseDate" name="date" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expenseCategory">Category *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-tag"></i>
+                                    <select id="expenseCategory" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="food">Food & Dining</option>
+                                        <option value="transport">Transportation</option>
+                                        <option value="shopping">Shopping</option>
+                                        <option value="entertainment">Entertainment</option>
+                                        <option value="bills">Bills & Utilities</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="education">Education</option>
+                                        <option value="travel">Travel</option>
+                                        <option value="insurance">Insurance</option>
+                                        <option value="investment">Investment</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expenseMerchant">Merchant/Vendor</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-store"></i>
+                                    <input type="text" id="expenseMerchant" name="merchant" placeholder="e.g., Restaurant Name, Store">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="expenseDescription">Description</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-comment"></i>
+                                <textarea id="expenseDescription" name="description" placeholder="Additional details about this expense..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="expenseRecurring">Recurring Expense</label>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" id="expenseRecurring" name="recurring">
+                                <span class="checkmark"></span>
+                                This is a recurring expense (monthly, weekly, etc.)
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width recurring-options" id="recurringOptions" style="display: none;">
+                            <label for="recurringFrequency">Frequency</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-repeat"></i>
+                                <select id="recurringFrequency" name="frequency">
+                                    <option value="weekly">Weekly</option>
+                                    <option value="bi-weekly">Bi-weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn" onclick="window.location.href='dashboard.html#budget'">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Expense
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- API Configuration and Service Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        // Function to show notifications
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // Add to document
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Function to save expense data to API and localStorage as fallback
+        async function saveExpenseData(expenseData) {
+            try {
+                // Try to save to backend first
+                const response = await dataService.createExpense(expenseData);
+                console.log('Expense saved to backend:', response);
+                return response;
+            } catch (error) {
+                console.error('Failed to save to backend, using localStorage:', error);
+                // Fallback to localStorage
+                let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+                expenseData.id = Date.now();
+                expenseData.timestamp = new Date().toISOString();
+                expenses.push(expenseData);
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+                showNotification('Expense saved locally (offline mode)', 'warning');
+                return expenseData;
+            }
+        }
+
+        // Set default date to today
+        document.getElementById('expenseDate').valueAsDate = new Date();
+
+        // Handle recurring checkbox
+        document.getElementById('expenseRecurring').addEventListener('change', function() {
+            const recurringOptions = document.getElementById('recurringOptions');
+            recurringOptions.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Form submission
+        document.getElementById('expenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            try {
+                const formData = new FormData(this);
+                const expenseData = {
+                    amount: parseFloat(formData.get('amount')),
+                    date: formData.get('date'),
+                    category: formData.get('category'),
+                    merchant: formData.get('merchant'),
+                    description: formData.get('description'),
+                    recurring: formData.get('recurring') === 'on',
+                    frequency: formData.get('frequency')
+                };
+
+                // Validate amount
+                if (isNaN(expenseData.amount) || expenseData.amount <= 0) {
+                    throw new Error('Please enter a valid amount greater than 0');
+                }
+
+                // Validate category
+                if (!expenseData.category) {
+                    throw new Error('Please select a category');
+                }
+
+                // Show loading state
+                const submitBtn = this.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Expense...';
+                submitBtn.disabled = true;
+
+                // Save the data
+                await saveExpenseData(expenseData);
+
+                // Show success message
+                showNotification('Expense added successfully!', 'success');
+
+                // Reset form
+                this.reset();
+                document.getElementById('expenseDate').valueAsDate = new Date();
+
+                // Redirect back to Budget section after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html#budget';
+                }, 2000);
+
+            } catch (error) {
+                showNotification(error.message, 'error');
+            } finally {
+                // Reset button state
+                const submitBtn = this.querySelector('.submit-btn');
+                submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Expense';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

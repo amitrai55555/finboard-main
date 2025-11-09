@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Goal - FinTrackr</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="income_expense_forms.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>FinTrackr</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>MAIN MENU</h4>
+                    <ul>
+                        <li>
+                            <a href="dashboard.html">
+                                <i class="fas fa-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#accounts">
+                                <i class="fas fa-university"></i>
+                                <span>Accounts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#transactions">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Transactions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#goals">
+                                <i class="fas fa-bullseye"></i>
+                                <span>Goals</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#budget">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Budget</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#investments">
+                                <i class="fas fa-chart-area"></i>
+                                <span>Investments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#reports">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Add Goal</h1>
+                </div>
+                <div class="header-right">
+                    <button class="back-btn" onclick="window.location.href='dashboard.html#goals'">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </header>
+
+            <!-- Add Goal Form -->
+            <section class="add-goal-section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Enter Goal Details</h2>
+                        <p>Set a new financial goal to work towards</p>
+                    </div>
+
+                    <form class="goal-form" id="goalForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="goalName">Goal Name *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-bullseye"></i>
+                                    <input type="text" id="goalName" name="name" placeholder="e.g., Buy a House" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="goalTargetAmount">Target Amount *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <input type="number" id="goalTargetAmount" name="targetAmount" placeholder="0.00" required min="0" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="goalCurrentAmount">Current Saved Amount</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-piggy-bank"></i>
+                                    <input type="number" id="goalCurrentAmount" name="currentAmount" placeholder="0.00" min="0" step="0.01" value="0">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="goalTargetDate">Target Date *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-calendar"></i>
+                                    <input type="date" id="goalTargetDate" name="targetDate" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="goalCategory">Category *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-tag"></i>
+                                    <select id="goalCategory" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="house">House</option>
+                                        <option value="car">Car</option>
+                                        <option value="vacation">Vacation</option>
+                                        <option value="emergency">Emergency Fund</option>
+                                        <option value="education">Education</option>
+                                        <option value="retirement">Retirement</option>
+                                        <option value="investment">Investment</option>
+                                        <option value="debt">Debt Payment</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="goalPriority">Priority</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <select id="goalPriority" name="priority">
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="goalDescription">Description</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-comment"></i>
+                                <textarea id="goalDescription" name="description" placeholder="Additional details about this goal..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn" onclick="window.location.href='dashboard.html#goals'">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Goal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+    <script>
+        // Function to show notifications
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // Add to document
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Function to save goal data to localStorage
+        function saveGoalData(goalData) {
+            // Get existing goals or initialize empty array
+            let goals = JSON.parse(localStorage.getItem('goals') || '[]');
+
+            // Add new goal with unique ID
+            goalData.id = Date.now();
+            goalData.timestamp = new Date().toISOString();
+            goals.push(goalData);
+
+            // Save back to localStorage
+            localStorage.setItem('goals', JSON.stringify(goals));
+        }
+
+        // Set default target date to one year from now
+        const oneYearFromNow = new Date();
+        oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+        document.getElementById('goalTargetDate').valueAsDate = oneYearFromNow;
+
+        // Form submission
+        document.getElementById('goalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            try {
+                const formData = new FormData(this);
+                const goalData = {
+                    name: formData.get('name').trim(),
+                    targetAmount: parseFloat(formData.get('targetAmount')),
+                    currentAmount: parseFloat(formData.get('currentAmount') || 0),
+                    targetDate: formData.get('targetDate'),
+                    category: formData.get('category'),
+                    priority: formData.get('priority'),
+                    description: formData.get('description').trim()
+                };
+
+                // Validate name
+                if (!goalData.name) {
+                    throw new Error('Please enter a goal name');
+                }
+
+                // Validate target amount
+                if (isNaN(goalData.targetAmount) || goalData.targetAmount <= 0) {
+                    throw new Error('Please enter a valid target amount greater than 0');
+                }
+
+                // Validate current amount
+                if (isNaN(goalData.currentAmount) || goalData.currentAmount < 0) {
+                    goalData.currentAmount = 0;
+                }
+
+                // Ensure current amount doesn't exceed target
+                if (goalData.currentAmount > goalData.targetAmount) {
+                    throw new Error('Current saved amount cannot exceed target amount');
+                }
+
+                // Validate category
+                if (!goalData.category) {
+                    throw new Error('Please select a goal category');
+                }
+
+                // Validate target date
+                const targetDate = new Date(goalData.targetDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (targetDate <= today) {
+                    throw new Error('Target date must be in the future');
+                }
+
+                // Save the data
+                saveGoalData(goalData);
+
+                // Show success message
+                showNotification('Goal added successfully!', 'success');
+
+                // Redirect back to Goals section after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html#goals';
+                }, 2000);
+
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+    </script>
+
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification.success {
+            border-left: 4px solid #4fd1c7;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f56565;
+        }
+
+        .notification i {
+            font-size: 20px;
+        }
+
+        .notification.success i {
+            color: #4fd1c7;
+        }
+
+        .notification.error i {
+            color: #f56565;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</body>
+</html>

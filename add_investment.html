@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Investment - FinTrackr</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="income_expense_forms.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>FinTrackr</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>MAIN MENU</h4>
+                    <ul>
+                        <li>
+                            <a href="dashboard.html">
+                                <i class="fas fa-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#accounts">
+                                <i class="fas fa-university"></i>
+                                <span>Accounts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#transactions">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Transactions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#goals">
+                                <i class="fas fa-bullseye"></i>
+                                <span>Goals</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#budget">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Budget</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#investments">
+                                <i class="fas fa-chart-area"></i>
+                                <span>Investments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html#reports">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Add Investment</h1>
+                </div>
+                <div class="header-right">
+                    <button class="back-btn" onclick="window.location.href='dashboard.html#investments'">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </header>
+
+            <!-- Add Investment Form -->
+            <section class="add-investment-section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Enter Investment Details</h2>
+                        <p>Add a new investment to track your portfolio</p>
+                    </div>
+
+                    <form class="investment-form" id="investmentForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="investmentName">Investment Name *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-chart-line"></i>
+                                    <input type="text" id="investmentName" name="name" placeholder="e.g., Reliance Industries" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="investmentType">Type of Investment *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-tag"></i>
+                                    <select id="investmentType" name="type" required>
+                                        <option value="">Select Investment Type</option>
+                                        <option value="stocks">Stocks</option>
+                                        <option value="mutual-funds">Mutual Funds</option>
+                                        <option value="bonds">Bonds</option>
+                                        <option value="etf">ETF</option>
+                                        <option value="crypto">Cryptocurrency</option>
+                                        <option value="fd">Fixed Deposit</option>
+                                        <option value="rd">Recurring Deposit</option>
+                                        <option value="ppf">PPF</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="investmentAmount">Amount Invested *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <input type="number" id="investmentAmount" name="amount" placeholder="0.00" required min="0" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="currentValue">Current Value</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-chart-area"></i>
+                                    <input type="number" id="currentValue" name="currentValue" placeholder="0.00" min="0" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="investmentDate">Investment Date *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-calendar"></i>
+                                    <input type="date" id="investmentDate" name="date" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quantity">Quantity/Units</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-hashtag"></i>
+                                    <input type="number" id="quantity" name="quantity" placeholder="e.g., 100 shares" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="broker">Broker/Platform</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-building"></i>
+                                <input type="text" id="broker" name="broker" placeholder="e.g., Zerodha, Groww, HDFC Bank">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="investmentDescription">Description</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-comment"></i>
+                                <textarea id="investmentDescription" name="description" placeholder="Additional details about this investment..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn" onclick="window.location.href='dashboard.html#investments'">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Investment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+    <script>
+        // Function to show notifications
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // Add to document
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Function to save investment data to localStorage
+        function saveInvestmentData(investmentData) {
+            // Get existing investments or initialize empty array
+            let investments = JSON.parse(localStorage.getItem('investments') || '[]');
+
+            // Add new investment with unique ID
+            investmentData.id = Date.now();
+            investmentData.timestamp = new Date().toISOString();
+            investments.push(investmentData);
+
+            // Save back to localStorage
+            localStorage.setItem('investments', JSON.stringify(investments));
+        }
+
+        // Set default date to today
+        document.getElementById('investmentDate').valueAsDate = new Date();
+
+        // Auto-fill current value with invested amount if empty
+        document.getElementById('investmentAmount').addEventListener('input', function() {
+            const currentValueField = document.getElementById('currentValue');
+            if (!currentValueField.value) {
+                currentValueField.value = this.value;
+            }
+        });
+
+        // Form submission
+        document.getElementById('investmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            try {
+                const formData = new FormData(this);
+                const investmentData = {
+                    name: formData.get('name').trim(),
+                    type: formData.get('type'),
+                    amount: parseFloat(formData.get('amount')),
+                    currentValue: parseFloat(formData.get('currentValue') || formData.get('amount')),
+                    date: formData.get('date'),
+                    quantity: parseFloat(formData.get('quantity') || 0),
+                    broker: formData.get('broker').trim(),
+                    description: formData.get('description').trim()
+                };
+
+                // Validate name
+                if (!investmentData.name) {
+                    throw new Error('Please enter an investment name');
+                }
+
+                // Validate type
+                if (!investmentData.type) {
+                    throw new Error('Please select an investment type');
+                }
+
+                // Validate amount
+                if (isNaN(investmentData.amount) || investmentData.amount <= 0) {
+                    throw new Error('Please enter a valid investment amount greater than 0');
+                }
+
+                // Validate current value
+                if (isNaN(investmentData.currentValue) || investmentData.currentValue < 0) {
+                    investmentData.currentValue = investmentData.amount;
+                }
+
+                // Validate quantity
+                if (isNaN(investmentData.quantity) || investmentData.quantity < 0) {
+                    investmentData.quantity = 0;
+                }
+
+                // Save the data
+                saveInvestmentData(investmentData);
+
+                // Show success message
+                showNotification('Investment added successfully!', 'success');
+
+                // Redirect back to Investments section after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html#investments';
+                }, 2000);
+
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+    </script>
+
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification.success {
+            border-left: 4px solid #4fd1c7;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f56565;
+        }
+
+        .notification i {
+            font-size: 20px;
+        }
+
+        .notification.success i {
+            color: #4fd1c7;
+        }
+
+        .notification.error i {
+            color: #f56565;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</body>
+</html>
