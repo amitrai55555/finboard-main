@@ -225,9 +225,9 @@
                 this.reset();
                 document.getElementById('incomeDate').valueAsDate = new Date();
 
-                // Redirect back to Budget section after a short delay
+                // Redirect back to Budget section after a short delay with refresh flag
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html#budget';
+                    window.location.href = 'dashboard.html#budget?income_updated=' + Date.now();
                 }, 2000);
 
             } catch (error) {

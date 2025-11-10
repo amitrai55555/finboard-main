@@ -840,15 +840,24 @@ async function loadIncomes() {
     try {
         // Show loading state
         incomeList.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading incomes...</div>';
-        
-        const incomes = await dataService.getIncome();
+
+        // Check if we need to force refresh (e.g., after adding income)
+        const urlParams = new URLSearchParams(window.location.search);
+        const forceRefresh = urlParams.has('income_updated');
+
+        // Clear cache if force refresh is needed
+        if (forceRefresh) {
+            dataService.clearCache('incomes');
+        }
+
+        const incomes = await dataService.getIncome(forceRefresh);
         incomeList.innerHTML = '';
-        
+
         if (incomes.length === 0) {
             incomeList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No income records yet. Add your first income to get started!</p>';
             return;
         }
-        
+
         incomes.forEach(income => {
             const item = document.createElement('div');
             item.className = 'income-item';
@@ -864,6 +873,15 @@ async function loadIncomes() {
             `;
             incomeList.appendChild(item);
         });
+
+        // Update the income chart after loading incomes
+        await updateIncomeChart(incomes);
+
+        // Clear the URL parameter after processing to avoid repeated refreshes
+        if (forceRefresh) {
+            const newUrl = window.location.pathname + window.location.hash;
+            window.history.replaceState({}, document.title, newUrl);
+        }
     } catch (error) {
         console.error('Error loading incomes:', error);
         incomeList.innerHTML = '<p style="text-align: center; color: #ff6b6b; padding: 20px;">Error loading incomes. Please try again later.</p>';
@@ -878,15 +896,24 @@ async function loadExpenses() {
     try {
         // Show loading state
         expenseList.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading expenses...</div>';
-        
-        const expenses = await dataService.getExpenses();
+
+        // Check if we need to force refresh (e.g., after adding expense)
+        const urlParams = new URLSearchParams(window.location.search);
+        const forceRefresh = urlParams.has('expense_updated');
+
+        // Clear cache if force refresh is needed
+        if (forceRefresh) {
+            dataService.clearCache('expenses');
+        }
+
+        const expenses = await dataService.getExpenses(forceRefresh);
         expenseList.innerHTML = '';
-        
+
         if (expenses.length === 0) {
             expenseList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No expense records yet. Add your first expense to get started!</p>';
             return;
         }
-        
+
         expenses.forEach(expense => {
             const item = document.createElement('div');
             item.className = 'expense-item';
@@ -902,6 +929,15 @@ async function loadExpenses() {
             `;
             expenseList.appendChild(item);
         });
+
+        // Update the expense chart after loading expenses
+        await updateExpenseChart(expenses);
+
+        // Clear the URL parameter after processing to avoid repeated refreshes
+        if (forceRefresh) {
+            const newUrl = window.location.pathname + window.location.hash;
+            window.history.replaceState({}, document.title, newUrl);
+        }
     } catch (error) {
         console.error('Error loading expenses:', error);
         expenseList.innerHTML = '<p style="text-align: center; color: #ff6b6b; padding: 20px;">Error loading expenses. Please try again later.</p>';
@@ -1423,6 +1459,174 @@ function resetCharts() {
     });
 
     console.log('Charts have been reset!');
+}
+
+// Update expense chart based on expense data
+async function updateExpenseChart(expenses) {
+    const chartBarsContainer = document.querySelector('.expense-chart-bars');
+
+    if (!chartBarsContainer) return;
+
+    // Clear existing chart bars
+    chartBarsContainer.innerHTML = '';
+
+    // Group expenses by month
+    const monthlyExpenses = {};
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+
+    // Initialize last 5 months with 0
+    for (let i = 4; i >= 0; i--) {
+        const date = new Date(currentYear, currentDate.getMonth() - i, 1);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        monthlyExpenses[monthKey] = 0;
+    }
+
+    // Sum expenses by month
+    expenses.forEach(expense => {
+        const expenseDate = new Date(expense.date);
+        const monthKey = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+
+        if (monthlyExpenses.hasOwnProperty(monthKey)) {
+            monthlyExpenses[monthKey] += parseFloat(expense.amount) || 0;
+        }
+    });
+
+    // Find max expense for scaling - use the highest value across all months
+    const maxExpense = Math.max(...Object.values(monthlyExpenses), 1);
+
+    // Get month keys and sort them
+    const monthKeys = Object.keys(monthlyExpenses).sort();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Create chart bars for each month
+    monthKeys.forEach((monthKey, index) => {
+        const expense = monthlyExpenses[monthKey];
+        const percentage = (expense / maxExpense) * 100;
+        const monthDate = new Date(monthKey + '-01');
+        const monthLabel = monthNames[monthDate.getMonth()];
+        const newHeight = `${Math.max(percentage, 2)}%`; // Minimum 2% for visibility
+
+        // Create new bar with transition and set final height
+        const bar = document.createElement('div');
+        bar.className = 'chart-bar';
+        bar.innerHTML = `<span class="bar-label">${monthLabel}</span>`;
+        bar.style.transition = 'height 0.8s ease-in-out';
+        bar.style.height = newHeight; // Set initial height
+
+        // Add hover functionality
+        bar.addEventListener('mouseenter', function() {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'chart-tooltip';
+            tooltip.innerHTML = `₹${expense.toLocaleString()}`;
+            tooltip.style.cssText = `
+                position: absolute;
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 14px;
+                pointer-events: none;
+                z-index: 1000;
+                top: ${this.offsetTop - 40}px;
+                left: ${this.offsetLeft + this.offsetWidth / 2 - 30}px;
+                transform: translateX(-50%);
+            `;
+            document.body.appendChild(tooltip);
+
+            this.addEventListener('mouseleave', function() {
+                tooltip.remove();
+            }, { once: true });
+        });
+
+        chartBarsContainer.appendChild(bar);
+    });
+
+    console.log('Expense chart updated:', monthlyExpenses);
+}
+
+// Update income chart based on income data
+async function updateIncomeChart(incomes) {
+    const chartBarsContainer = document.querySelector('.chart-bars');
+
+    if (!chartBarsContainer) return;
+
+    // Clear existing chart bars
+    chartBarsContainer.innerHTML = '';
+
+    // Group incomes by month
+    const monthlyIncomes = {};
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+
+    // Initialize last 5 months with 0
+    for (let i = 4; i >= 0; i--) {
+        const date = new Date(currentYear, currentDate.getMonth() - i, 1);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        monthlyIncomes[monthKey] = 0;
+    }
+
+    // Sum incomes by month
+    incomes.forEach(income => {
+        const incomeDate = new Date(income.date);
+        const monthKey = `${incomeDate.getFullYear()}-${String(incomeDate.getMonth() + 1).padStart(2, '0')}`;
+
+        if (monthlyIncomes.hasOwnProperty(monthKey)) {
+            monthlyIncomes[monthKey] += parseFloat(income.amount) || 0;
+        }
+    });
+
+    // Find max income for scaling
+    const maxIncome = Math.max(...Object.values(monthlyIncomes), 1);
+
+    // Get month keys and sort them
+    const monthKeys = Object.keys(monthlyIncomes).sort();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Create chart bars for each month
+    monthKeys.forEach((monthKey, index) => {
+        const income = monthlyIncomes[monthKey];
+        const percentage = (income / maxIncome) * 100;
+        const monthDate = new Date(monthKey + '-01');
+        const monthLabel = monthNames[monthDate.getMonth()];
+        const newHeight = `${Math.max(percentage, 2)}%`; // Minimum 2% for visibility
+
+        // Create new bar with transition and set final height
+        const bar = document.createElement('div');
+        bar.className = 'chart-bar';
+        bar.innerHTML = `<span class="bar-label">${monthLabel}</span>`;
+        bar.style.transition = 'height 0.8s ease-in-out';
+        bar.style.height = newHeight; // Set initial height
+
+        // Add hover functionality
+        bar.addEventListener('mouseenter', function() {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'chart-tooltip';
+            tooltip.innerHTML = `₹${income.toLocaleString()}`;
+            tooltip.style.cssText = `
+                position: absolute;
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 14px;
+                pointer-events: none;
+                z-index: 1000;
+                top: ${this.offsetTop - 40}px;
+                left: ${this.offsetLeft + this.offsetWidth / 2 - 30}px;
+                transform: translateX(-50%);
+            `;
+            document.body.appendChild(tooltip);
+
+            this.addEventListener('mouseleave', function() {
+                tooltip.remove();
+            }, { once: true });
+        });
+
+        chartBarsContainer.appendChild(bar);
+    });
+
+    console.log('Income chart updated:', monthlyIncomes);
 }
 
 // Reset dummy data function

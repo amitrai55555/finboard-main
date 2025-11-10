@@ -231,21 +231,7 @@
                         <div class="income-chart">
                             <div class="chart-container">
                                 <div class="chart-bars">
-                                    <div class="chart-bar" style="height: 0%">
-                                        <span class="bar-label">Jan</span>
-                                    </div>
-                                    <div class="chart-bar" style="height: 0%">
-                                        <span class="bar-label">Feb</span>
-                                    </div>
-                                    <div class="chart-bar" style="height: 0%">
-                                        <span class="bar-label">Mar</span>
-                                    </div>
-                                    <div class="chart-bar" style="height: 0%">
-                                        <span class="bar-label">Apr</span>
-                                    </div>
-                                    <div class="chart-bar" style="height: 0%">
-                                        <span class="bar-label">May</span>
-                                    </div>
+                                    <!-- Chart bars will be dynamically created by JavaScript -->
                                 </div>
                             </div>
                         </div>
@@ -260,10 +246,11 @@
                         <div class="section-header">
                             <h2>Expense Tracking</h2>
                             <div class="header-actions">
-                                <button class="filter-btn">
-                                    <i class="fas fa-filter"></i>
-                                    Filter
-                                </button>
+                                <select class="time-filter">
+                                    <option value="this-month">This Month</option>
+                                    <option value="last-month">Last Month</option>
+                                    <option value="this-year">This Year</option>
+                                </select>
                                 <button class="add-expense-btn">
                                     <i class="fas fa-plus"></i>
                                     Add Expense
@@ -271,41 +258,16 @@
                             </div>
                         </div>
 
-                        <div class="expense-categories">
-                            <h3>Expense Categories</h3>
-                            <div class="category-list">
-                                <!-- No expense data yet -->
-                            </div>
-                        </div>
-
-                        <div class="monthly-trend">
-                            <h3>Monthly Trend</h3>
-                            <div class="trend-chart">
-                                <div class="trend-bars">
-                                    <div class="trend-bar" style="height: 0%">
-                                        <span class="trend-label">Jan</span>
-                                    </div>
-                                    <div class="trend-bar" style="height: 0%">
-                                        <span class="trend-label">Feb</span>
-                                    </div>
-                                    <div class="trend-bar" style="height: 0%">
-                                        <span class="trend-label">Mar</span>
-                                    </div>
-                                    <div class="trend-bar" style="height: 0%">
-                                        <span class="trend-label">Apr</span>
-                                    </div>
-                                    <div class="trend-bar" style="height: 0%">
-                                        <span class="trend-label">May</span>
-                                    </div>
+                        <div class="expense-chart">
+                            <div class="chart-container">
+                                <div class="expense-chart-bars">
+                                    <!-- Expense chart bars will be dynamically created by JavaScript -->
                                 </div>
                             </div>
                         </div>
 
-                        <div class="recent-transactions">
-                            <h3>Recent Transactions</h3>
-                            <div class="transaction-list">
-                                <!-- No transactions yet -->
-                            </div>
+                        <div class="expense-list">
+                            <!-- No expense data yet -->
                         </div>
                     </div>
                 </div>

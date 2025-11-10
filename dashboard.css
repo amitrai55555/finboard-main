@@ -162,7 +162,7 @@ body {
 /* Header */
 .dashboard-header {
     background: white;
-    padding: 20px 32px;
+    padding: 18px 32px;
     border-bottom: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-between;
