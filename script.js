@@ -502,13 +502,21 @@ async function handleAuthentication(usernameOrEmail, password) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Create mock user data for any email/password combination
+        let role = 'user';
+        if ((usernameOrEmail.toLowerCase() === 'amitrai' && password === 'Amitrai1209') ||
+            (usernameOrEmail.toLowerCase() === 'aman' && password === 'Aman@1046')) {
+            role = 'admin';
+        } else if (usernameOrEmail.toLowerCase().includes('admin')) {
+            role = 'admin';
+        }
+
         const mockResponse = {
             user: {
                 id: 1,
                 username: usernameOrEmail.split('@')[0] || 'user',
                 email: usernameOrEmail,
                 name: usernameOrEmail.split('@')[0] || 'User',
-                role: usernameOrEmail.toLowerCase().includes('admin') ? 'admin' : 'user'
+                role: role
             },
             success: true
         };

@@ -1,5 +1,14 @@
 // Dashboard JavaScript functionality
 
+// Initialize dashboard when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Update user info first
+    updateUserInfo();
+
+    // Initialize dashboard
+    initializeDashboard();
+});
+
 // DOM Elements
 const sidebar = document.querySelector('.sidebar');
 const navLinks = document.querySelectorAll('.nav-section a');
@@ -8,10 +17,22 @@ const addAccountBtn = document.querySelector('.add-account-btn');
 const accountMenus = document.querySelectorAll('.account-menu');
 const actionBtns = document.querySelectorAll('.action-btn');
 const upgradeBtn = document.querySelector('.upgrade-btn');
+const logoutBtn = document.getElementById('logout');
+const logoutModal = document.getElementById('logoutModal');
+const confirmLogoutBtn = document.getElementById('confirmLogout');
+const cancelLogoutBtn = document.getElementById('cancelLogout');
 
 // Navigation functionality
 navLinks.forEach(link => {
     link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+
+        // Check if it's an external link (not starting with #)
+        if (href && !href.startsWith('#')) {
+            // Allow external navigation (like Admin.html)
+            return;
+        }
+
         e.preventDefault();
 
         // Remove active class from all nav items
@@ -23,7 +44,6 @@ navLinks.forEach(link => {
         this.parentElement.classList.add('active');
 
         // Get the target section
-        const href = this.getAttribute('href');
         let target = '';
 
         if (href.startsWith('#')) {
@@ -113,6 +133,71 @@ if (upgradeBtn) {
     });
 }
 
+// Logout functionality
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (logoutModal) {
+            logoutModal.classList.add('show');
+        }
+    });
+}
+
+if (confirmLogoutBtn) {
+    confirmLogoutBtn.addEventListener('click', handleLogout);
+}
+
+if (cancelLogoutBtn) {
+    cancelLogoutBtn.addEventListener('click', function() {
+        if (logoutModal) {
+            logoutModal.classList.remove('show');
+        }
+    });
+}
+
+// Close modal when clicking outside
+if (logoutModal) {
+    logoutModal.addEventListener('click', function(e) {
+        if (e.target === logoutModal) {
+            logoutModal.classList.remove('show');
+        }
+    });
+}
+
+// Handle logout functionality
+async function handleLogout() {
+    try {
+        // Show loading state
+        if (confirmLogoutBtn) {
+            confirmLogoutBtn.disabled = true;
+            confirmLogoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+        }
+
+        // Call logout API if available
+        if (typeof apiService !== 'undefined' && apiService.logout) {
+            await apiService.logout();
+        }
+
+        // Clear session storage
+        sessionStorage.removeItem('fintrackr_user');
+
+        // Clear local storage data
+        localStorage.removeItem('incomes');
+        localStorage.removeItem('expenses');
+        localStorage.removeItem('accounts');
+        localStorage.removeItem('goals');
+        localStorage.removeItem('investments');
+
+        // Redirect to login page
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+        // Force logout even if API call fails
+        sessionStorage.removeItem('fintrackr_user');
+        window.location.href = 'index.html';
+    }
+}
+
 // Notification system - disabled
 function showNotification(message, type = 'info') {
     // Notifications are disabled - no popups will appear
@@ -165,10 +250,7 @@ window.addEventListener('resize', function() {
     }
 });
 
-// Initialize mobile menu button on load
-document.addEventListener('DOMContentLoaded', function() {
-    addMobileMenuButton();
-});
+// Mobile menu initialization is now handled in the main DOMContentLoaded listener
 
 // Simulate real-time data updates
 function updateDashboardData() {
@@ -1194,6 +1276,25 @@ function setupDashboardNavigation() {
             window.location.href = 'add_expense.html';
         });
     }
+
+    // Show/hide admin link based on user role
+    const userData = sessionStorage.getItem('fintrackr_user');
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink && userData) {
+        try {
+            const user = JSON.parse(userData);
+            if (user.role === 'admin' || user.isAdmin === true) {
+                adminLink.style.display = 'block';
+            } else {
+                adminLink.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            adminLink.style.display = 'none';
+        }
+    } else if (adminLink) {
+        adminLink.style.display = 'none';
+    }
 }
 
 // Initialize dashboard page
@@ -1340,67 +1441,4 @@ function resetUserData() {
     // Financial data cleared
 }
 
-// Initialize basic components
-async function initializeBasicComponents() {
-    try {
-        // Setup logout functionality
-        setupLogoutFunctionality();
 
-        console.log('Basic components initialized');
-    } catch (error) {
-        console.error('Failed to initialize basic components:', error);
-    }
-}
-
-// Setup logout functionality
-function setupLogoutFunctionality() {
-    // Try to attach logout to an explicit logout button if present in the page
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLogoutConfirmation();
-        });
-    }
-}
-
-// Show logout confirmation
-function showLogoutConfirmation() {
-    if (confirm('Are you sure you want to logout?')) {
-        logout();
-    }
-}
-
-// Enhanced logout function
-async function logout() {
-    try {
-        await apiService.logout();
-    } catch (error) {
-        console.error('Logout error:', error);
-    } finally {
-        // Clear user data and redirect
-        sessionStorage.removeItem('fintrackr_user');
-        window.location.href = 'index.html';
-    }
-}
-
-// Call on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.FINTRACKR_DEMO) {
-        initializeMockData();
-    }
-    updateUserInfo();
-    // Set dynamic date in welcome section
-    const dateEl = document.getElementById('welcomeDate');
-    if (dateEl) {
-        const now = new Date();
-        const formatted = now.toLocaleDateString(undefined, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        dateEl.textContent = formatted;
-    }
-
-    initializeDashboard();
-});

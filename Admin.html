@@ -1,204 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CollisionCatcher — Login & Admin</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="Admin.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - FinTrackr</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-
-
-  <div class="app" id="adminApp" aria-hidden="true">
-    <aside class="sidebar card" aria-label="Sidebar">
-      <div class="brand-small">
-        <img src="png1.jpeg" alt="Logo">
-        <div>
-          <div style="font-weight:700">CollisionCatcher</div>
-          <div class="muted" style="font-size:12px">Admin Panel</div>
-        </div>
-      </div>
-
-      <nav class="nav" role="navigation" aria-label="Main navigation">
-        <a href="#" id="nav-dashboard" class="active" data-target="dashboard">🏠 Dashboard</a>
-        <a href="#" id="nav-users" class="inactive" data-target="users">👥 Manage Users</a>
-        <a href="#" id="nav-reports" class="inactive" data-target="reports">🧾 Manage Reports</a>
-      </nav>
-
-      <div class="meta">
-        <div class="muted">Signed in as</div>
-        <div id="signedInUser" style="font-weight:700;margin-top:6px">admin@collisioncatcher.local</div>
-      </div>
-
-      <div class="logout">
-        <div class="muted">v1.0</div>
-        <div>
-          <button id="logoutBtn" class="ghost" type="button">Logout</button>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main" id="mainApp">
-      <header class="topbar" role="banner">
-        <div>
-          <h2 style="font-size:22px;font-weight:800"><span id="header-page-name">Dashboard</span></h2>
-          <div class="muted" style="margin-top:6px">Overview & quick actions</div>
-        </div>
-
-        <div style="display:flex;gap:10px;align-items:center">
-          <div class="search card" style="align-items:center">
-            <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:0.9" aria-hidden="true"><path fill="currentColor" d="M21 21l-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"></path></svg>
-            <input id="globalSearch" placeholder="Search users, reports, alerts..." aria-label="Global search" />
-          </div>
-          <button id="notifBtn" class="icon-btn" title="Notifications" type="button">🔔</button>
-        </div>
-      </header>
-
-      <section id="dashboard-grid" class="grid" style="position:relative;gap:18px" aria-live="polite">
-        <div class="card col-4">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <p class="muted">Total Users</p>
-              <div id="stat-total-users" class="kpi num" style="font-size:20px;font-weight:800">0</div>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>FinTrackr Admin</span>
+                </div>
             </div>
-            <div class="pill">+3.6%</div>
-          </div>
-        </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>ADMIN PANEL</h4>
+                    <ul>
+                        <li class="active">
+                            <a href="#admin-dashboard">
+                                <i class="fas fa-cog"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#admin-users">
+                                <i class="fas fa-users-cog"></i>
+                                <span>Manage Users</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#admin-reports">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Manage Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#admin-settings">
+                                <i class="fas fa-sliders-h"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html" class="external">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back to Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
 
-        <div class="card col-4">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <p class="muted">Total Vehicles</p>
-              <div id="stat-total-vehicles" class="kpi num" style="font-size:20px;font-weight:800">0</div>
-            </div>
-            <div class="pill">Fleet</div>
-          </div>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>Admin Panel</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </header>
 
-        <div class="card col-4">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <p class="muted">Active Alerts</p>
-              <div id="stat-active-alerts" class="kpi num" style="font-size:20px;font-weight:800;color:#ffb4b4">0</div>
-            </div>
-            <div class="pill">Critical</div>
-          </div>
-        </div>
+            <!-- Admin Dashboard Section -->
+            <section id="admin-dashboard" class="admin-dashboard-section">
+                <div class="section-header">
+                    <h2>Admin Dashboard</h2>
+                    <div class="header-actions">
+                        <button class="refresh-admin-btn" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
 
-        <div class="card col-8">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <h3>Recent Active Alerts</h3>
-            <div class="muted">Last 24 hours</div>
-          </div>
-          <div style="overflow:auto">
-            <table>
-              <thead>
-                <tr><th>User</th><th>Type</th><th>Location</th><th>Time</th></tr>
-              </thead>
-              <tbody id="dashboard-alerts-table">
-                <tr><td colspan="4" class="muted" style="padding:14px;text-align:center">No active alerts.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                            <span class="stat-change positive">+0%</span>
+                        </div>
+                    </div>
 
-        <div class="card col-4">
-          <h3>Alerts Hotspot Map</h3>
-          <div style="height:180px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;align-items:center;justify-content:center;margin-top:12px;">
-            <div class="muted">Map Placeholder</div>
-          </div>
-        </div>
-      </section>
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="activeUsers">0</h3>
+                            <p>Active Users</p>
+                            <span class="stat-change positive">+0%</span>
+                        </div>
+                    </div>
 
-      <section id="page-users-block" class="card" style="display:none;margin-top:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <h3>All Registered Users</h3>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input id="userSearch" placeholder="Search users..." style="padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;outline:none" />
-            <button id="addUser" class="btn" type="button">＋ Add</button>
-          </div>
-        </div>
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalReports">0</h3>
+                            <p>Total Reports</p>
+                            <span class="stat-change positive">+0%</span>
+                        </div>
+                    </div>
 
-        <div style="overflow:auto">
-          <table>
-            <thead>
-              <tr><th>Name</th><th>Email</th><th>Phone</th><th>Vehicle</th><th>Actions</th></tr>
-            </thead>
-            <tbody id="users-table-body"></tbody>
-          </table>
-        </div>
-      </section>
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="systemHealth">100%</h3>
+                            <p>System Health</p>
+                            <span class="stat-change positive">Good</span>
+                        </div>
+                    </div>
+                </div>
 
-      <section id="page-reports-block" class="card" style="display:none;margin-top:8px">
-        <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-          <h3>Active Accident Reports</h3>
-          <div class="muted">Manage & assign</div>
-        </div>
+                <div class="admin-system-metrics">
+                    <h3>System Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-header">
+                                <span class="metric-label">CPU Usage</span>
+                                <span class="metric-value" id="cpuUsage">0%</span>
+                            </div>
+                            <div class="metric-progress">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-        <div style="overflow:auto;margin-bottom:12px">
-          <table>
-            <thead>
-              <tr><th>User</th><th>Vehicle</th><th>Location</th><th>Time</th><th>Actions</th></tr>
-            </thead>
-            <tbody id="accident-reports-table"></tbody>
-          </table>
-        </div>
+                        <div class="metric-item">
+                            <div class="metric-header">
+                                <span class="metric-label">Memory Usage</span>
+                                <span class="metric-value" id="memoryUsage">0%</span>
+                            </div>
+                            <div class="metric-progress">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-        <div style="margin-top:8px">
-          <h3 style="margin-bottom:8px">Active Theft Reports</h3>
-          <div style="overflow:auto">
-            <table>
-              <thead>
-                <tr><th>User</th><th>Vehicle</th><th>Location</th><th>Time</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="theft-reports-table"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+                        <div class="metric-item">
+                            <div class="metric-header">
+                                <span class="metric-label">Storage Usage</span>
+                                <span class="metric-value" id="storageUsage">0%</span>
+                            </div>
+                            <div class="metric-progress">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-  <div id="user-modal" class="modal-backdrop" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-user-name">
-    <div class="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:12px">
-        <h3 id="modal-user-name" style="font-size:20px;font-weight:700">User Details</h3>
-        <button id="modal-close-btn" class="ghost" type="button">Close</button>
-      </div>
+                        <div class="metric-item">
+                            <div class="metric-header">
+                                <span class="metric-label">API Response Time</span>
+                                <span class="metric-value" id="apiResponseTime">0ms</span>
+                            </div>
+                            <div class="metric-progress">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-      <div style="padding-top:12px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div>
-            <p class="muted">Email</p>
-            <p id="modal-user-email" style="font-weight:700">-</p>
-          </div>
-          <div>
-            <p class="muted">Phone</p>
-            <p id="modal-user-phone" style="font-weight:700">-</p>
-          </div>
-          <div>
-            <p class="muted">Vehicle Model</p>
-            <p id="modal-user-vehicle-model" style="font-weight:700">-</p>
-          </div>
-          <div>
-            <p class="muted">License Plate</p>
-            <p id="modal-user-vehicle-plate" style="font-weight:700">-</p>
-          </div>
-        </div>
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="activityList">
+                        <!-- Activity items will be loaded here -->
+                    </div>
+                </div>
+            </section>
 
-        <div style="margin-top:14px">
-          <h4 style="margin:0 0 8px 0">Emergency Contacts</h4>
-          <ul id="modal-user-contacts" style="list-style:none;padding:0;margin:0"></ul>
-        </div>
-      </div>
+            <!-- Admin Users Management Section -->
+            <section id="admin-users" class="admin-users-section">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <div class="header-actions">
+                        <select class="admin-filter" id="userFilter">
+                            <option value="all">All Users</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="admin">Admins</option>
+                        </select>
+                        <button class="add-user-btn" id="addUserBtn">
+                            <i class="fas fa-plus"></i>
+                            Add User
+                        </button>
+                    </div>
+                </div>
+
+                <div class="users-container">
+                    <div class="users-list" id="usersList">
+                        <!-- Users will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Reports Management Section -->
+            <section id="admin-reports" class="admin-reports-section">
+                <div class="section-header">
+                    <h2>Report Management</h2>
+                    <div class="header-actions">
+                        <select class="report-filter" id="reportFilter">
+                            <option value="all">All Reports</option>
+                            <option value="user">User Reports</option>
+                            <option value="system">System Reports</option>
+                            <option value="financial">Financial Reports</option>
+                        </select>
+                        <button class="generate-report-btn" id="generateReportBtn">
+                            <i class="fas fa-plus"></i>
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-container">
+                    <div class="reports-list" id="reportsList">
+                        <!-- Reports will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Settings Section -->
+            <section id="admin-settings" class="admin-settings-section">
+                <div class="section-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h3>General Settings</h3>
+                        <div class="setting-item">
+                            <label for="siteTitle">Site Title</label>
+                            <input type="text" id="siteTitle" value="FinTrackr">
+                        </div>
+                        <div class="setting-item">
+                            <label for="maintenanceMode">Maintenance Mode</label>
+                            <input type="checkbox" id="maintenanceMode">
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Security Settings</h3>
+                        <div class="setting-item">
+                            <label for="twoFactor">Enable 2FA</label>
+                            <input type="checkbox" id="twoFactor" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="sessionTimeout">Session Timeout (minutes)</label>
+                            <input type="number" id="sessionTimeout" value="30">
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <!-- Modals -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button class="close-modal" id="closeAddUserModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="userName">Name</label>
+                        <input type="text" id="userName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Role</label>
+                        <select id="userRole">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" id="cancelAddUser">Cancel</button>
+                        <button type="submit" class="submit-btn">Add User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content logout-modal-content">
+            <div class="modal-header">
+                <h2>Confirm Logout</h2>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to logout?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelLogout" class="btn btn-secondary">Cancel</button>
+                <button id="confirmLogout" class="btn btn-primary">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Configuration and Service Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>
