@@ -1476,7 +1476,7 @@ async function updateExpenseChart(expenses) {
     const currentYear = currentDate.getFullYear();
 
     // Initialize last 5 months with 0
-    for (let i = 4; i >= 0; i--) {
+    for (let i = 11; i >= 0; i--) {
         const date = new Date(currentYear, currentDate.getMonth() - i, 1);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         monthlyExpenses[monthKey] = 0;
@@ -1560,7 +1560,7 @@ async function updateIncomeChart(incomes) {
     const currentYear = currentDate.getFullYear();
 
     // Initialize last 5 months with 0
-    for (let i = 4; i >= 0; i--) {
+    for (let i = 11; i >= 0; i--) {
         const date = new Date(currentYear, currentDate.getMonth() - i, 1);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         monthlyIncomes[monthKey] = 0;
