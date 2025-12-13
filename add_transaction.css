@@ -255,6 +255,27 @@ textarea {
     background-color: #38b2ac;
 }
 
+/* Form switch styles */
+.form-switch {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.form-switch button {
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.form-switch button.active {
+    background: #4F46E5;
+    color: #fff;
+    border-color: #4F46E5;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .form-grid {
@@ -280,24 +301,4 @@ textarea {
     .sidebar-nav ul li {
         margin-bottom: 0;
     }
-}
-
-.form-switch {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.form-switch button {
-    padding: 6px 10px;
-    border: 1px solid #e2e8f0;
-    background: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.form-switch button.active {
-    background: #4F46E5;
-    color: #fff;
-    border-color: #4F46E5;
 }

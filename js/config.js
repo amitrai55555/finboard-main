@@ -7,16 +7,36 @@ const ENVIRONMENT = {
     isTest: window.location.hostname.includes('test') || window.location.hostname.includes('staging')
 };
 
+// Helper: allow overriding API base URL via query param or localStorage
+function resolveBaseUrl() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const urlOverride = params.get('apiBase');
+        const storedOverride = localStorage.getItem('FIN_API_BASE_URL');
+        const defaultBase = ENVIRONMENT.isProduction
+            ? 'https://api.fintrackr.com'
+            : (ENVIRONMENT.isTest ? 'https://test-api.fintrackr.com' : 'http://localhost:8080');
+        const base = (urlOverride || storedOverride || defaultBase).trim();
+        // Persist override from URL for next loads
+        if (urlOverride) localStorage.setItem('FIN_API_BASE_URL', base);
+        return base.replace(/\/$/, ''); // remove trailing slash
+    } catch (_) {
+        return 'http://localhost:8080';
+    }
+}
+
+function setApiBaseUrl(newBase) {
+    if (typeof newBase === 'string' && newBase.length > 0) {
+        localStorage.setItem('FIN_API_BASE_URL', newBase);
+    }
+}
+
 // ===============================
 // API Configuration
 // ===============================
 const API_CONFIG = {
-    // Base URL depending on environment
-    BASE_URL: ENVIRONMENT.isProduction 
-        ? 'https://api.fintrackr.com' 
-        : ENVIRONMENT.isTest 
-            ? 'https://test-api.fintrackr.com'
-            : 'http://localhost:8080',
+    // Base URL depending on environment, with override support
+    BASE_URL: resolveBaseUrl(),
 
     VERSION: 'v1',
 
@@ -118,7 +138,8 @@ function getApiUrl(endpoint) {
 
 // Get basic headers
 function getAuthHeaders() {
-    return {};
+    const token = sessionStorage.getItem('fintrackr_token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 // Build fetch options with JWT and defaults
@@ -138,4 +159,11 @@ function buildRequestOptions(method = 'GET', body = null) {
 // ===============================
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { API_CONFIG, getApiUrl, buildRequestOptions };
+}
+
+// Expose helper in browser
+if (typeof window !== 'undefined') {
+    window.API_CONFIG = API_CONFIG;
+    window.setApiBaseUrl = setApiBaseUrl;
+    window.getApiUrl = getApiUrl;
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="forgot.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            Fintrackr
+        </div>
+        <div class="register">
+            Don't have an account? <a href="#">Register Now</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <img src="/forgot_password.png" srcset="">
+        <h2>Forgot your password?</h2>
+        <p>Enter your email so that we can send you password reset link</p>
+
+        <div class="input-box">
+            <label>Email</label>
+            <input type="email" placeholder="e.g. username@Fintrackr.com" />
+        </div>
+
+        <button class="btn" onclick="sendPasswordResetEmail()">Send Email</button>
+
+        <div class="back" onclick="window.location.href='/login'">← Back to Login</div>
+    </div>
+
+    <footer>
+        <span>Copyright©2025 Fintrackr</span>
+        <a href="#">Privacy Policy</a>
+    </footer>
+
+    <script src="password-reset.js"></script>
+</body>
+
+</html>

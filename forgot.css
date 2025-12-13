@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: #ffffff;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    width: 100%;
+    padding: 25px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .logo img {
+    width: 32px;
+}
+
+header .register a {
+    font-size: 14px;
+    color:#4361ee;;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.container h2 {
+    font-size: 32px;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+.container p {
+    font-size: 14px;
+    margin: 10px 0 30px;
+    color: #777;
+}
+
+.input-box {
+    width: 450px;
+    max-width: 90%;
+    margin-bottom: 20px;
+}
+
+.input-box label {
+    font-weight: 700;
+    display: block;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align:left;
+    margin-left: 10px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    border-radius: 30px;
+    border: 1px solid #d9d9d9;
+    outline: none;
+}
+input[type="email"]:focus{
+    border-color: #4361ee;
+}
+
+.btn {
+    width: 450px;
+    max-width: 90%;
+    background: #4361ee;
+    border: none;
+    padding: 14px;
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #3a56d4;
+}
+
+.back {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    font-weight: 700;
+}
+.back:hover{
+    color: #4361ee;
+}
+footer {
+    padding: 15px 40px;
+    font-size: 12px;
+    color: #777;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #f0f0f0;
+}
+
+footer a {
+    color: #555;
+    text-decoration: none;
+    font-size: 12px;
+}
+.illustration {
+    width: 150px;
+    margin-bottom: 20px;
+}
+.logo i{
+    background: #2d3748;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 18px;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(67, 97, 238, 0.3);
+}
+.container img {
+    width: 309px;
+    height: 270px;
+}

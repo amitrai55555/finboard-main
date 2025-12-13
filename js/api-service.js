@@ -10,35 +10,46 @@ class ApiService {
 
         this.baseUrl = API_CONFIG.BASE_URL;
         this.endpoints = API_CONFIG.ENDPOINTS;
-        // Token management removed
         
         instance = this;
+    }
+
+    // Helper to read stored JWT
+    getToken() {
+        return sessionStorage.getItem('fintrackr_token');
     }
 
     // Check backend connection
     async checkConnection() {
         try {
-            return await fetch(this.baseUrl + '/api/csrf-token', {
+            const res = await fetch(this.baseUrl + '/api/public/health', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
+                mode: 'cors',
                 signal: AbortSignal.timeout(5000) // 5 second timeout
             });
+            return res;
         } catch (error) {
             console.error('Connection check failed:', error);
             throw error;
         }
     }
 
-    // Get headers without authentication
+    // Build headers, attach Authorization if available
     getHeaders(includeAuth = true) {
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         };
+
+        if (includeAuth) {
+            const token = this.getToken();
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+        }
 
         return headers;
     }
@@ -56,17 +67,31 @@ class ApiService {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Login failed');
+                let errorText = 'Login failed';
+                try {
+                    const errorData = await response.json();
+                    errorText = errorData.message || errorData.error || errorText;
+                } catch (_) {}
+                throw new Error(errorText);
             }
 
             const data = await response.json();
-            
-            // Store user info if available
-            if (data.user) {
-                sessionStorage.setItem('fintrackr_user', JSON.stringify(data.user));
+
+            // Backend returns JWT as 'token' (JwtResponse.token) or sometimes 'jwt'
+            const token = data && (data.jwt || data.token);
+            if (token) {
+                sessionStorage.setItem('fintrackr_token', token);
+                const user = {
+                    id: data.id,
+                    username: data.username,
+                    email: data.email,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    role: data.role
+                };
+                sessionStorage.setItem('fintrackr_user', JSON.stringify(user));
             }
-            
+
             return data;
         } catch (error) {
             console.error('Login error:', error);
@@ -80,7 +105,7 @@ class ApiService {
             const response = await fetch(this.baseUrl + this.endpoints.REGISTER, {
                 method: 'POST',
                 headers: this.getHeaders(false),
-                body: JSON.stringify(userData)
+                body: JSON.stringify(userData) // { firstName, lastName, username, email, password }
             });
 
             if (!response.ok) {
@@ -89,6 +114,9 @@ class ApiService {
             }
 
             const data = await response.json();
+
+            // Backend returns success message for registration, not JWT
+            // Registration doesn't automatically log in the user
             return data;
         } catch (error) {
             console.error('Registration error:', error);
@@ -99,11 +127,13 @@ class ApiService {
     // Logout method
     async logout() {
         try {
-            // Call backend logout endpoint
-            await fetch(this.baseUrl + this.endpoints.LOGOUT, {
-                method: 'POST',
-                headers: this.getHeaders(true)
-            });
+            // Call backend logout endpoint if available (best-effort)
+            try {
+                await fetch(this.baseUrl + this.endpoints.LOGOUT, {
+                    method: 'POST',
+                    headers: this.getHeaders(true)
+                });
+            } catch (_) {}
             
             // Clear user data
             this.clearTokens();
@@ -120,9 +150,10 @@ class ApiService {
     // Clear all user data
     clearTokens() {
         sessionStorage.removeItem('fintrackr_user');
+        sessionStorage.removeItem('fintrackr_token');
     }
 
-    // Refresh token - simplified
+    // Refresh token - optional (backend may not provide this endpoint)
     async refreshToken() {
         try {
             const response = await fetch(this.baseUrl + this.endpoints.REFRESH, {
@@ -135,6 +166,7 @@ class ApiService {
             }
 
             const data = await response.json();
+            if (data && data.token) sessionStorage.setItem('fintrackr_token', data.token);
             return data;
         } catch (error) {
             console.error('Token refresh error:', error);

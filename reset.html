@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="reset.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            Fintrackr
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+        <img src="/open-black-mailbox-with-letter-vector-35137684.jpg" alt="" srcset="">
+        </div>
+        <h1>Reset password</h1>
+        <p class="subtitle">Please kindly set your new password.</p>
+
+        <div class="form-container">
+            <form id="resetForm">
+                <div class="form-group">
+                    <label for="newPassword">New password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="newPassword" required>
+                        <div class="toggle-password" onclick="togglePassword('newPassword')"></div>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bars">
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                        </div>
+                        <div class="strength-text">
+                            Password strength: <span>Weak</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Re-enter password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirmPassword" required>
+                        <div class="toggle-password" onclick="togglePassword('confirmPassword')">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Change Password</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <span>Copyright©2023</span>
+        <span>|</span>
+        <a href="#">Privacy Policy</a>
+    </footer>
+    <script src="reset.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Sent</title>
+    <link rel="stylesheet" href="sent.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            Fintrackr
+        </div>
+        <div class="register">
+            Don't have an account? <a href="#">Register Now</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <img src="/Mail_sent.png" alt="" srcset="">
+        <h2>Check your email!</h2>
+        <p>Thanks! An email was sent that will ask you to click on a link to verify
+           <br> that you own this account. If you don't get the email, please contact support@fintrackr.com
+        </p>
+        <div class="resend">
+            <a href="/forgot.html" onclick="clearAndResend(); return false;">← Resend email</a>
+        </div>
+    </div>
+
+    <footer>
+        <span>Copyright©2025 Fintrackr</span>
+        <a href="#">Privacy Policy</a>
+    </footer>
+
+    <script src="sent.js"></script>
+</body>
+
+</html>

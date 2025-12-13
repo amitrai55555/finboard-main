@@ -2,6 +2,16 @@
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication first
+    const userData = sessionStorage.getItem('fintrackr_user');
+    const token = sessionStorage.getItem('fintrackr_token');
+
+    if (!userData || !token) {
+        // No authentication data, redirect to login
+        window.location.href = 'index.html';
+        return;
+    }
+
     // Update user info first
     updateUserInfo();
 
@@ -1319,10 +1329,17 @@ function setupDashboardNavigation() {
     if (adminLink && userData) {
         try {
             const user = JSON.parse(userData);
-            if (user.role === 'admin' || user.isAdmin === true) {
+            console.log('📋 Dashboard.js checking admin role:', user.role);
+            // Backend returns role as "ROLE_ADMIN" from getAuthority()
+            const roleStr = String(user.role || '').toUpperCase();
+            const isAdmin = roleStr === 'ROLE_ADMIN' || roleStr === 'ADMIN' || user.isAdmin === true;
+            
+            if (isAdmin) {
                 adminLink.style.display = 'block';
+                console.log('✅ Dashboard.js: Admin link visible');
             } else {
                 adminLink.style.display = 'none';
+                console.log('❌ Dashboard.js: Admin link hidden for role:', user.role);
             }
         } catch (error) {
             console.error('Error parsing user data:', error);
@@ -1336,13 +1353,6 @@ function setupDashboardNavigation() {
 // Initialize dashboard page
 async function initializeDashboard() {
     try {
-        // Check authentication
-        const userData = sessionStorage.getItem('fintrackr_user');
-        if (!userData) {
-            window.location.href = 'index.html';
-            return;
-        }
-
         // Load all data with error handling
         try {
             await Promise.all([
