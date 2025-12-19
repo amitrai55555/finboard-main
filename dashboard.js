@@ -109,7 +109,7 @@ if (searchInput) {
 // Add account functionality
 if (addAccountBtn) {
     addAccountBtn.addEventListener('click', function() {
-        // In a real app, you would open an add account modal
+        window.location.href = 'add_account.html';
     });
 }
 
@@ -974,16 +974,22 @@ async function loadAccounts() {
         accounts.forEach(account => {
             const card = document.createElement('div');
             card.className = 'account-card';
+
+            const title = account.bankName || account.bank || 'Bank Account';
+            const subtitle = account.accountType || account.type || '';
+            const masked = account.accountNumber || (account.number ? ('•••• ' + String(account.number).slice(-4)) : '');
+            const verified = account.verified === true;
+
             card.innerHTML = `
                 <div class="account-icon"><i class="fas fa-university"></i></div>
                 <div class="account-info">
-                    <h3>${account.name}</h3>
-                    <p>${account.bank || account.type || 'Account'}</p>
+                    <h3>${title}</h3>
+                    <p>${subtitle}${verified ? '' : ' (unverified)'}</p>
                 </div>
-                <div class="account-balance">₹${(account.balance || 0).toFixed(2)}</div>
+                <div class="account-balance">${masked}</div>
                 <div class="account-meta">
-                    <span>${account.currency || ''}</span>
-                    <span>${account.number ? '•••• ' + String(account.number).slice(-4) : ''}</span>
+                    <span>${account.accountHolderName || ''}</span>
+                    <span>${account.ifscCode || ''}</span>
                 </div>
             `;
             accountList.appendChild(card);

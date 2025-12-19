@@ -48,59 +48,138 @@ document.getElementById('incomeRecurring').addEventListener('change', function()
     recurringOptions.style.display = this.checked ? 'block' : 'none';
 });
 
+function mapIncomeCategory(type) {
+    const t = String(type || '').toLowerCase();
+    switch (t) {
+        case 'salary': return 'SALARY';
+        case 'freelance': return 'FREELANCE';
+        case 'business': return 'BUSINESS';
+        case 'investment':
+        case 'dividend':
+            return 'INVESTMENTS';
+        case 'rental': return 'RENTAL';
+        case 'bonus': return 'BONUS';
+        default: return 'OTHER';
+    }
+}
+
+function mapRecurrenceType(freq) {
+    const f = String(freq || '').toLowerCase();
+    switch (f) {
+        case 'weekly':
+        case 'bi-weekly':
+            return 'WEEKLY';
+        case 'monthly':
+            return 'MONTHLY';
+        case 'quarterly':
+            return 'QUARTERLY';
+        case 'yearly':
+            return 'YEARLY';
+        default:
+            return null;
+    }
+}
+
+async function populateIncomeBankAccounts() {
+    const select = document.getElementById('incomeBankAccount');
+    if (!select) return;
+
+    try {
+        const accounts = await dataService.getAccounts(true);
+        select.innerHTML = '';
+
+        if (!accounts || accounts.length === 0) {
+            select.innerHTML = '<option value="">No bank accounts found. Add an account first.</option>';
+            return;
+        }
+
+        accounts.forEach((a) => {
+            const opt = document.createElement('option');
+            opt.value = a.id;
+            const suffix = a.verified ? '' : ' (unverified)';
+            opt.textContent = `${a.bankName || 'Bank'} - ${a.accountNumber || ''}${suffix}`.trim();
+            select.appendChild(opt);
+        });
+
+        const verified = accounts.find(a => a.verified);
+        if (verified) select.value = String(verified.id);
+    } catch (e) {
+        console.error('Failed to load bank accounts:', e);
+        select.innerHTML = '<option value="">Unable to load bank accounts</option>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', populateIncomeBankAccounts);
+
 // Form submission
 document.getElementById('incomeForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
+    const submitBtn = this.querySelector('.submit-btn');
+    const originalText = submitBtn ? submitBtn.innerHTML : '';
+
     try {
         const formData = new FormData(this);
-        const incomeData = {
-            amount: parseFloat(formData.get('amount')),
-            date: formData.get('date'),
-            type: formData.get('type'),
-            source: formData.get('source'),
-            description: formData.get('description'),
-            recurring: formData.get('recurring') === 'on',
-            frequency: formData.get('frequency')
-        };
+
+        const amount = parseFloat(formData.get('amount'));
+        const date = formData.get('date');
+        const type = formData.get('type');
+        const source = formData.get('source');
+        const isRecurring = formData.get('recurring') === 'on';
+        const recurrenceType = isRecurring ? mapRecurrenceType(formData.get('frequency')) : null;
+        const bankAccountId = Number(formData.get('bankAccountId'));
+
+        const description = (formData.get('description') || '').trim()
+            || (source || '').trim()
+            || `${type || 'Income'} income`;
 
         // Validate amount
-        if (isNaN(incomeData.amount) || incomeData.amount <= 0) {
+        if (Number.isNaN(amount) || amount <= 0) {
             throw new Error('Please enter a valid amount greater than 0');
         }
 
         // Validate type
-        if (!incomeData.type) {
+        if (!type) {
             throw new Error('Please select an income type');
         }
 
+        if (!bankAccountId || Number.isNaN(bankAccountId)) {
+            throw new Error('Please select a bank account');
+        }
+
+        const incomeData = {
+            description,
+            amount,
+            category: mapIncomeCategory(type),
+            date,
+            isRecurring,
+            recurrenceType,
+            notes: source ? `Source: ${source}` : null,
+            bankAccountId
+        };
+
         // Show loading state
-        const submitBtn = this.querySelector('.submit-btn');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Income...';
-        submitBtn.disabled = true;
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Income...';
+            submitBtn.disabled = true;
+        }
 
         // Save the data
         await saveIncomeData(incomeData);
 
-        // Show success message
         showNotification('Income added successfully!', 'success');
 
-        // Reset form
-        this.reset();
-        document.getElementById('incomeDate').valueAsDate = new Date();
-
-        // Redirect back to Budget section after a short delay with refresh flag
+        // Redirect back to Budget section with refresh flag
         setTimeout(() => {
-            window.location.href = 'dashboard.html#budget?income_updated=' + Date.now();
-        }, 2000);
+            window.location.href = 'dashboard.html?income_updated=' + Date.now() + '#budget';
+        }, 800);
 
     } catch (error) {
         showNotification(error.message, 'error');
     } finally {
-        // Reset button state
-        const submitBtn = this.querySelector('.submit-btn');
-        submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Income';
-        submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.innerHTML = originalText || '<i class="fas fa-plus"></i> Add Income';
+            submitBtn.disabled = false;
+        }
     }
 });

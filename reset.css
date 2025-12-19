@@ -2,7 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+    font-family: "TASA Orbiter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
 body {
@@ -47,14 +50,14 @@ main {
 h1 {
     font-size: 36px;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
     font-weight: 600;
 }
 
 .subtitle {
     color: #999;
     font-size: 14px;
-    margin-bottom: 30px;
+    margin-bottom: 18px;
 }
 
 .form-container {
@@ -63,7 +66,7 @@ h1 {
 }
 
 .form-group {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 label {
@@ -158,7 +161,7 @@ input[type="text"]:focus {
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 2px;
     transition: opacity 0.3s;
 }
 
@@ -184,5 +187,5 @@ footer a:hover {
 }
 .container img {
     width: 409px;
-    height: 270px;
+    height: 235px;
 }

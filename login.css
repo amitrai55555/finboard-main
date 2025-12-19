@@ -2,6 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "TASA Orbiter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
 :root {
@@ -53,10 +57,10 @@ html {
     align-items: center;
     gap: 12px;
     font-size: 22px;
-    font-weight: 700;
     color: #2d3748;
+    font-weight: 700;
+    font-style: italic;
 }
-
 .nav-brand i {
     background: #2d3748;
     color: white;

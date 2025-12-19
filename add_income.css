@@ -1,7 +1,12 @@
 /* Styles for Add Income and Add Expense forms */
 
+*{
+    font-family: "TASA Orbiter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f9fafb;
     margin: 0;
     padding: 0;

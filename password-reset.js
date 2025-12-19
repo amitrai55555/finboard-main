@@ -32,24 +32,12 @@ async function sendPasswordResetEmail() {
     button.style.opacity = '0.7';
     
     try {
-        const response = await fetch('http://localhost:8080/api/auth/forgot-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            // Store email in sessionStorage for the sent page to display
-            sessionStorage.setItem('resetEmail', email);
-            // Redirect to email sent page
-            window.location.href = '/sent.html';
-        } else {
-            showMessage(messageDiv, data.error || data.message || 'Error sending reset email', 'error');
-        }
+        await apiService.requestPasswordReset(email);
+
+        // Store email in sessionStorage for the sent page to display
+        sessionStorage.setItem('resetEmail', email);
+        // Redirect to email sent page
+        window.location.href = 'sent.html';
     } catch (error) {
         console.error('Error:', error);
         showMessage(messageDiv, 'An error occurred. Please try again later.', 'error');
@@ -122,29 +110,14 @@ async function resetPassword() {
     button.style.opacity = '0.7';
     
     try {
-        const response = await fetch('/api/password-reset/reset', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token: token,
-                newPassword: newPassword
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            showMessage(messageDiv, 'Password reset successfully! Redirecting to login...', 'success');
-            newPasswordInput.value = '';
-            confirmPasswordInput.value = '';
-            setTimeout(() => {
-                window.location.href = '/login';
-            }, 2000);
-        } else {
-            showMessage(messageDiv, data.message || 'Error resetting password', 'error');
-        }
+        await apiService.resetPassword(token, newPassword);
+
+        showMessage(messageDiv, 'Password reset successfully! Redirecting to login...', 'success');
+        newPasswordInput.value = '';
+        confirmPasswordInput.value = '';
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1200);
     } catch (error) {
         console.error('Error:', error);
         showMessage(messageDiv, 'An error occurred. Please try again later.', 'error');

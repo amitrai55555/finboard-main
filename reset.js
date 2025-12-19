@@ -88,31 +88,10 @@ document.getElementById('resetForm').addEventListener('submit', async function (
     submitBtn.style.opacity = '0.7';
     
     try {
-        const response = await fetch('http://localhost:8080/api/auth/reset-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token: token,
-                newPassword: newPassword
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            // Redirect to password changed page
-            window.location.href = '/password_changed.html';
-        } else {
-            messageDiv.textContent = data.error || data.message || 'Error resetting password. The link may have expired.';
-            messageDiv.style.color = '#ef4444';
-            
-            // Re-enable button
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Change Password';
-            submitBtn.style.opacity = '1';
-        }
+        await apiService.resetPassword(token, newPassword);
+
+        // Redirect to password changed page
+        window.location.href = 'password_changed.html';
     } catch (error) {
         console.error('Error:', error);
         messageDiv.textContent = 'An error occurred. Please try again later.';

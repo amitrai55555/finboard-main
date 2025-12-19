@@ -2,6 +2,7 @@
 class DataService {
     constructor() {
         this.cache = {
+            accounts: null,
             incomes: null,
             expenses: null,
             goals: null,
@@ -90,12 +91,11 @@ class DataService {
     async createIncome(incomeData) {
         try {
             const newIncome = await apiService.createIncome(incomeData);
-            this.clearCache('incomes'); // Force refresh on next load
-            // Income added successfully
+            this.clearCache('incomes');
+            this.clearCache('dashboard');
             return newIncome;
         } catch (error) {
             console.error('Error creating income:', error);
-            // Failed to add income
             throw error;
         }
     }
@@ -127,12 +127,11 @@ class DataService {
     async createExpense(expenseData) {
         try {
             const newExpense = await apiService.createExpense(expenseData);
-            this.clearCache('expenses'); // Force refresh on next load
-            // Expense added successfully
+            this.clearCache('expenses');
+            this.clearCache('dashboard');
             return newExpense;
         } catch (error) {
             console.error('Error creating expense:', error);
-            // Failed to add expense
             throw error;
         }
     }
@@ -211,10 +210,40 @@ class DataService {
         }
     }
 
-    // Accounts management (placeholder - backend doesn't support accounts yet)
+    // ===============================
+    // Bank Accounts management
+    // ===============================
     async getAccounts(forceRefresh = false) {
-        // Backend doesn't have accounts endpoint yet, return empty array
-        return [];
+        if (!forceRefresh && this.isCacheValid('accounts')) {
+            return this.cache.accounts;
+        }
+
+        try {
+            const accounts = await apiService.getMyBankAccounts();
+            this.setCache('accounts', accounts);
+            return accounts;
+        } catch (error) {
+            console.error('Error fetching accounts from API:', error);
+            // Fallback to localStorage (older UI)
+            const localAccounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+            if (localAccounts.length > 0) {
+                this.setCache('accounts', localAccounts);
+                return localAccounts;
+            }
+            return [];
+        }
+    }
+
+    async createBankAccount(bankAccountData) {
+        const created = await apiService.addBankAccount(bankAccountData);
+        this.clearCache('accounts');
+        return created;
+    }
+
+    async verifyBankAccount(accountId, otp) {
+        const verified = await apiService.verifyBankAccount(accountId, otp);
+        this.clearCache('accounts');
+        return verified;
     }
 
     // User profile management
@@ -273,3 +302,6 @@ class DataService {
 
 // Create a global instance of the data service
 const dataService = new DataService();
+if (typeof window !== 'undefined') {
+    window.dataService = dataService;
+}

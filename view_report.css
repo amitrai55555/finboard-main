@@ -4,6 +4,10 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    font-family: "TASA Orbiter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
 .reports-header {

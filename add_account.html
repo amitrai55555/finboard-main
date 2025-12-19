@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="add_account.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400..800&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <div class="dashboard-container">
@@ -61,10 +66,26 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="bankName">Bank/Financial Institution</label>
+                                <label for="bankName">Bank/Financial Institution *</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-building"></i>
-                                    <input type="text" id="bankName" name="bank" placeholder="e.g., HDFC Bank">
+                                    <input type="text" id="bankName" name="bank" placeholder="e.g., HDFC Bank" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="accountHolderName">Account Holder Name *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="accountHolderName" name="accountHolderName" placeholder="e.g., Aman" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ifscCode">IFSC Code *</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-code"></i>
+                                    <input type="text" id="ifscCode" name="ifscCode" placeholder="e.g., HDFC0001234" required>
                                 </div>
                             </div>
 
@@ -138,7 +159,9 @@
         </main>
     </div>
 
-    <script src="dashboard.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/data-service.js"></script>
     <script src="add_account.js"></script>
 </body>
 </html>

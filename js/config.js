@@ -47,9 +47,12 @@ const API_CONFIG = {
         // Authentication
         LOGIN: '/api/auth/login',
         REGISTER: '/api/auth/register',
+        // Note: backend may not implement these; kept for compatibility
         LOGOUT: '/api/auth/logout',
         REFRESH: '/api/auth/refresh',
         ME: '/api/auth/me',
+        FORGOT_PASSWORD: '/api/auth/forgot-password',
+        RESET_PASSWORD: '/api/auth/reset-password',
 
         // User Profile
         USER_PROFILE: '/api/auth/me',
@@ -61,18 +64,25 @@ const API_CONFIG = {
         INCOME_CATEGORIES: '/api/income/categories',
         INCOME_BY_CATEGORY: '/api/income/by-category',
         INCOME_RECENT: (limit = 5) => `/api/income/recent?limit=${limit}`,
+        INCOME_TOTAL: '/api/income/total',
 
         EXPENSES: '/api/expenses',
         EXPENSE_BY_ID: (id) => `/api/expenses/${id}`,
         EXPENSE_CATEGORIES: '/api/expenses/categories',
         EXPENSES_BY_CATEGORY: '/api/expenses/by-category',
         EXPENSES_RECENT: (limit = 5) => `/api/expenses/recent?limit=${limit}`,
+        EXPENSES_TOTAL: '/api/expenses/total',
 
         // Goals
         GOALS: '/api/goals',
         GOAL_BY_ID: (id) => `/api/goals/${id}`,
         GOALS_ACTIVE: '/api/goals/active',
         GOALS_STATS: '/api/goals/stats',
+        GOALS_OVERDUE: '/api/goals/overdue',
+        GOALS_BY_PRIORITY: (priority) => `/api/goals/priority/${priority}`,
+        GOAL_PROGRESS: (id) => `/api/goals/${id}/progress`,
+        GOAL_ADD_PROGRESS: (id) => `/api/goals/${id}/add-progress`,
+        GOAL_STATUS: (id) => `/api/goals/${id}/status`,
 
         // Investments
         INVESTMENTS: '/api/investments',
@@ -81,6 +91,11 @@ const API_CONFIG = {
         INVEST_CAPACITY: '/api/investments/capacity',
         INVEST_RISK_PROFILES: '/api/investments/risk-profiles',
 
+        // Bank Accounts (OTP verification)
+        BANK_ACCOUNT_ADD: '/api/bank-account/add',
+        BANK_ACCOUNT_VERIFY: '/api/bank-account/verify',
+        BANK_ACCOUNT_MY: '/api/bank-account/my',
+
         // Dashboard & Analytics
         DASHBOARD_OVERVIEW: '/api/dashboard/overview',
         DASHBOARD_SPENDING_ANALYSIS: '/api/dashboard/spending-analysis',
@@ -88,8 +103,10 @@ const API_CONFIG = {
         DASHBOARD_INSIGHTS: '/api/dashboard/insights',
 
         // Admin
-        USERS: '/api/users',
-        USER_BY_ID: (id) => `/api/users/${id}`,
+        ADMIN_PING: '/api/admin/ping',
+        ADMIN_STATS: '/api/admin/stats',
+        ADMIN_USERS: '/api/admin/users',
+        ADMIN_USER_BY_ID: (id) => `/api/admin/users/${id}`,
 
         // Reports
         REPORTS_MONTHLY: '/api/reports/monthly',

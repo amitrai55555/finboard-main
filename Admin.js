@@ -49,22 +49,68 @@ function setupNavigation() {
     });
 }
 
+// Cache for UI actions
+let cachedUsers = [];
+
+function isAdminUser() {
+    const userData = sessionStorage.getItem('fintrackr_user');
+    if (!userData) return false;
+    try {
+        const user = JSON.parse(userData);
+        const roleStr = String(user.role || '').toUpperCase();
+        return roleStr === 'ROLE_ADMIN' || roleStr === 'ADMIN';
+    } catch (_) {
+        return false;
+    }
+}
+
+async function ensureAdminAccess() {
+    const token = sessionStorage.getItem('fintrackr_token');
+    if (!token) {
+        window.location.href = 'index.html';
+        return false;
+    }
+
+    if (!isAdminUser()) {
+        alert('Admin access required. Please login with an admin account.');
+        window.location.href = 'dashboard.html';
+        return false;
+    }
+
+    try {
+        await apiService.adminPing();
+        return true;
+    } catch (e) {
+        console.error(e);
+        alert('Admin API access failed. Please login again.');
+        sessionStorage.removeItem('fintrackr_token');
+        sessionStorage.removeItem('fintrackr_user');
+        window.location.href = 'index.html';
+        return false;
+    }
+}
+
 // Load Admin Dashboard Data
-function loadAdminDashboard() {
-    // Simulate loading admin stats
-    document.getElementById('totalUsers').textContent = '1,250';
-    document.getElementById('activeUsers').textContent = '892';
-    document.getElementById('totalReports').textContent = '456';
-    document.getElementById('systemHealth').textContent = '98%';
+async function loadAdminDashboard() {
+    try {
+        const stats = await apiService.getAdminStats();
 
-    // Simulate system metrics with animation
-    animateMetric('cpuUsage', 45);
-    animateMetric('memoryUsage', 67);
-    animateMetric('storageUsage', 34);
-    animateMetric('apiResponseTime', 120);
+        document.getElementById('totalUsers').textContent = String(stats.totalUsers ?? 0);
+        document.getElementById('activeUsers').textContent = String(stats.activeUsers ?? 0);
+        document.getElementById('totalReports').textContent = String(stats.totalReports ?? 0);
+        document.getElementById('systemHealth').textContent = `${stats.systemHealth ?? 100}%`;
 
-    // Load recent activity
-    loadRecentActivity();
+        // Basic animated metrics (placeholder for now)
+        animateMetric('cpuUsage', Math.floor(30 + Math.random() * 40));
+        animateMetric('memoryUsage', Math.floor(40 + Math.random() * 40));
+        animateMetric('storageUsage', Math.floor(20 + Math.random() * 50));
+        animateMetric('apiResponseTime', Math.floor(80 + Math.random() * 120));
+
+        loadRecentActivity();
+    } catch (error) {
+        console.error('Failed to load admin dashboard:', error);
+        showNotification(error.message || 'Failed to load admin dashboard', 'error');
+    }
 }
 
 function animateMetric(elementId, value) {
@@ -131,39 +177,59 @@ function loadRecentActivity() {
 }
 
 // Load Users List
-function loadUsersList() {
-    const users = [
-        { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user', status: 'active', lastLogin: '2024-01-15' },
-        { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'admin', status: 'active', lastLogin: '2024-01-14' },
-        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'user', status: 'inactive', lastLogin: '2024-01-10' },
-        { id: 4, name: 'Alice Brown', email: 'alice@example.com', role: 'user', status: 'active', lastLogin: '2024-01-13' },
-        { id: 5, name: 'Charlie Wilson', email: 'charlie@example.com', role: 'user', status: 'active', lastLogin: '2024-01-12' }
-    ];
-
+async function loadUsersList() {
     const usersList = document.getElementById('usersList');
-    usersList.innerHTML = users.map(user => `
-        <div class="user-item" data-status="${user.status}" data-role="${user.role}">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
+    usersList.innerHTML = '<div style="padding:12px; color:#6b7280;">Loading users...</div>';
+
+    try {
+        const users = await apiService.getAdminUsers();
+        cachedUsers = Array.isArray(users) ? users : [];
+
+        usersList.innerHTML = cachedUsers.map(user => {
+            const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username;
+            const role = String(user.role || '').toUpperCase();
+            const status = user.enabled ? 'active' : 'inactive';
+
+            return `
+                <div class="user-item" data-status="${status}" data-role="${role}">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4>${escapeHtml(fullName)}</h4>
+                            <p>${escapeHtml(user.email || '')}</p>
+                            <span class="user-role">${escapeHtml(role)}</span>
+                        </div>
+                    </div>
+                    <div class="user-status ${status}">${status}</div>
+                    <div class="user-actions">
+                        <button class="action-btn edit" onclick="editUser(${user.id})" title="Toggle Active">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteUser(${user.id})" title="Delete User">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="user-details">
-                    <h4>${user.name}</h4>
-                    <p>${user.email}</p>
-                    <span class="user-role">${user.role}</span>
-                </div>
-            </div>
-            <div class="user-status ${user.status}">${user.status}</div>
-            <div class="user-actions">
-                <button class="action-btn edit" onclick="editUser(${user.id})" title="Edit User">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="action-btn delete" onclick="deleteUser(${user.id})" title="Delete User">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
+            `;
+        }).join('');
+
+        filterUsers();
+    } catch (error) {
+        console.error('Failed to load users:', error);
+        usersList.innerHTML = '<div style="padding:12px; color:#ef4444;">Failed to load users</div>';
+        showNotification(error.message || 'Failed to load users', 'error');
+    }
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
 }
 
 // Load Reports List
@@ -204,15 +270,40 @@ function loadReportsList() {
 }
 
 // User Management Functions
-function editUser(userId) {
-    alert(`Edit user functionality for user ID: ${userId} - Feature coming soon!`);
+async function editUser(userId) {
+    const user = cachedUsers.find(u => u.id === userId);
+    if (!user) return;
+
+    const nextEnabled = !user.enabled;
+    const action = nextEnabled ? 'activate' : 'deactivate';
+
+    if (!confirm(`Are you sure you want to ${action} ${user.username}?`)) return;
+
+    try {
+        await apiService.updateAdminUser(userId, { enabled: nextEnabled });
+        showNotification(`User ${user.username} updated.`, 'success');
+        await loadUsersList();
+        await loadAdminDashboard();
+    } catch (e) {
+        console.error(e);
+        showNotification(e.message || 'Failed to update user', 'error');
+    }
 }
 
-function deleteUser(userId) {
-    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-        alert(`User with ID ${userId} has been deleted.`);
-        // In a real app, this would make an API call to delete the user
-        loadUsersList(); // Reload the list
+async function deleteUser(userId) {
+    const user = cachedUsers.find(u => u.id === userId);
+    const label = user ? user.username : `ID ${userId}`;
+
+    if (!confirm(`Are you sure you want to delete ${label}? This action cannot be undone.`)) return;
+
+    try {
+        await apiService.deleteAdminUser(userId);
+        showNotification(`User deleted: ${label}`, 'success');
+        await loadUsersList();
+        await loadAdminDashboard();
+    } catch (e) {
+        console.error(e);
+        showNotification(e.message || 'Failed to delete user', 'error');
     }
 }
 
@@ -302,17 +393,17 @@ function showNotification(message, type = 'info') {
 
 // Filtering Functions
 function filterUsers() {
-    const filterValue = userFilter.value;
+    const filterValue = userFilter ? userFilter.value : 'all';
     const userItems = document.querySelectorAll('.user-item');
 
     userItems.forEach(item => {
         const status = item.dataset.status;
-        const role = item.dataset.role;
+        const role = (item.dataset.role || '').toUpperCase();
 
         if (filterValue === 'all' ||
             (filterValue === 'active' && status === 'active') ||
             (filterValue === 'inactive' && status === 'inactive') ||
-            (filterValue === 'admin' && role === 'admin')) {
+            (filterValue === 'admin' && role === 'ADMIN')) {
             item.style.display = 'flex';
         } else {
             item.style.display = 'none';
@@ -340,13 +431,17 @@ function filterReports() {
 }
 
 // Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // Setup navigation
     setupNavigation();
 
+    // Verify admin access before loading anything
+    const ok = await ensureAdminAccess();
+    if (!ok) return;
+
     // Load initial data
-    loadAdminDashboard();
-    loadUsersList();
+    await loadAdminDashboard();
+    await loadUsersList();
     loadReportsList();
 
     // Logout Modal Elements
@@ -435,20 +530,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (addUserForm) {
-        addUserForm.addEventListener('submit', function(e) {
+        addUserForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            const userData = {
-                name: formData.get('userName'),
-                email: formData.get('userEmail'),
-                role: formData.get('userRole')
-            };
 
-            // In a real app, this would send data to backend
-            console.log('Adding user:', userData);
-            showNotification(`User "${userData.name}" added successfully!`, 'success');
-            closeAddUserModalFunc();
-            loadUsersList(); // Reload users list
+            const name = document.getElementById('userName')?.value?.trim();
+            const email = document.getElementById('userEmail')?.value?.trim();
+            const password = document.getElementById('userPassword')?.value;
+            const role = document.getElementById('userRole')?.value;
+            const enabled = document.getElementById('userEnabled')?.checked;
+
+            if (!name || !email || !password) {
+                showNotification('Name, email and password are required', 'error');
+                return;
+            }
+
+            try {
+                await apiService.createAdminUser({ name, email, password, role, enabled });
+                showNotification(`User "${name}" created successfully!`, 'success');
+                closeAddUserModalFunc();
+                await loadUsersList();
+                await loadAdminDashboard();
+            } catch (err) {
+                console.error(err);
+                showNotification(err.message || 'Failed to create user', 'error');
+            }
         });
     }
 

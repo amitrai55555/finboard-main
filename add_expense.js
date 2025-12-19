@@ -48,59 +48,139 @@ document.getElementById('expenseRecurring').addEventListener('change', function(
     recurringOptions.style.display = this.checked ? 'block' : 'none';
 });
 
+function mapExpenseCategory(category) {
+    const c = String(category || '').toLowerCase();
+    switch (c) {
+        case 'food': return 'FOOD';
+        case 'transport': return 'TRANSPORTATION';
+        case 'shopping': return 'SHOPPING';
+        case 'entertainment': return 'ENTERTAINMENT';
+        case 'bills': return 'UTILITIES';
+        case 'healthcare': return 'HEALTHCARE';
+        case 'education': return 'EDUCATION';
+        case 'insurance': return 'INSURANCE';
+        // travel/investment not supported by backend enum
+        default: return 'OTHER';
+    }
+}
+
+function mapRecurrenceType(freq) {
+    const f = String(freq || '').toLowerCase();
+    switch (f) {
+        case 'weekly':
+        case 'bi-weekly':
+            return 'WEEKLY';
+        case 'monthly':
+            return 'MONTHLY';
+        case 'quarterly':
+            return 'QUARTERLY';
+        case 'yearly':
+            return 'YEARLY';
+        default:
+            return null;
+    }
+}
+
+async function populateExpenseBankAccounts() {
+    const select = document.getElementById('expenseBankAccount');
+    if (!select) return;
+
+    try {
+        const accounts = await dataService.getAccounts(true);
+        select.innerHTML = '';
+
+        if (!accounts || accounts.length === 0) {
+            select.innerHTML = '<option value="">No bank accounts found. Add an account first.</option>';
+            return;
+        }
+
+        accounts.forEach((a) => {
+            const opt = document.createElement('option');
+            opt.value = a.id;
+            const suffix = a.verified ? '' : ' (unverified)';
+            opt.textContent = `${a.bankName || 'Bank'} - ${a.accountNumber || ''}${suffix}`.trim();
+            select.appendChild(opt);
+        });
+
+        const verified = accounts.find(a => a.verified);
+        if (verified) select.value = String(verified.id);
+    } catch (e) {
+        console.error('Failed to load bank accounts:', e);
+        select.innerHTML = '<option value="">Unable to load bank accounts</option>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', populateExpenseBankAccounts);
+
 // Form submission
 document.getElementById('expenseForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
+    const submitBtn = this.querySelector('.submit-btn');
+    const originalText = submitBtn ? submitBtn.innerHTML : '';
+
     try {
         const formData = new FormData(this);
-        const expenseData = {
-            amount: parseFloat(formData.get('amount')),
-            date: formData.get('date'),
-            category: formData.get('category'),
-            merchant: formData.get('merchant'),
-            description: formData.get('description'),
-            recurring: formData.get('recurring') === 'on',
-            frequency: formData.get('frequency')
-        };
+
+        const amount = parseFloat(formData.get('amount'));
+        const date = formData.get('date');
+        const category = formData.get('category');
+        const merchant = formData.get('merchant');
+        const isRecurring = formData.get('recurring') === 'on';
+        const recurrenceType = isRecurring ? mapRecurrenceType(formData.get('frequency')) : null;
+        const bankAccountId = Number(formData.get('bankAccountId'));
+
+        const description = (formData.get('description') || '').trim()
+            || (merchant || '').trim()
+            || `${category || 'Expense'}`;
 
         // Validate amount
-        if (isNaN(expenseData.amount) || expenseData.amount <= 0) {
+        if (Number.isNaN(amount) || amount <= 0) {
             throw new Error('Please enter a valid amount greater than 0');
         }
 
         // Validate category
-        if (!expenseData.category) {
+        if (!category) {
             throw new Error('Please select an expense category');
         }
 
+        if (!bankAccountId || Number.isNaN(bankAccountId)) {
+            throw new Error('Please select a bank account');
+        }
+
+        const expenseData = {
+            description,
+            amount,
+            category: mapExpenseCategory(category),
+            date,
+            isRecurring,
+            recurrenceType,
+            notes: merchant ? `Merchant: ${merchant}` : null,
+            bankAccountId
+        };
+
         // Show loading state
-        const submitBtn = this.querySelector('.submit-btn');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Expense...';
-        submitBtn.disabled = true;
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Expense...';
+            submitBtn.disabled = true;
+        }
 
         // Save the data
         await saveExpenseData(expenseData);
 
-        // Show success message
         showNotification('Expense added successfully!', 'success');
 
-        // Reset form
-        this.reset();
-        document.getElementById('expenseDate').valueAsDate = new Date();
-
-        // Redirect back to Budget section after a short delay with refresh flag
+        // Redirect back to Budget section with refresh flag
         setTimeout(() => {
-            window.location.href = 'dashboard.html#budget?expense_updated=' + Date.now();
-        }, 2000);
+            window.location.href = 'dashboard.html?expense_updated=' + Date.now() + '#budget';
+        }, 800);
 
     } catch (error) {
         showNotification(error.message, 'error');
     } finally {
-        // Reset button state
-        const submitBtn = this.querySelector('.submit-btn');
-        submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Expense';
-        submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.innerHTML = originalText || '<i class="fas fa-plus"></i> Add Expense';
+            submitBtn.disabled = false;
+        }
     }
 });

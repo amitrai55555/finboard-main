@@ -2,6 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "TASA Orbiter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
 body {
@@ -47,8 +51,8 @@ body {
 }
 
 .logo span {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 25px;
+    font-weight: 900;
     color: #2d3748;
 }
 
@@ -95,10 +99,11 @@ body {
     color: #2d3748;
 }
 
+
 .nav-section li.active a {
-    background: #b9c7cf;
-    color: #2d3748;
-    border-right-color: #4fd1c7;
+    background: #00baf248;
+    color: rgb(0, 0, 488);
+    border-right-color: #305eff;
     border-radius: 9px;
     font-weight: 500;
 }
@@ -193,13 +198,13 @@ body {
 .search-bar i {
     position: absolute;
     left: 12px;
-    color: #a0aec0;
+    color:#305eff;;
     font-size: 14px;
 }
 
 .search-bar input {
     padding: 10px 12px 10px 36px;
-    border: 1px solid #e2e8f0;
+    border: 2px solid #305eff;
     border-radius: 8px;
     font-size: 14px;
     width: 300px;
@@ -208,8 +213,11 @@ body {
 
 .search-bar input:focus {
     outline: none;
-    border-color: #4fd1c7;
+    border-color: 2px solid #305eff;;
     background: white;
+}
+.search-bar::placeholder{
+    color:#305eff;
 }
 
 .header-actions {
@@ -237,7 +245,7 @@ body {
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #305eff;
     transition: all 0.2s ease;
 }
 
@@ -295,7 +303,7 @@ body {
 
 /* Welcome Section */
 .welcome-section {
-    background: linear-gradient(160deg, #08436b 0%, #12507a85, #08436b 100%);;
+    background: linear-gradient(160deg, #0e1c26 0%, #4898aa, #294861 100%);
     padding: 40px 32px;
     color: white;
 }
@@ -340,20 +348,23 @@ body {
 }
 
 .action-btn.primary:hover {
-    background: #012e43;
+    background: #ffffff;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+    color: #305eff;
+    border:2px solid #305eff;
 }
 
 /* Make the welcome section View Reports button more visible */
 .welcome-section .action-btn.secondary {
-    background: #045276; /* sky-500 */
-    color: #ffffff;
-    border: none;
+    background: #ffffff; /* sky-500 */
+    color: #305eff;
+    border: 2px solid #305eff;
 }
 
 .welcome-section .action-btn.secondary:hover {
-    background: #006a7a; /* sky-600 */
+    background: #305eff;
+    color: white;
 }
 
 /* fallback style for other secondary buttons elsewhere */
@@ -369,8 +380,9 @@ body {
 }
 
 .total-balance {
-    background: linear-gradient(160deg,#054d6c, #024461, #395873, #054d6c, #024461);
+    background: linear-gradient(160deg, #08203e 0%, #557c93 100%);
     backdrop-filter: blur(10px);
+    border: 3px solid #00baf2;
     border-radius: 16px;
     padding: 32px;
     min-width: 50%;
@@ -446,14 +458,13 @@ body {
 }
 
 .stat-card {
-    background:linear-gradient(160deg, #34a8d9, #b4dff1, #e1eeff, #b4dff1, #34a8d9);
+    background: linear-gradient(160deg, #0070e0, #5bbbfc, #00c4ff40, #5bbbfc, #0070e0);
     border-radius: 12px;
     padding: 24px;
     display: flex;
     align-items: center;
     gap: 16px;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
+    border: 2px solid #003087;
 }
 
 .stat-card:hover {
@@ -558,7 +569,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #4fd1c7;
+    background: #003087;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -734,7 +745,7 @@ body {
 
 .add-income-btn,
 .add-expense-btn {
-    background: #4fd1c7;
+    background: #003087;
     color: white;
 }
 
@@ -1301,7 +1312,7 @@ body {
 }
 
 .add-goal-btn {
-    background: #4f46e5;
+    background: #003087;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -1441,7 +1452,7 @@ body {
 }
 
 .add-currency-btn {
-    background: #4f46e5;
+    background: #003087;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -1780,7 +1791,7 @@ body {
 }
 
 .add-investment-btn {
-    background: #4f46e5;
+    background: #003087;
     color: white;
     border: none;
     display: flex;
@@ -1911,9 +1922,9 @@ body {
 }
 
 .action-btn.primary {
-    background: #00c6e5;
+    background: #305eff;
     color: white;
-    border: none;
+    border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .action-btn.secondary {
@@ -2340,7 +2351,7 @@ body {
     color: #64748b;
 }
 .add-user-btn {
-    background: #4f46e5;
+    background: #003087;
     color: white;
     border: none;
     display: flex;
@@ -2610,7 +2621,7 @@ body {
 }
 
 .add-transaction-btn {
-    background: #4fd1c7;
+    background: #003087;
     color: white;
 }
 
