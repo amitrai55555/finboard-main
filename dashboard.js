@@ -820,6 +820,341 @@ breakdownItems.forEach(item => {
 
 console.log('Dashboard JavaScript loaded successfully!');
 
+// ===== Helpers for mapping types/categories to backend enums =====
+function mapIncomeTypeToEnum(type) {
+    const t = String(type || '').toLowerCase();
+    switch (t) {
+        case 'salary': return 'SALARY';
+        case 'freelance': return 'FREELANCE';
+        case 'business': return 'BUSINESS';
+        case 'investment':
+        case 'dividend': return 'INVESTMENTS';
+        case 'rental': return 'RENTAL';
+        case 'bonus': return 'BONUS';
+        default: return 'OTHER';
+    }
+}
+
+function mapExpenseCategoryToEnum(category) {
+    const c = String(category || '').toLowerCase();
+    switch (c) {
+        case 'food': return 'FOOD';
+        case 'transport': return 'TRANSPORTATION';
+        case 'shopping': return 'SHOPPING';
+        case 'entertainment': return 'ENTERTAINMENT';
+        case 'bills': return 'UTILITIES';
+        case 'healthcare': return 'HEALTHCARE';
+        case 'education': return 'EDUCATION';
+        case 'insurance': return 'INSURANCE';
+        default: return 'OTHER';
+    }
+}
+
+// State for edit/delete modals
+let pendingDelete = null;
+
+// Attach event listeners for income & expense cards and modals once DOM is ready
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const incomeList = document.querySelector('.income-list');
+        const expenseList = document.querySelector('.expense-list');
+
+        if (incomeList) {
+            incomeList.addEventListener('click', handleIncomeListClick);
+        }
+        if (expenseList) {
+            expenseList.addEventListener('click', handleExpenseListClick);
+        }
+
+        const cancelIncomeEdit = document.getElementById('cancelIncomeEdit');
+        const saveIncomeEdit = document.getElementById('saveIncomeEdit');
+        const cancelExpenseEdit = document.getElementById('cancelExpenseEdit');
+        const saveExpenseEdit = document.getElementById('saveExpenseEdit');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDelete = document.getElementById('confirmDelete');
+
+        if (cancelIncomeEdit) {
+            cancelIncomeEdit.addEventListener('click', () => toggleModal('incomeEditModal', false));
+        }
+        if (saveIncomeEdit) {
+            saveIncomeEdit.addEventListener('click', submitIncomeEditForm);
+        }
+        if (cancelExpenseEdit) {
+            cancelExpenseEdit.addEventListener('click', () => toggleModal('expenseEditModal', false));
+        }
+        if (saveExpenseEdit) {
+            saveExpenseEdit.addEventListener('click', submitExpenseEditForm);
+        }
+        if (cancelDelete) {
+            cancelDelete.addEventListener('click', () => {
+                pendingDelete = null;
+                toggleModal('confirmDeleteModal', false);
+            });
+        }
+        if (confirmDelete) {
+            confirmDelete.addEventListener('click', performDelete);
+        }
+    });
+}
+
+function toggleModal(id, show) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (show) {
+        el.classList.add('show');
+    } else {
+        el.classList.remove('show');
+    }
+}
+
+async function populateBankAccountsSelect(selectEl, selectedId) {
+    if (!selectEl) return;
+    try {
+        const accounts = await dataService.getAccounts(true);
+        selectEl.innerHTML = '';
+        if (!accounts || accounts.length === 0) {
+            selectEl.innerHTML = '<option value="">No bank accounts found</option>';
+            return;
+        }
+        accounts.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.id;
+            const suffix = a.verified ? '' : ' (unverified)';
+            opt.textContent = `${a.bankName || 'Bank'} - ${a.accountNumber || ''}${suffix}`.trim();
+            selectEl.appendChild(opt);
+        });
+        if (selectedId) {
+            selectEl.value = String(selectedId);
+        }
+    } catch (e) {
+        console.error('Failed to load bank accounts for edit form:', e);
+        selectEl.innerHTML = '<option value="">Unable to load bank accounts</option>';
+    }
+}
+
+function handleIncomeListClick(e) {
+    const updateBtn = e.target.closest('.income-update-btn');
+    const removeBtn = e.target.closest('.income-remove-btn');
+    if (updateBtn) {
+        const id = Number(updateBtn.dataset.id);
+        openIncomeEditModal(id).catch(err => console.error('Error opening income edit modal:', err));
+    } else if (removeBtn) {
+        const id = Number(removeBtn.dataset.id);
+        openDeleteModal('income', id);
+    }
+}
+
+function handleExpenseListClick(e) {
+    const updateBtn = e.target.closest('.expense-update-btn');
+    const removeBtn = e.target.closest('.expense-remove-btn');
+    if (updateBtn) {
+        const id = Number(updateBtn.dataset.id);
+        openExpenseEditModal(id).catch(err => console.error('Error opening expense edit modal:', err));
+    } else if (removeBtn) {
+        const id = Number(removeBtn.dataset.id);
+        openDeleteModal('expense', id);
+    }
+}
+
+async function openIncomeEditModal(id) {
+    const form = document.getElementById('incomeEditForm');
+    if (!form) return;
+
+    const amountInput = document.getElementById('editIncomeAmount');
+    const typeSelect = document.getElementById('editIncomeType');
+    const bankSelect = document.getElementById('editIncomeBankAccount');
+    const idInput = document.getElementById('editIncomeId');
+
+    const card = document.querySelector(`.income-item[data-income-id="${id}"]`);
+    if (!card) {
+        console.warn('Income card not found for id', id);
+        return;
+    }
+
+    const amount = Number(card.dataset.amount || 0);
+    const categoryEnum = String(card.dataset.category || '').toUpperCase();
+    const description = card.dataset.description || '';
+    const notes = card.dataset.notes || '';
+    const bankAccountId = card.dataset.bankAccountId ? Number(card.dataset.bankAccountId) : null;
+
+    idInput.value = String(id);
+    amountInput.value = amount;
+
+    const cat = categoryEnum;
+    let typeValue = 'other';
+    if (cat === 'SALARY') typeValue = 'salary';
+    else if (cat === 'FREELANCE') typeValue = 'freelance';
+    else if (cat === 'BUSINESS') typeValue = 'business';
+    else if (cat === 'INVESTMENTS') typeValue = 'investment';
+    else if (cat === 'RENTAL') typeValue = 'rental';
+    else if (cat === 'BONUS') typeValue = 'bonus';
+    typeSelect.value = typeValue;
+
+    await populateBankAccountsSelect(bankSelect, bankAccountId || null);
+
+    toggleModal('incomeEditModal', true);
+}
+
+async function submitIncomeEditForm(e) {
+    if (e) e.preventDefault();
+    const id = Number(document.getElementById('editIncomeId').value);
+    const amount = Number(document.getElementById('editIncomeAmount').value);
+    const type = document.getElementById('editIncomeType').value;
+    const bankSelect = document.getElementById('editIncomeBankAccount');
+
+    const card = document.querySelector(`.income-item[data-income-id="${id}"]`);
+    const originalDescription = card?.dataset.description || 'Income';
+    const originalNotes = card?.dataset.notes || null;
+    let bankAccountId = Number(bankSelect.value);
+    if (!bankAccountId && card?.dataset.bankAccountId) {
+        bankAccountId = Number(card.dataset.bankAccountId);
+    }
+
+    if (!id || !amount || !bankAccountId) return;
+
+    const payload = {
+        description: originalDescription,
+        amount,
+        category: mapIncomeTypeToEnum(type),
+        date: new Date().toISOString().slice(0, 10),
+        isRecurring: false,
+        recurrenceType: null,
+        notes: originalNotes,
+        bankAccountId
+    };
+
+    try {
+        await apiService.updateIncome(id, payload);
+        dataService.clearCache('incomes');
+        dataService.clearCache('dashboard');
+        dataService.clearCache('monthlyTrends');
+        toggleModal('incomeEditModal', false);
+        // Reload dashboard so list and charts update cleanly
+        window.location.href = 'dashboard.html?income_updated=' + Date.now() + '#budget';
+    } catch (err) {
+        console.error('Failed to update income:', err);
+    }
+}
+
+async function openExpenseEditModal(id) {
+    const form = document.getElementById('expenseEditForm');
+    if (!form) return;
+
+    const amountInput = document.getElementById('editExpenseAmount');
+    const categorySelect = document.getElementById('editExpenseCategory');
+    const bankSelect = document.getElementById('editExpenseBankAccount');
+    const idInput = document.getElementById('editExpenseId');
+
+    const card = document.querySelector(`.expense-item[data-expense-id="${id}"]`);
+    if (!card) {
+        console.warn('Expense card not found for id', id);
+        return;
+    }
+
+    const amount = Number(card.dataset.amount || 0);
+    const categoryEnum = String(card.dataset.category || '').toUpperCase();
+    const description = card.dataset.description || '';
+    const notes = card.dataset.notes || '';
+    const bankAccountId = card.dataset.bankAccountId ? Number(card.dataset.bankAccountId) : null;
+
+    idInput.value = String(id);
+    amountInput.value = amount;
+
+    const cat = categoryEnum;
+    let catValue = 'other';
+    if (cat === 'FOOD') catValue = 'food';
+    else if (cat === 'TRANSPORTATION') catValue = 'transport';
+    else if (cat === 'SHOPPING') catValue = 'shopping';
+    else if (cat === 'ENTERTAINMENT') catValue = 'entertainment';
+    else if (cat === 'UTILITIES') catValue = 'bills';
+    else if (cat === 'HEALTHCARE') catValue = 'healthcare';
+    else if (cat === 'EDUCATION') catValue = 'education';
+    else if (cat === 'INSURANCE') catValue = 'insurance';
+    categorySelect.value = catValue;
+
+    await populateBankAccountsSelect(bankSelect, bankAccountId || null);
+
+    toggleModal('expenseEditModal', true);
+}
+
+async function submitExpenseEditForm(e) {
+    if (e) e.preventDefault();
+    const id = Number(document.getElementById('editExpenseId').value);
+    const amount = Number(document.getElementById('editExpenseAmount').value);
+    const category = document.getElementById('editExpenseCategory').value;
+    const bankSelect = document.getElementById('editExpenseBankAccount');
+
+    const card = document.querySelector(`.expense-item[data-expense-id="${id}"]`);
+    const originalDescription = card?.dataset.description || 'Expense';
+    const originalNotes = card?.dataset.notes || null;
+    let bankAccountId = Number(bankSelect.value);
+    if (!bankAccountId && card?.dataset.bankAccountId) {
+        bankAccountId = Number(card.dataset.bankAccountId);
+    }
+
+    if (!id || !amount || !bankAccountId) return;
+
+    const payload = {
+        description: originalDescription,
+        amount,
+        category: mapExpenseCategoryToEnum(category),
+        date: new Date().toISOString().slice(0, 10),
+        isRecurring: false,
+        recurrenceType: null,
+        notes: originalNotes,
+        bankAccountId
+    };
+
+    try {
+        await apiService.updateExpense(id, payload);
+        dataService.clearCache('expenses');
+        dataService.clearCache('dashboard');
+        dataService.clearCache('monthlyTrends');
+        toggleModal('expenseEditModal', false);
+        // Reload dashboard so list and charts update cleanly
+        window.location.href = 'dashboard.html?expense_updated=' + Date.now() + '#budget';
+    } catch (err) {
+        console.error('Failed to update expense:', err);
+    }
+}
+
+function openDeleteModal(kind, id) {
+    pendingDelete = { kind, id };
+    const msgEl = document.getElementById('confirmDeleteMessage');
+    if (msgEl) {
+        msgEl.textContent = 'Do you really want to remove this ' + (kind === 'income' ? 'income' : 'expense') + ' item?';
+    }
+    toggleModal('confirmDeleteModal', true);
+}
+
+async function performDelete() {
+    if (!pendingDelete) {
+        toggleModal('confirmDeleteModal', false);
+        return;
+    }
+    const { kind, id } = pendingDelete;
+    try {
+        if (kind === 'income') {
+            await apiService.deleteIncome(id);
+            dataService.clearCache('incomes');
+        } else if (kind === 'expense') {
+            await apiService.deleteExpense(id);
+            dataService.clearCache('expenses');
+        }
+        dataService.clearCache('dashboard');
+        dataService.clearCache('monthlyTrends');
+        toggleModal('confirmDeleteModal', false);
+        pendingDelete = null;
+        await loadIncomes();
+        await loadExpenses();
+        await updateDashboardSummary();
+    } catch (err) {
+        console.error('Failed to delete item:', err);
+        toggleModal('confirmDeleteModal', false);
+        pendingDelete = null;
+    }
+}
+
 // Update user profile name and welcome message
 function updateUserInfo() {
     const userData = sessionStorage.getItem('fintrackr_user');
@@ -868,7 +1203,54 @@ async function loadIncomes() {
         const incomes = await dataService.getIncome(forceRefresh);
         incomeList.innerHTML = '';
 
-        if (incomes.length === 0) {
+        if (!Array.isArray(incomes) || incomes.length === 0) {
+            console.log('No incomes from /api/income, trying dashboard overview recentIncomes');
+
+            try {
+                const summary = await dataService.getDashboardSummary(false);
+                const recentIncomes = Array.isArray(summary?.recentIncomes) ? summary.recentIncomes : [];
+
+                if (recentIncomes.length > 0) {
+                    console.log('Using recentIncomes from dashboard overview to populate income list');
+                    recentIncomes.forEach(income => {
+                        const item = document.createElement('div');
+                        item.className = 'income-item';
+                        item.dataset.incomeId = income.id;
+                        item.dataset.category = income.category || '';
+                        item.dataset.description = income.description || '';
+                        item.dataset.notes = income.notes || '';
+                        item.dataset.bankAccountId = '';
+
+                        const amountNumber = Number(income.amount);
+                        const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
+                        item.dataset.amount = String(safeAmount);
+
+                        const category = income.category || 'Income';
+
+                        item.innerHTML = `
+                <div class="income-icon ${category ? category.toLowerCase() : 'other'}">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="income-details">
+                    <h4>${category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()}</h4>
+                    <p>${income.description || 'Income source'}</p>
+                </div>
+                <div class="income-amount">
+                    ₹${safeAmount.toFixed(2)}
+                    <button class="income-update-btn" data-id="${income.id}" style="margin-left: 12px;">Update</button>
+                    <button class="income-remove-btn" data-id="${income.id}" style="margin-left: 8px;">Remove</button>
+                </div>
+            `;
+                        incomeList.appendChild(item);
+                    });
+
+                    await updateIncomeChart(recentIncomes);
+                    return;
+                }
+            } catch (summaryError) {
+                console.error('Error loading dashboard summary for incomes:', summaryError);
+            }
+
             incomeList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No income records yet. Add your first income to get started!</p>';
             // Still update the chart (it can use backend trends even if list is empty)
             await updateIncomeChart([]);
@@ -878,20 +1260,32 @@ async function loadIncomes() {
         incomes.forEach(income => {
             const item = document.createElement('div');
             item.className = 'income-item';
+            item.dataset.incomeId = income.id;
+            item.dataset.category = income.category || '';
+            item.dataset.description = income.description || '';
+            item.dataset.notes = income.notes || '';
+            item.dataset.bankAccountId = income.bankAccount && income.bankAccount.id ? income.bankAccount.id : '';
 
             // Safely normalise amount in case backend sends it as string or null
             const amountNumber = Number(income.amount);
             const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
+            item.dataset.amount = String(safeAmount);
 
             item.innerHTML = `
-                <div class="income-icon ${income.category ? income.category.toLowerCase() : 'other'}">
-                    <i class="fas fa-briefcase"></i>
+                <div class="income-main">
+                    <div class="income-icon ${income.category ? income.category.toLowerCase() : 'other'}">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="income-details">
+                        <h4>${income.category ? income.category.charAt(0).toUpperCase() + income.category.slice(1) : 'Income'}</h4>
+                        <p>${income.description || income.source || 'Income source'}</p>
+                    </div>
+                    <div class="income-amount">
+                        ₹${safeAmount.toFixed(2)}
+                        <button class="income-update-btn" data-id="${income.id}" style="margin-left: 12px;">Update</button>
+                        <button class="income-remove-btn" data-id="${income.id}" style="margin-left: 8px;">Remove</button>
+                    </div>
                 </div>
-                <div class="income-details">
-                    <h4>${income.category ? income.category.charAt(0).toUpperCase() + income.category.slice(1) : 'Income'}</h4>
-                    <p>${income.description || income.source || 'Income source'}</p>
-                </div>
-                <div class="income-amount">₹${safeAmount.toFixed(2)}</div>
             `;
             incomeList.appendChild(item);
         });
@@ -937,7 +1331,54 @@ async function loadExpenses() {
         const expenses = await dataService.getExpenses(forceRefresh);
         expenseList.innerHTML = '';
 
-        if (expenses.length === 0) {
+        if (!Array.isArray(expenses) || expenses.length === 0) {
+            console.log('No expenses from /api/expense, trying dashboard overview recentExpenses');
+
+            try {
+                const summary = await dataService.getDashboardSummary(false);
+                const recentExpenses = Array.isArray(summary?.recentExpenses) ? summary.recentExpenses : [];
+
+                if (recentExpenses.length > 0) {
+                    console.log('Using recentExpenses from dashboard overview to populate expense list');
+                    recentExpenses.forEach(expense => {
+                        const item = document.createElement('div');
+                        item.className = 'expense-item';
+                        item.dataset.expenseId = expense.id;
+                        item.dataset.category = expense.category || '';
+                        item.dataset.description = expense.description || '';
+                        item.dataset.notes = expense.notes || '';
+                        item.dataset.bankAccountId = '';
+
+                        const amountNumber = Number(expense.amount);
+                        const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
+                        item.dataset.amount = String(safeAmount);
+
+                        const category = expense.category || 'Expense';
+
+                        item.innerHTML = `
+                <div class="expense-icon ${category ? category.toLowerCase() : 'other'}">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="expense-details">
+                    <h4>${category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()}</h4>
+                    <p>${expense.description || 'Expense details'}</p>
+                </div>
+                <div class="expense-amount">
+                    ₹${safeAmount.toFixed(2)}
+                    <button class="expense-update-btn" data-id="${expense.id}" style="margin-left: 12px;">Update</button>
+                    <button class="expense-remove-btn" data-id="${expense.id}" style="margin-left: 8px;">Remove</button>
+                </div>
+            `;
+                        expenseList.appendChild(item);
+                    });
+
+                    await updateExpenseChart(recentExpenses);
+                    return;
+                }
+            } catch (summaryError) {
+                console.error('Error loading dashboard summary for expenses:', summaryError);
+            }
+
             expenseList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No expense records yet. Add your first expense to get started!</p>';
             // Still update the chart (it can use backend trends even if list is empty)
             await updateExpenseChart([]);
@@ -947,20 +1388,32 @@ async function loadExpenses() {
         expenses.forEach(expense => {
             const item = document.createElement('div');
             item.className = 'expense-item';
+            item.dataset.expenseId = expense.id;
+            item.dataset.category = expense.category || '';
+            item.dataset.description = expense.description || '';
+            item.dataset.notes = expense.notes || '';
+            item.dataset.bankAccountId = expense.bankAccount && expense.bankAccount.id ? expense.bankAccount.id : '';
 
             // Safely normalise amount in case backend sends it as string or null
             const amountNumber = Number(expense.amount);
             const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
+            item.dataset.amount = String(safeAmount);
 
             item.innerHTML = `
-                <div class="expense-icon ${expense.category ? expense.category.toLowerCase() : 'other'}">
-                    <i class="fas fa-tag"></i>
+                <div class="expense-main">
+                    <div class="expense-icon ${expense.category ? expense.category.toLowerCase() : 'other'}">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="expense-details">
+                        <h4>${expense.category ? expense.category.charAt(0).toUpperCase() + expense.category.slice(1) : 'Expense'}</h4>
+                        <p>${expense.description || expense.merchant || 'Expense details'}</p>
+                    </div>
+                    <div class="expense-amount">
+                        ₹${safeAmount.toFixed(2)}
+                        <button class="expense-update-btn" data-id="${expense.id}" style="margin-left: 12px;">Update</button>
+                        <button class="expense-remove-btn" data-id="${expense.id}" style="margin-left: 8px;">Remove</button>
+                    </div>
                 </div>
-                <div class="expense-details">
-                    <h4>${expense.category ? expense.category.charAt(0).toUpperCase() + expense.category.slice(1) : 'Expense'}</h4>
-                    <p>${expense.description || expense.merchant || 'Expense details'}</p>
-                </div>
-                <div class="expense-amount">₹${safeAmount.toFixed(2)}</div>
             `;
             expenseList.appendChild(item);
         });

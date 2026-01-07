@@ -569,7 +569,6 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #003087;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -578,10 +577,15 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    border: 3px solid #003087;
+    border-color: #3182ce;
+    color: #003087;
+    background: #ebf8ff;
 }
 
 .add-account-btn:hover {
-    background: #38b2ac;
+    background: #003087;
+    color: white;
     transform: translateY(-1px);
 }
 
@@ -745,13 +749,16 @@ body {
 
 .add-income-btn,
 .add-expense-btn {
-    background: #003087;
-    color: white;
+    border: 3px solid #003087;
+    border-color: #3182ce;
+    color: #003087;
+    background: #ebf8ff;
 }
 
 .add-income-btn:hover,
 .add-expense-btn:hover {
-    background: #38b2ac;
+    background: #003087;
+    color: white;
     transform: translateY(-1px);
 }
 
@@ -848,6 +855,13 @@ body {
     transition: all 0.2s ease;
 }
 
+.income-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
 .income-item:hover {
     background: #edf2f7;
     transform: translateX(4px);
@@ -898,6 +912,50 @@ body {
     font-size: 18px;
     font-weight: 700;
     color: #38a169;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.income-update-btn,
+.income-remove-btn,
+.expense-update-btn,
+.expense-remove-btn {
+    border-radius: 999px;
+    border: 1px solid #cbd5e0;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #ffffff;
+    color: #4a5568;
+    transition: all 0.15s ease;
+}
+
+.income-update-btn,
+.expense-update-btn {
+    border-color: #3182ce;
+    color: #2b6cb0;
+    background: #ebf8ff;
+}
+
+.income-update-btn:hover,
+.expense-update-btn:hover {
+    background: #3182ce;
+    color: #ffffff;
+}
+
+.income-remove-btn,
+.expense-remove-btn {
+    border-color: #e53e3e;
+    color: #c53030;
+    background: #fff5f5;
+}
+
+.income-remove-btn:hover,
+.expense-remove-btn:hover {
+    background: #e53e3e;
+    color: #ffffff;
 }
 
 /* Expense Categories */
@@ -1016,6 +1074,13 @@ body {
     transition: all 0.2s ease;
 }
 
+.expense-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
 .expense-item:hover {
     background: #edf2f7;
     transform: translateX(4px);
@@ -1066,6 +1131,9 @@ body {
     font-size: 18px;
     font-weight: 700;
     color: #38a169;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 /* Monthly Trend Chart */
 .trend-chart {
@@ -1339,10 +1407,15 @@ body {
     align-items: center;
     gap: 8px;
     transition: all 0.2s ease;
+    border: 3px solid #003087;
+    border-color: #3182ce;
+    color: #003087;
+    background: #ebf8ff;
 }
 
 .add-goal-btn:hover {
-    background: #4338ca;
+    background: #003087;
+    color: white;
     transform: translateY(-1px);
 }
 
@@ -1467,8 +1540,6 @@ body {
 }
 
 .add-currency-btn {
-    background: #003087;
-    color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 8px;
@@ -1479,10 +1550,15 @@ body {
     align-items: center;
     gap: 8px;
     transition: all 0.2s ease;
+    border: 3px solid #003087;
+    border-color: #3182ce;
+    color: #003087;
+    background: #ebf8ff;
 }
 
 .add-currency-btn:hover {
-    background: #4338ca;
+    background: #003087;
+    color: white;
     transform: translateY(-1px);
 }
 
@@ -1806,16 +1882,19 @@ body {
 }
 
 .add-investment-btn {
-    background: #003087;
-    color: white;
     border: none;
     display: flex;
     align-items: center;
     gap: 8px;
+    border: 3px solid #003087;
+    border-color: #3182ce;
+    color: #003087;
+    background: #ebf8ff;
 }
 
 .add-investment-btn:hover {
-    background: #4338ca;
+    background: #003087;
+    color: white;
     transform: translateY(-1px);
 }
 
