@@ -1,16 +1,21 @@
 // Dashboard JavaScript functionality
+console.log('🚀 Dashboard.js loaded');
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📋 DOMContentLoaded fired');
+    
     // Check authentication first
     const userData = sessionStorage.getItem('fintrackr_user');
     const token = sessionStorage.getItem('fintrackr_token');
 
     if (!userData || !token) {
-        // No authentication data, redirect to login
+        console.log('❌ No auth data, redirecting to login');
         window.location.href = 'index.html';
         return;
     }
+
+    console.log('✅ Auth OK, initializing dashboard');
 
     // Update user info first
     updateUserInfo();
@@ -865,12 +870,19 @@ async function loadIncomes() {
 
         if (incomes.length === 0) {
             incomeList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No income records yet. Add your first income to get started!</p>';
+            // Still update the chart (it can use backend trends even if list is empty)
+            await updateIncomeChart([]);
             return;
         }
 
         incomes.forEach(income => {
             const item = document.createElement('div');
             item.className = 'income-item';
+
+            // Safely normalise amount in case backend sends it as string or null
+            const amountNumber = Number(income.amount);
+            const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
+
             item.innerHTML = `
                 <div class="income-icon ${income.category ? income.category.toLowerCase() : 'other'}">
                     <i class="fas fa-briefcase"></i>
@@ -879,7 +891,7 @@ async function loadIncomes() {
                     <h4>${income.category ? income.category.charAt(0).toUpperCase() + income.category.slice(1) : 'Income'}</h4>
                     <p>${income.description || income.source || 'Income source'}</p>
                 </div>
-                <div class="income-amount">₹${income.amount.toFixed(2)}</div>
+                <div class="income-amount">₹${safeAmount.toFixed(2)}</div>
             `;
             incomeList.appendChild(item);
         });
@@ -895,6 +907,12 @@ async function loadIncomes() {
     } catch (error) {
         console.error('Error loading incomes:', error);
         incomeList.innerHTML = '<p style="text-align: center; color: #ff6b6b; padding: 20px;">Error loading incomes. Please try again later.</p>';
+        // Still try to update chart from backend trends
+        try {
+            await updateIncomeChart([]);
+        } catch (chartError) {
+            console.error('Error updating income chart:', chartError);
+        }
     }
 }
 
@@ -921,12 +939,19 @@ async function loadExpenses() {
 
         if (expenses.length === 0) {
             expenseList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No expense records yet. Add your first expense to get started!</p>';
+            // Still update the chart (it can use backend trends even if list is empty)
+            await updateExpenseChart([]);
             return;
         }
 
         expenses.forEach(expense => {
             const item = document.createElement('div');
             item.className = 'expense-item';
+
+            // Safely normalise amount in case backend sends it as string or null
+            const amountNumber = Number(expense.amount);
+            const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
+
             item.innerHTML = `
                 <div class="expense-icon ${expense.category ? expense.category.toLowerCase() : 'other'}">
                     <i class="fas fa-tag"></i>
@@ -935,7 +960,7 @@ async function loadExpenses() {
                     <h4>${expense.category ? expense.category.charAt(0).toUpperCase() + expense.category.slice(1) : 'Expense'}</h4>
                     <p>${expense.description || expense.merchant || 'Expense details'}</p>
                 </div>
-                <div class="expense-amount">₹${expense.amount.toFixed(2)}</div>
+                <div class="expense-amount">₹${safeAmount.toFixed(2)}</div>
             `;
             expenseList.appendChild(item);
         });
@@ -951,6 +976,12 @@ async function loadExpenses() {
     } catch (error) {
         console.error('Error loading expenses:', error);
         expenseList.innerHTML = '<p style="text-align: center; color: #ff6b6b; padding: 20px;">Error loading expenses. Please try again later.</p>';
+        // Still try to update chart from backend trends
+        try {
+            await updateExpenseChart([]);
+        } catch (chartError) {
+            console.error('Error updating expense chart:', chartError);
+        }
     }
 }
 
@@ -981,15 +1012,17 @@ async function loadAccounts() {
             const verified = account.verified === true;
 
             card.innerHTML = `
-                <div class="account-icon"><i class="fas fa-university"></i></div>
-                <div class="account-info">
-                    <h3>${title}</h3>
-                    <p>${subtitle}${verified ? '' : ' (unverified)'}</p>
+            <div class="all-account-info">
+                <div class="account-icon"><i class="fas fa-university"></i></div><br>
+                <div class="account-info" style="text-align:left;">
+                    <span><h4 style="color:black; display:inline-block; font-weight:bold;">Bank Name : </h4> ${title}</span> <br> <br>
                 </div>
-                <div class="account-balance">${masked}</div>
-                <div class="account-meta">
-                    <span>${account.accountHolderName || ''}</span>
-                    <span>${account.ifscCode || ''}</span>
+                <div class="account-number" style="text-align:left;"><span> <h4 style="color:black; display:inline-block; font-weight:bold;">Account No. : </h4> ${masked}</span> </div><br>
+                <div class="account-meta" style="text-align:left;">
+                    <span><h4 style="color:black; display:inline-block; font-weight:bold;">Account Holder : </h4> ${account.accountHolderName || ''}</span>
+                    <br><br>
+                    <span><h4 style="color:black; display:inline-block; font-weight:bold;">IFSC Code : </h4> ${account.ifscCode || ''}</span>
+                </div>
                 </div>
             `;
             accountList.appendChild(card);
@@ -1384,7 +1417,26 @@ async function initializeDashboard() {
             console.log('Dashboard summary not available, using default values');
         }
 
-        // Dashboard loaded
+        // Ensure charts are rendered (fallback in case loadIncomes/loadExpenses didn't call them)
+        try {
+            console.log('Ensuring charts are rendered...');
+            // Check if chart containers have children; if not, render them
+            const incomeChartBars = document.querySelector('.chart-bars');
+            const expenseChartBars = document.querySelector('.expense-chart-bars');
+            
+            if (incomeChartBars && incomeChartBars.children.length === 0) {
+                console.log('Income chart empty, rendering from trends...');
+                await updateIncomeChart([]);
+            }
+            if (expenseChartBars && expenseChartBars.children.length === 0) {
+                console.log('Expense chart empty, rendering from trends...');
+                await updateExpenseChart([]);
+            }
+        } catch (chartError) {
+            console.error('Error ensuring charts:', chartError);
+        }
+
+        console.log('Dashboard initialization complete');
     } catch (error) {
         console.error('Error initializing dashboard:', error);
         // Dashboard loaded with limited functionality
@@ -1395,25 +1447,38 @@ async function initializeDashboard() {
 async function updateDashboardSummary() {
     try {
         const summary = await dataService.getDashboardSummary();
+
+        // Normalise numeric fields and align with backend keys
+        const totalIncome = Number(summary.totalIncome || 0);
+        const totalExpenses = Number(summary.totalExpenses || 0);
+        const netBalance = summary.netBalance != null
+            ? Number(summary.netBalance)
+            : (totalIncome - totalExpenses);
+
+        const monthlyIncome = Number(summary.monthlyIncome || 0);
+        const monthlyExpenses = Number(summary.monthlyExpenses || 0);
+        const monthlySavings = summary.monthlyNet != null
+            ? Number(summary.monthlyNet)
+            : (monthlyIncome - monthlyExpenses);
         
-        // Update balance cards
+        // Update balance cards (top card)
         const totalBalanceEl = document.querySelector('.balance-card h3');
         if (totalBalanceEl) {
-            totalBalanceEl.textContent = `₹${summary.totalBalance.toLocaleString()}`;
+            totalBalanceEl.textContent = `₹${netBalance.toLocaleString()}`;
         }
         
         // Update income/expense summary
         const incomeAmountEl = document.querySelector('.balance-item:first-child .amount');
         const expenseAmountEl = document.querySelector('.balance-item:last-child .amount');
-        if (incomeAmountEl) incomeAmountEl.textContent = `₹${summary.monthlyIncome.toLocaleString()}`;
-        if (expenseAmountEl) expenseAmountEl.textContent = `₹${summary.monthlyExpenses.toLocaleString()}`;
+        if (incomeAmountEl) incomeAmountEl.textContent = `₹${monthlyIncome.toLocaleString()}`;
+        if (expenseAmountEl) expenseAmountEl.textContent = `₹${monthlyExpenses.toLocaleString()}`;
         
         // Update stat cards
         const statCards = document.querySelectorAll('.stat-card');
         if (statCards.length >= 3) {
-            statCards[0].querySelector('h3').textContent = `₹${summary.monthlyIncome.toLocaleString()}`;
-            statCards[1].querySelector('h3').textContent = `₹${summary.monthlyExpenses.toLocaleString()}`;
-            statCards[2].querySelector('h3').textContent = `₹${summary.monthlySavings.toLocaleString()}`;
+            statCards[0].querySelector('h3').textContent = `₹${monthlyIncome.toLocaleString()}`;
+            statCards[1].querySelector('h3').textContent = `₹${monthlyExpenses.toLocaleString()}`;
+            statCards[2].querySelector('h3').textContent = `₹${monthlySavings.toLocaleString()}`;
         }
         
         console.log('Dashboard summary updated:', summary);
@@ -1477,60 +1542,87 @@ function resetCharts() {
     console.log('Charts have been reset!');
 }
 
-// Update expense chart based on expense data
+// Update expense chart based on backend monthly trends (with fallback to raw expenses)
 async function updateExpenseChart(expenses) {
+    console.log('updateExpenseChart called with', expenses?.length || 0, 'expenses');
+    
     const chartBarsContainer = document.querySelector('.expense-chart-bars');
-
-    if (!chartBarsContainer) return;
+    if (!chartBarsContainer) {
+        console.error('Expense chart container .expense-chart-bars not found!');
+        return;
+    }
+    
+    console.log('Expense chart container found:', chartBarsContainer);
 
     // Clear existing chart bars
     chartBarsContainer.innerHTML = '';
 
-    // Group expenses by month
+    // Prepare months for last 12 months
     const monthlyExpenses = {};
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
 
-    // Initialize last 5 months with 0
     for (let i = 11; i >= 0; i--) {
         const date = new Date(currentYear, currentDate.getMonth() - i, 1);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         monthlyExpenses[monthKey] = 0;
     }
 
-    // Sum expenses by month
-    expenses.forEach(expense => {
-        const expenseDate = new Date(expense.date);
-        const monthKey = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+    let hasData = false;
 
-        if (monthlyExpenses.hasOwnProperty(monthKey)) {
-            monthlyExpenses[monthKey] += parseFloat(expense.amount) || 0;
+    // First try to use backend monthly trends (aggregated data)
+    try {
+        if (typeof dataService !== 'undefined' && dataService.getMonthlyTrends) {
+            const trends = await dataService.getMonthlyTrends(false, 12);
+            if (trends && trends.expenses) {
+                Object.keys(trends.expenses).forEach(key => {
+                    const amountNumber = Number(trends.expenses[key]);
+                    if (!Number.isFinite(amountNumber)) return;
+                    if (monthlyExpenses.hasOwnProperty(key)) {
+                        monthlyExpenses[key] = amountNumber;
+                        if (amountNumber > 0) hasData = true;
+                    }
+                });
+            }
         }
-    });
+    } catch (e) {
+        console.warn('Falling back to raw expenses for chart:', e);
+    }
 
-    // Find max expense for scaling - use the highest value across all months
+    // Fallback: aggregate client-side from raw expenses if API trends not available
+    if (!hasData && Array.isArray(expenses) && expenses.length) {
+        expenses.forEach(expense => {
+            if (!expense || !expense.date) return;
+            const expenseDate = new Date(expense.date);
+            const amountNumber = Number(expense.amount);
+            if (Number.isNaN(expenseDate.getTime()) || !Number.isFinite(amountNumber)) return;
+            const monthKey = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+            if (monthlyExpenses.hasOwnProperty(monthKey)) {
+                monthlyExpenses[monthKey] += amountNumber;
+                if (amountNumber > 0) hasData = true;
+            }
+        });
+    }
+
+    // Find max expense for scaling
     const maxExpense = Math.max(...Object.values(monthlyExpenses), 1);
 
-    // Get month keys and sort them
     const monthKeys = Object.keys(monthlyExpenses).sort();
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    // Create chart bars for each month
-    monthKeys.forEach((monthKey, index) => {
+    monthKeys.forEach(monthKey => {
         const expense = monthlyExpenses[monthKey];
         const percentage = (expense / maxExpense) * 100;
         const monthDate = new Date(monthKey + '-01');
         const monthLabel = monthNames[monthDate.getMonth()];
         const newHeight = `${Math.max(percentage, 2)}%`; // Minimum 2% for visibility
 
-        // Create new bar with transition and set final height
         const bar = document.createElement('div');
         bar.className = 'chart-bar';
         bar.innerHTML = `<span class="bar-label">${monthLabel}</span>`;
-        bar.style.transition = 'height 0.8s ease-in-out';
-        bar.style.height = newHeight; // Set initial height
+        bar.style.transition = 'height 2s ease-in-out';
+        bar.style.height = newHeight;
 
-        // Add hover functionality
         bar.addEventListener('mouseenter', function() {
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
@@ -1558,63 +1650,90 @@ async function updateExpenseChart(expenses) {
         chartBarsContainer.appendChild(bar);
     });
 
-    console.log('Expense chart updated:', monthlyExpenses);
+    console.log('Expense chart updated:', monthlyExpenses, '| Bars created:', chartBarsContainer.children.length);
 }
 
-// Update income chart based on income data
+// Update income chart based on backend monthly trends (with fallback to raw incomes)
 async function updateIncomeChart(incomes) {
+    console.log('updateIncomeChart called with', incomes?.length || 0, 'incomes');
+    
     const chartBarsContainer = document.querySelector('.chart-bars');
-
-    if (!chartBarsContainer) return;
+    if (!chartBarsContainer) {
+        console.error('Income chart container .chart-bars not found!');
+        return;
+    }
+    
+    console.log('Income chart container found:', chartBarsContainer);
 
     // Clear existing chart bars
     chartBarsContainer.innerHTML = '';
 
-    // Group incomes by month
+    // Prepare months for last 12 months
     const monthlyIncomes = {};
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
 
-    // Initialize last 5 months with 0
     for (let i = 11; i >= 0; i--) {
         const date = new Date(currentYear, currentDate.getMonth() - i, 1);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         monthlyIncomes[monthKey] = 0;
     }
 
-    // Sum incomes by month
-    incomes.forEach(income => {
-        const incomeDate = new Date(income.date);
-        const monthKey = `${incomeDate.getFullYear()}-${String(incomeDate.getMonth() + 1).padStart(2, '0')}`;
+    let hasData = false;
 
-        if (monthlyIncomes.hasOwnProperty(monthKey)) {
-            monthlyIncomes[monthKey] += parseFloat(income.amount) || 0;
+    // First try to use backend monthly trends (aggregated data)
+    try {
+        if (typeof dataService !== 'undefined' && dataService.getMonthlyTrends) {
+            const trends = await dataService.getMonthlyTrends(false, 12);
+            if (trends && trends.income) {
+                Object.keys(trends.income).forEach(key => {
+                    const amountNumber = Number(trends.income[key]);
+                    if (!Number.isFinite(amountNumber)) return;
+                    if (monthlyIncomes.hasOwnProperty(key)) {
+                        monthlyIncomes[key] = amountNumber;
+                        if (amountNumber > 0) hasData = true;
+                    }
+                });
+            }
         }
-    });
+    } catch (e) {
+        console.warn('Falling back to raw incomes for chart:', e);
+    }
+
+    // Fallback: aggregate client-side from raw incomes if API trends not available
+    if (!hasData && Array.isArray(incomes) && incomes.length) {
+        incomes.forEach(income => {
+            if (!income || !income.date) return;
+            const incomeDate = new Date(income.date);
+            const amountNumber = Number(income.amount);
+            if (Number.isNaN(incomeDate.getTime()) || !Number.isFinite(amountNumber)) return;
+            const monthKey = `${incomeDate.getFullYear()}-${String(incomeDate.getMonth() + 1).padStart(2, '0')}`;
+            if (monthlyIncomes.hasOwnProperty(monthKey)) {
+                monthlyIncomes[monthKey] += amountNumber;
+                if (amountNumber > 0) hasData = true;
+            }
+        });
+    }
 
     // Find max income for scaling
     const maxIncome = Math.max(...Object.values(monthlyIncomes), 1);
 
-    // Get month keys and sort them
     const monthKeys = Object.keys(monthlyIncomes).sort();
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    // Create chart bars for each month
-    monthKeys.forEach((monthKey, index) => {
+    monthKeys.forEach(monthKey => {
         const income = monthlyIncomes[monthKey];
         const percentage = (income / maxIncome) * 100;
         const monthDate = new Date(monthKey + '-01');
         const monthLabel = monthNames[monthDate.getMonth()];
         const newHeight = `${Math.max(percentage, 2)}%`; // Minimum 2% for visibility
 
-        // Create new bar with transition and set final height
         const bar = document.createElement('div');
         bar.className = 'chart-bar';
         bar.innerHTML = `<span class="bar-label">${monthLabel}</span>`;
-        bar.style.transition = 'height 0.8s ease-in-out';
-        bar.style.height = newHeight; // Set initial height
+        bar.style.transition = 'height 2s ease-in-out';
+        bar.style.height = newHeight;
 
-        // Add hover functionality
         bar.addEventListener('mouseenter', function() {
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
@@ -1642,7 +1761,7 @@ async function updateIncomeChart(incomes) {
         chartBarsContainer.appendChild(bar);
     });
 
-    console.log('Income chart updated:', monthlyIncomes);
+    console.log('Income chart updated:', monthlyIncomes, '| Bars created:', chartBarsContainer.children.length);
 }
 
 // Reset dummy data function

@@ -770,36 +770,50 @@ body {
     margin: 24px 0;
 }
 
+.expense-chart {
+    margin: 24px 0;
+}
+
 .chart-container {
     height: 200px;
-    padding: 20px;
+    padding: 20px 20px 40px 20px; /* Extra bottom padding for labels */
     background: #f8fafc;
     border-radius: 12px;
+    box-sizing: border-box;
 }
 
 .chart-bars {
     display: flex;
-    align-items: end;
-    justify-content: space-between;
+    align-items: flex-end;
+    justify-content: space-around;
     height: 100%;
-    gap: 12px;
+    min-height: 120px;
+    gap: 8px;
+    padding-bottom: 20px; /* Space for labels */
 }
 
 .expense-chart-bars {
     display: flex;
-    align-items: end;
-    justify-content: space-between;
+    align-items: flex-end;
+    justify-content: space-around;
     height: 100%;
-    gap: 12px;
+    min-height: 120px;
+    gap: 8px;
+    padding-bottom: 20px; /* Space for labels */
 }
 
 .chart-bar {
     flex: 1;
-    background: #718096;
+    max-width: 35px;
+    background: linear-gradient(180deg, #329F5B 0%, #8fd5a6b5 100%);
     border-radius: 4px 4px 0 0;
     position: relative;
-    min-height: 20px;
-    transition: all 0.2s ease;
+    min-height: 4px;
+    transition: all 0.3s ease;
+}
+
+.expense-chart-bars .chart-bar {
+    background: linear-gradient(180deg, #FF331F 0%, #ff18017d 100%);
 }
 
 .chart-bar:hover {
@@ -808,12 +822,13 @@ body {
 
 .bar-label {
     position: absolute;
-    bottom: -14px;
+    bottom: -20px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 12px;
-    color: #718096;
-    font-weight: 500;
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 /* Income List */

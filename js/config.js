@@ -66,12 +66,13 @@ const API_CONFIG = {
         INCOME_RECENT: (limit = 5) => `/api/income/recent?limit=${limit}`,
         INCOME_TOTAL: '/api/income/total',
 
-        EXPENSES: '/api/expenses',
-        EXPENSE_BY_ID: (id) => `/api/expenses/${id}`,
-        EXPENSE_CATEGORIES: '/api/expenses/categories',
-        EXPENSES_BY_CATEGORY: '/api/expenses/by-category',
-        EXPENSES_RECENT: (limit = 5) => `/api/expenses/recent?limit=${limit}`,
-        EXPENSES_TOTAL: '/api/expenses/total',
+        // NOTE: Backend maps expenses under /api/expense (singular)
+        EXPENSES: '/api/expense',
+        EXPENSE_BY_ID: (id) => `/api/expense/${id}`,
+        EXPENSE_CATEGORIES: '/api/expense/categories',
+        EXPENSES_BY_CATEGORY: '/api/expense/by-category',
+        EXPENSES_RECENT: (limit = 5) => `/api/expense/recent?limit=${limit}`,
+        EXPENSES_TOTAL: '/api/expense/total',
 
         // Goals
         GOALS: '/api/goals',

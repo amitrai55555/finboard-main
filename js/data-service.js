@@ -8,7 +8,8 @@ class DataService {
             goals: null,
             investments: null,
             user: null,
-            dashboard: null
+            dashboard: null,
+            monthlyTrends: null
         };
         this.cacheExpiry = 5 * 60 * 1000; // 5 minutes cache
         this.lastFetch = {};
@@ -39,7 +40,9 @@ class DataService {
                 expenses: null,
                 goals: null,
                 investments: null,
-                user: null
+                user: null,
+                dashboard: null,
+                monthlyTrends: null
             };
             this.lastFetch = {};
         }
@@ -279,6 +282,21 @@ class DataService {
         } catch (error) {
             console.error('Error fetching dashboard overview:', error);
             // Failed to load dashboard data
+            throw error;
+        }
+    }
+
+    // Get monthly income/expense trends for charts
+    async getMonthlyTrends(forceRefresh = false, monthsBack = 12) {
+        if (!forceRefresh && this.isCacheValid('monthlyTrends')) {
+            return this.cache.monthlyTrends;
+        }
+        try {
+            const trends = await apiService.getMonthlyTrends(monthsBack);
+            this.setCache('monthlyTrends', trends);
+            return trends;
+        } catch (error) {
+            console.error('Error fetching monthly trends:', error);
             throw error;
         }
     }

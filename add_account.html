@@ -158,7 +158,52 @@
             </section>
         </main>
     </div>
-
+    <!-- OTP Verfication -->
+<div class="otp-overlay" id="otpOverlay">
+    <div class="otp-modal">
+        <button class="otp-close" onclick="closeOTPModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="image">
+            <img src="/removed.png" alt="">
+        </div>
+        
+        <div class="otp-header">
+            <h2 class="otp-title">Verification Code</h2>
+            <p class="otp-subtitle">
+                We've sent a 6-digit verification code to verify your bank account.
+                <br>Please enter it below.
+            </p>
+        </div>
+        
+        <div class="otp-input-container">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        </div>
+        
+        <div class="otp-actions">
+            <button class="otp-btn otp-btn-primary" id="verifyBtn">
+                Verify Account
+            </button>
+            <button class="otp-btn otp-btn-secondary" onclick="closeOTPModal()">
+                Cancel
+            </button>
+        </div>
+        
+        <div class="otp-resend">
+            Didn't receive the code? 
+            <a href="#" class="otp-resend-link" id="resendLink" onclick="resendOTP(event)">
+                Resend OTP
+            </a>
+            <span id="resendTimer"></span>
+        </div>
+    </div>
+</div>
     <script src="js/config.js"></script>
     <script src="js/api-service.js"></script>
     <script src="js/data-service.js"></script>
