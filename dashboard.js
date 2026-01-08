@@ -1010,7 +1010,10 @@ async function submitIncomeEditForm(e) {
         bankAccountId = Number(card.dataset.bankAccountId);
     }
 
-    if (!id || !amount || !bankAccountId) return;
+    if (!id || !amount || !bankAccountId) {
+        alert('Please fill in all required fields');
+        return;
+    }
 
     const payload = {
         description: originalDescription,
@@ -1024,15 +1027,18 @@ async function submitIncomeEditForm(e) {
     };
 
     try {
+        toggleModal('incomeEditModal', false);
+        console.log('Updating income with payload:', payload);
         await apiService.updateIncome(id, payload);
         dataService.clearCache('incomes');
         dataService.clearCache('dashboard');
         dataService.clearCache('monthlyTrends');
-        toggleModal('incomeEditModal', false);
-        // Reload dashboard so list and charts update cleanly
-        window.location.href = 'dashboard.html?income_updated=' + Date.now() + '#budget';
+        await loadIncomes();
+        await updateDashboardSummary();
     } catch (err) {
         console.error('Failed to update income:', err);
+        console.error('Error details:', err.message, err.stack);
+        alert('Failed to update income: ' + (err.message || 'Please try again.'));
     }
 }
 
@@ -1092,7 +1098,10 @@ async function submitExpenseEditForm(e) {
         bankAccountId = Number(card.dataset.bankAccountId);
     }
 
-    if (!id || !amount || !bankAccountId) return;
+    if (!id || !amount || !bankAccountId) {
+        alert('Please fill in all required fields');
+        return;
+    }
 
     const payload = {
         description: originalDescription,
@@ -1106,15 +1115,18 @@ async function submitExpenseEditForm(e) {
     };
 
     try {
+        toggleModal('expenseEditModal', false);
+        console.log('Updating expense with payload:', payload);
         await apiService.updateExpense(id, payload);
         dataService.clearCache('expenses');
         dataService.clearCache('dashboard');
         dataService.clearCache('monthlyTrends');
-        toggleModal('expenseEditModal', false);
-        // Reload dashboard so list and charts update cleanly
-        window.location.href = 'dashboard.html?expense_updated=' + Date.now() + '#budget';
+        await loadExpenses();
+        await updateDashboardSummary();
     } catch (err) {
         console.error('Failed to update expense:', err);
+        console.error('Error details:', err.message, err.stack);
+        alert('Failed to update expense: ' + (err.message || 'Please try again.'));
     }
 }
 
