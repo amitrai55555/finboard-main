@@ -220,6 +220,7 @@
                         <div class="section-header">
                             <h2>Income Sources</h2>
                             <div class="header-actions">
+                                <a href="search_income.html" id="income">Search Income</a>
                                 <select class="time-filter">
                                     <option value="this-month">This Month</option>
                                     <option value="last-month">Last Month</option>
@@ -250,6 +251,7 @@
                         <div class="section-header">
                             <h2>Expense Tracking</h2>
                             <div class="header-actions">
+                                <a href="search_expense.html" id="expense">Seach Expense</a>
                                 <select class="time-filter">
                                     <option value="this-month">This Month</option>
                                     <option value="last-month">Last Month</option>
@@ -968,18 +970,20 @@
         </div>
     </div>
 
-    <!-- Confirm Delete Modal -->
-    <div id="confirmDeleteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Confirm Removal</h2>
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <div class="modal-header delete-modal-header">
+                <h2>Confirm Delete</h2>
             </div>
-            <div class="modal-body">
-                <p id="confirmDeleteMessage">Do you really want to remove this item?</p>
+            <div class="modal-body delete-modal-body">
+                <i class="fas fa-exclamation-triangle delete-icon"></i>
+                <p id="confirmDeleteMessage">Are you sure you want to delete this item?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button id="cancelDelete" class="btn btn-secondary">No</button>
-                <button id="confirmDelete" class="btn btn-primary">Yes, remove</button>
+                <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+                <button id="confirmDelete" class="btn btn-danger">Delete</button>
             </div>
         </div>
     </div>

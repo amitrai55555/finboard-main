@@ -888,11 +888,21 @@ if (typeof document !== 'undefined') {
         if (cancelDelete) {
             cancelDelete.addEventListener('click', () => {
                 pendingDelete = null;
-                toggleModal('confirmDeleteModal', false);
+                toggleModal('deleteConfirmModal', false);
             });
         }
         if (confirmDelete) {
             confirmDelete.addEventListener('click', performDelete);
+        }
+        
+        const deleteModal = document.getElementById('deleteConfirmModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('click', (e) => {
+                if (e.target === deleteModal) {
+                    pendingDelete = null;
+                    toggleModal('deleteConfirmModal', false);
+                }
+            });
         }
     });
 }
@@ -1136,12 +1146,12 @@ function openDeleteModal(kind, id) {
     if (msgEl) {
         msgEl.textContent = 'Do you really want to remove this ' + (kind === 'income' ? 'income' : 'expense') + ' item?';
     }
-    toggleModal('confirmDeleteModal', true);
+    toggleModal('deleteConfirmModal', true);
 }
 
 async function performDelete() {
     if (!pendingDelete) {
-        toggleModal('confirmDeleteModal', false);
+        toggleModal('deleteConfirmModal', false);
         return;
     }
     const { kind, id } = pendingDelete;
@@ -1155,14 +1165,14 @@ async function performDelete() {
         }
         dataService.clearCache('dashboard');
         dataService.clearCache('monthlyTrends');
-        toggleModal('confirmDeleteModal', false);
+        toggleModal('deleteConfirmModal', false);
         pendingDelete = null;
         await loadIncomes();
         await loadExpenses();
         await updateDashboardSummary();
     } catch (err) {
         console.error('Failed to delete item:', err);
-        toggleModal('confirmDeleteModal', false);
+        toggleModal('deleteConfirmModal', false);
         pendingDelete = null;
     }
 }
@@ -1224,7 +1234,7 @@ async function loadIncomes() {
 
                 if (recentIncomes.length > 0) {
                     console.log('Using recentIncomes from dashboard overview to populate income list');
-                    recentIncomes.forEach(income => {
+                    [...recentIncomes].reverse().slice(0, 5).forEach(income => {
                         const item = document.createElement('div');
                         item.className = 'income-item';
                         item.dataset.incomeId = income.id;
@@ -1238,6 +1248,12 @@ async function loadIncomes() {
                         item.dataset.amount = String(safeAmount);
 
                         const category = income.category || 'Income';
+                        
+                        const incomeDate = income.date ? new Date(income.date).toLocaleDateString('en-IN', { 
+                            day: '2-digit', 
+                            month: 'short', 
+                            year: 'numeric' 
+                        }) : 'N/A';
 
                         item.innerHTML = `
                 <div class="income-icon ${category ? category.toLowerCase() : 'other'}">
@@ -1248,6 +1264,7 @@ async function loadIncomes() {
                     <p>${income.description || 'Income source'}</p>
                 </div>
                 <div class="income-amount">
+                    <p style="font-size: 14px; color: #888; margin: 0 0 10px 0; text-align: center;"><i class="fas fa-calendar"></i> ${incomeDate}</p>
                     ₹${safeAmount.toFixed(2)}
                     <button class="income-update-btn" data-id="${income.id}" style="margin-left: 12px;">Update</button>
                     <button class="income-remove-btn" data-id="${income.id}" style="margin-left: 8px;">Remove</button>
@@ -1269,7 +1286,7 @@ async function loadIncomes() {
             return;
         }
 
-        incomes.forEach(income => {
+        [...incomes].reverse().slice(0, 5).forEach(income => {
             const item = document.createElement('div');
             item.className = 'income-item';
             item.dataset.incomeId = income.id;
@@ -1283,6 +1300,12 @@ async function loadIncomes() {
             const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
             item.dataset.amount = String(safeAmount);
 
+            const incomeDate = income.date ? new Date(income.date).toLocaleDateString('en-IN', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric' 
+            }) : 'N/A';
+
             item.innerHTML = `
                 <div class="income-main">
                     <div class="income-icon ${income.category ? income.category.toLowerCase() : 'other'}">
@@ -1293,6 +1316,7 @@ async function loadIncomes() {
                         <p>${income.description || income.source || 'Income source'}</p>
                     </div>
                     <div class="income-amount">
+                        <p style="font-size: 14px; color: black; margin: 0 20px 0px 0; text-align: center;"><i class="fas fa-calendar"></i> ${incomeDate}</p>
                         ₹${safeAmount.toFixed(2)}
                         <button class="income-update-btn" data-id="${income.id}" style="margin-left: 12px;">Update</button>
                         <button class="income-remove-btn" data-id="${income.id}" style="margin-left: 8px;">Remove</button>
@@ -1352,7 +1376,7 @@ async function loadExpenses() {
 
                 if (recentExpenses.length > 0) {
                     console.log('Using recentExpenses from dashboard overview to populate expense list');
-                    recentExpenses.forEach(expense => {
+                    [...recentExpenses].reverse().slice(0, 5).forEach(expense => {
                         const item = document.createElement('div');
                         item.className = 'expense-item';
                         item.dataset.expenseId = expense.id;
@@ -1366,6 +1390,12 @@ async function loadExpenses() {
                         item.dataset.amount = String(safeAmount);
 
                         const category = expense.category || 'Expense';
+                        
+                        const expenseDate = expense.date ? new Date(expense.date).toLocaleDateString('en-IN', { 
+                            day: '2-digit', 
+                            month: 'short', 
+                            year: 'numeric' 
+                        }) : 'N/A';
 
                         item.innerHTML = `
                 <div class="expense-icon ${category ? category.toLowerCase() : 'other'}">
@@ -1376,6 +1406,7 @@ async function loadExpenses() {
                     <p>${expense.description || 'Expense details'}</p>
                 </div>
                 <div class="expense-amount">
+                    <p style="font-size: 14px; color: #888; margin: 0 0 10px 0; text-align: center;"><i class="fas fa-calendar"></i> ${expenseDate}</p>
                     ₹${safeAmount.toFixed(2)}
                     <button class="expense-update-btn" data-id="${expense.id}" style="margin-left: 12px;">Update</button>
                     <button class="expense-remove-btn" data-id="${expense.id}" style="margin-left: 8px;">Remove</button>
@@ -1397,7 +1428,7 @@ async function loadExpenses() {
             return;
         }
 
-        expenses.forEach(expense => {
+        [...expenses].reverse().slice(0, 5).forEach(expense => {
             const item = document.createElement('div');
             item.className = 'expense-item';
             item.dataset.expenseId = expense.id;
@@ -1411,6 +1442,12 @@ async function loadExpenses() {
             const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
             item.dataset.amount = String(safeAmount);
 
+            const expenseDate = expense.date ? new Date(expense.date).toLocaleDateString('en-IN', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric' 
+            }) : 'N/A';
+
             item.innerHTML = `
                 <div class="expense-main">
                     <div class="expense-icon ${expense.category ? expense.category.toLowerCase() : 'other'}">
@@ -1421,6 +1458,7 @@ async function loadExpenses() {
                         <p>${expense.description || expense.merchant || 'Expense details'}</p>
                     </div>
                     <div class="expense-amount">
+                        <p style="font-size: 14px; color: black; margin: 0 20px 0 0; text-align: center;"><i class="fas fa-calendar"></i> ${expenseDate}</p>
                         ₹${safeAmount.toFixed(2)}
                         <button class="expense-update-btn" data-id="${expense.id}" style="margin-left: 12px;">Update</button>
                         <button class="expense-remove-btn" data-id="${expense.id}" style="margin-left: 8px;">Remove</button>

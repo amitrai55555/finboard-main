@@ -226,6 +226,34 @@ body {
     gap: 16px;
 }
 
+.header-actions #income{
+    text-decoration: none;
+    color: #329F5B;
+    border: 2px solid #329F5B;
+    padding: 7px 7px;
+    border-radius: 999px;
+    background-color: #329F5B12;
+}
+
+.header-actions #income:hover{
+    background-color: #329F5B;
+    color: white;
+}
+
+.header-actions #expense{
+    text-decoration: none;
+    color: #FF331F;
+    border: 2px solid #FF331F;
+    padding: 7px 7px;
+    border-radius: 999px;
+    background-color: #ff321f12;
+}
+
+.header-actions #expense:hover{
+    background-color: #FF331F;
+    color: white;
+}
+
 .profile-section {
     position: relative;
     display: flex;
@@ -2914,6 +2942,39 @@ body {
     animation: slideIn 0.3s ease;
 }
 
+#incomeEditModal .modal-content,
+#expenseEditModal .modal-content {
+    max-width: 500px;
+}
+
+#incomeEditModal .modal-body,
+#expenseEditModal .modal-body {
+    padding: 24px 32px;
+    max-height: calc(90vh - 200px);
+    overflow-y: auto;
+}
+
+#incomeEditModal .input-wrapper,
+#expenseEditModal .input-wrapper {
+    position: relative;
+}
+
+#incomeEditModal .input-wrapper i,
+#expenseEditModal .input-wrapper i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+}
+
+#incomeEditModal .input-wrapper input,
+#incomeEditModal .input-wrapper select,
+#expenseEditModal .input-wrapper input,
+#expenseEditModal .input-wrapper select {
+    padding-left: 45px;
+}
+
 .logout-modal-content {
     max-width: 400px;
     margin: 0 auto;
@@ -3171,6 +3232,47 @@ body {
 .btn-outline:hover {
     background: #667eea;
     color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    transform: translateY(-2px);
+}
+
+.delete-modal-content {
+    max-width: 400px;
+}
+
+.delete-modal-header {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+.delete-modal-body {
+    padding: 32px;
+    text-align: center;
+}
+
+.delete-icon {
+    font-size: 48px;
+    color: #ef4444;
+    margin-bottom: 16px;
+}
+
+.delete-modal-body p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #374151;
+}
+
+.delete-warning {
+    font-size: 14px;
+    color: #6b7280;
+    font-style: italic;
 }
 
 /* Sidebar Styles */

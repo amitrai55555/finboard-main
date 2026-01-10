@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>FinTrackr - Search Income</title>
+    <link rel="stylesheet" href="search_income.css" />
+    <link rel="stylesheet" href="js/CSS/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400..800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            <span>FinTrackr</span>
+        </div>
+        <h1>Search Income by Category</h1>
+        <p><a href="dashboard.html">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard</a></p>
+    </header>
+
+    <section class="filters">
+        <input type="number" id="amountInput" placeholder="Enter Amount....." step="0.01" min="0" />
+
+        <select id="timeFilter" name="timefilter" required>
+            <option value="Alltime">All Time</option>
+            <option value="last7days">Last 7 Days</option>
+            <option value="Thismonth">This Month</option>
+        </select>
+
+        <select id="incomeCategory" name="category" required>
+            <option value="">Select Category</option>
+            <option value="All">All Categories</option>
+            <option value="salary">Salary</option>
+            <option value="freelance">Freelance</option>
+            <option value="business">Business</option>
+            <option value="investment">Investment</option>
+            <option value="rental">Rental Income</option>
+            <option value="other">Other</option>
+        </select>
+
+        <select id="priceOrder" name="Priceorder" required>
+            <option value="">Select Price Order</option>
+            <option value="Exactamount">Exact Amount</option>
+            <option value="Morethan">Exact & More than</option>
+            <option value="Lessthan">Exact & less then</option>
+        </select>
+
+        <button class="search-btn">Search</button>
+    </section>
+
+    <section class="categories">
+        <button class="category">Salary</button>
+        <button class="category">Freelance</button>
+        <button class="category">Business</button>
+        <button class="category">Investment</button>
+        <button class="category">Rental Income</button>
+    </section>
+
+    <section class="summary">
+        <div class="card">
+            <p>Total Income</p>
+            <h2 id="totalIncome">₹0</h2>
+        </div>
+        <div class="card">
+            <p>This Month</p>
+            <h2 id="monthIncome">₹0</h2>
+        </div>
+        <div class="card">
+            <p>Top Category</p>
+            <h2 id="topCategory">N/A</h2>
+        </div>
+    </section>
+
+    <section class="incomes">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Modification</th>
+                </tr>
+            </thead>
+            <tbody id="incomeTableBody">
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #888;">Loading incomes...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <div class="modal-header delete-modal-header">
+                <h2>Confirm Delete</h2>
+            </div>
+            <div class="modal-body delete-modal-body">
+                <i class="fas fa-exclamation-triangle delete-icon"></i>
+                <p>Are you sure you want to delete this income?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+                <button id="confirmDelete" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Income Modal -->
+    <div id="incomeEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Income</h2>
+            </div>
+            <div class="modal-body">
+                <form id="incomeEditForm" class="edit-form">
+                    <input type="hidden" id="editIncomeId">
+                    <div class="form-group">
+                        <label for="editIncomeAmount">Amount</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-rupee-sign"></i>
+                            <input type="number" id="editIncomeAmount" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editIncomeType">Type of Income</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-tag"></i>
+                            <select id="editIncomeType" required>
+                                <option value="salary">Salary</option>
+                                <option value="freelance">Freelance</option>
+                                <option value="business">Business</option>
+                                <option value="investment">Investment</option>
+                                <option value="rental">Rental Income</option>
+                                <option value="dividend">Dividend</option>
+                                <option value="bonus">Bonus</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editIncomeBankAccount">Bank Account</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-university"></i>
+                            <select id="editIncomeBankAccount" required>
+                                <option value="">Loading accounts...</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelIncomeEdit" class="btn btn-secondary">Cancel</button>
+                <button id="saveIncomeEdit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="search_income.js"></script>
+</body>
+
+</html>
