@@ -46,7 +46,7 @@ async function loadExpenses() {
 
         console.log('Loading expenses:', expenses);
         allExpenses = expenses;
-        const latestExpenses = [...expenses].reverse().slice(0, 5);
+        const latestExpenses = [...expenses].reverse();
         displayExpenses(latestExpenses);
         updateSummary(expenses);
     } catch (error) {
@@ -55,7 +55,7 @@ async function loadExpenses() {
         if (localExpenses && localExpenses.length > 0) {
             console.log('Error occurred, using localStorage fallback');
             allExpenses = localExpenses;
-            const latestExpenses = [...localExpenses].reverse().slice(0, 5);
+            const latestExpenses = [...localExpenses].reverse();
             displayExpenses(latestExpenses);
             updateSummary(localExpenses);
         } else {

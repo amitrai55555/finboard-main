@@ -46,7 +46,7 @@ async function loadIncomes() {
 
         console.log('Loading incomes:', incomes);
         allIncomes = incomes;
-        const latestIncomes = [...incomes].reverse().slice(0, 5);
+        const latestIncomes = [...incomes].reverse();
         displayIncomes(latestIncomes);
         updateSummary(incomes);
     } catch (error) {
@@ -55,7 +55,7 @@ async function loadIncomes() {
         if (localIncomes && localIncomes.length > 0) {
             console.log('Error occurred, using localStorage fallback');
             allIncomes = localIncomes;
-            const latestIncomes = [...localIncomes].reverse().slice(0, 5);
+            const latestIncomes = [...localIncomes].reverse();
             displayIncomes(latestIncomes);
             updateSummary(localIncomes);
         } else {
