@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <title>FinTrackr -search Expenses</title>
+    <link rel="icon" type="image/x-icon" href="tab-logo.png">
     <link rel="stylesheet" href="search_expense.css" />
     <link rel="stylesheet" href="js/CSS/style.css">
+    <link rel="stylesheet" href="darkmode.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,9 +29,9 @@
     </header>
 
     <section class="filters">
-        <input type="number" id="amountInput" placeholder="Enter Amount....." min="0" />
+        <input type="number" id="expenseAmountInput" placeholder="Enter Amount....." min="0" />
 
-        <select id="timeFilter" name="timefilter" required>
+        <select id="expenseTimeFilter" name="timefilter" required>
             <option value="Alltime">All Time</option>
             <option value="last7days">Last 7 Days</option>
             <option value="Thismonth">This Month</option>
@@ -51,7 +53,7 @@
             <option value="other">Other</option>
         </select>
 
-        <select id="priceOrder" name="Priceorder" required>
+        <select id="expensePriceOrder" name="Priceorder" required>
             <option value="">Select Price Order</option>
             <option value="Exactamount">Exact Amount</option>
             <option value="Morethan">Exact & More than</option>
@@ -169,6 +171,7 @@
     <script src="js/config.js"></script>
     <script src="js/api-service.js"></script>
     <script src="js/data-service.js"></script>
+    <script src="darkmode.js"></script>
     <script src="search_expense.js"></script>
 </body>
 

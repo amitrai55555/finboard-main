@@ -1,13 +1,33 @@
 /* Reports Page Styles */
 
+@font-face {
+    font-family: 'Pallada';
+    src: url(fonts/PalladaBold-Regular.woff2);
+    src: url(fonts/Pallada-Regular.woff2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pallada';
+    font-weight: bold;
+    font-style: normal;
+    font-optical-sizing: auto;
+}
+
 .main-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    font-family: "TASA Orbiter", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-style: normal;
+}
+
+.annual-chart-bars {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 200px;
+    padding: 20px 0;
 }
 
 .reports-header {
@@ -241,6 +261,7 @@
 }
 
 .export-btn {
+    margin-top: 10px;
     background: #4f46e5;
     color: white;
     border: none;

@@ -1,10 +1,19 @@
 /* Styles for Add Goal form */
 
-*{
-    font-family: "TASA Orbiter", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 500;
+@font-face {
+    font-family: 'Pallada';
+    src: url(fonts/PalladaBold-Regular.woff2);
+    src: url(fonts/Pallada-Regular.woff2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pallada';
+    font-weight: bold;
     font-style: normal;
+    font-optical-sizing: auto;
 }
 body {
     background-color: #f9fafb;

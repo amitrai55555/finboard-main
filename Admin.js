@@ -126,6 +126,41 @@ function animateMetric(elementId, value) {
     }
 }
 
+// Start real-time metrics updates
+function startRealTimeMetrics() {
+    // Clear any existing interval
+    stopRealTimeMetrics();
+
+    // Update metrics immediately
+    updateMetrics();
+
+    // Set up periodic updates every 3 seconds
+    metricsUpdateInterval = setInterval(updateMetrics, 3000);
+}
+
+// Stop real-time metrics updates
+function stopRealTimeMetrics() {
+    if (metricsUpdateInterval) {
+        clearInterval(metricsUpdateInterval);
+        metricsUpdateInterval = null;
+    }
+}
+
+// Update system metrics with simulated real-time values
+function updateMetrics() {
+    // Generate realistic simulated values
+    const cpuUsage = Math.floor(20 + Math.random() * 60); // 20-80%
+    const memoryUsage = Math.floor(30 + Math.random() * 50); // 30-80%
+    const storageUsage = Math.floor(15 + Math.random() * 65); // 15-80%
+    const apiResponseTime = Math.floor(50 + Math.random() * 150); // 50-200ms
+
+    // Animate the metrics
+    animateMetric('cpuUsage', cpuUsage);
+    animateMetric('memoryUsage', memoryUsage);
+    animateMetric('storageUsage', storageUsage);
+    animateMetric('apiResponseTime', apiResponseTime);
+}
+
 // Load Recent Activity
 function loadRecentActivity() {
     const activities = [
@@ -477,18 +512,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             localStorage.removeItem('goals');
             localStorage.removeItem('investments');
 
-            // Attempt API logout if available
-            if (typeof apiService !== 'undefined' && apiService.logout) {
-                apiService.logout().finally(() => {
-                    // Always redirect after attempting logout
-                    window.location.href = 'index.html';
-                });
-            } else {
-                // Direct redirect if no API service
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
-            }
+    // Attempt API logout if available
+    if (typeof apiService !== 'undefined' && apiService.logout) {
+        apiService.logout().finally(() => {
+            // Always redirect after attempting logout
+            window.location.href = 'index.html';
+        });
+    } else {
+        // Direct redirect if no API service
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+    }
         });
     }
 
@@ -569,6 +604,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (e.key === 'Escape') {
             closeAddUserModalFunc();
         }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        stopRealTimeMetrics();
     });
 });
 

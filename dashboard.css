@@ -1,17 +1,24 @@
+@font-face {
+    font-family: 'Pallada';
+    src: url(fonts/PalladaBold-Regular.woff2);
+    src: url(fonts/Pallada-Regular.woff2);
+
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "TASA Orbiter", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 500;
+    font-family: 'Pallada';
+    font-weight: bold;
     font-style: normal;
+    font-optical-sizing: auto;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: #f8fafc;
-    color: #2d3748;
+    background: var(--bg-primary, #f8fafc);
+    color: var(--text-primary, #2d3748);
 }
 
 .dashboard-container {
@@ -22,8 +29,7 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 280px;
-    background: white;
-    border-right: 1px solid #e2e8f0;
+    background: var(--sidebar-bg, white);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -33,7 +39,6 @@ body {
 
 .sidebar-header {
     padding: 24px 20px;
-    border-bottom: 1px solid #e2e8f0;
 }
 
 .logo {
@@ -43,8 +48,8 @@ body {
 }
 
 .logo i {
-    background: #2d3748;
-    color: white;
+    background: var(--text-primary, #2d3748);
+    color: var(--sidebar-bg, white);
     padding: 10px;
     border-radius: 8px;
     font-size: 16px;
@@ -53,12 +58,14 @@ body {
 .logo span {
     font-size: 25px;
     font-weight: 900;
-    color: #2d3748;
+    color: var(--text-primary, #2d3748);
 }
 
 .sidebar-nav {
     flex: 1;
     padding: 20px 0;
+    border-right: 3px solid gray;
+    border-radius: 70px;
 }
 
 .nav-section {
@@ -68,7 +75,7 @@ body {
 .nav-section h4 {
     font-size: 12px;
     font-weight: 600;
-    color: #718096;
+    color: var(--text-tertiary, #718096);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 16px;
@@ -88,15 +95,15 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 20px;
-    color: #4a5568;
+    color: var(--text-secondary, #4a5568);
     text-decoration: none;
     transition: all 0.2s ease;
     border-right: 3px solid transparent;
 }
 
 .nav-section a:hover {
-    background: #f7fafc;
-    color: #2d3748;
+    background: var(--hover-bg, #f7fafc);
+    color: var(--text-primary, #2d3748);
 }
 
 
@@ -106,6 +113,8 @@ body {
     border-right-color: #305eff;
     border-radius: 9px;
     font-weight: 500;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .nav-section i {
@@ -115,7 +124,6 @@ body {
 
 .sidebar-footer {
     padding: 29px 20px;
-    border-top: 1px solid #e2e8f0;
 }
 
 .upgrade-card {
@@ -166,9 +174,8 @@ body {
 
 /* Header */
 .dashboard-header {
-    background: white;
+    background: var(--header-bg, white);
     padding: 18px 32px;
-    border-bottom: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -180,7 +187,7 @@ body {
 .header-left h1 {
     font-size: 24px;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-primary, #2d3748);
 }
 
 .header-right {
@@ -208,13 +215,14 @@ body {
     border-radius: 8px;
     font-size: 14px;
     width: 300px;
-    background: #f7fafc;
+    background: var(--input-bg, #f7fafc);
+    color: var(--text-primary, #2d3748);
 }
 
 .search-bar input:focus {
     outline: none;
     border-color: 2px solid #305eff;;
-    background: white;
+    background: var(--bg-secondary, white);
 }
 .search-bar::placeholder{
     color:#305eff;
@@ -265,7 +273,7 @@ body {
 }
 
 .profile-section:hover {
-    background: #f7fafc;
+    background: var(--hover-bg, #f7fafc);
 }
 
 .profile-image {
@@ -285,10 +293,10 @@ body {
     position: absolute;
     top: 100%;
     right: 0;
-    background: white;
+    background: var(--bg-secondary, white);
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.1));
+    border: 1px solid var(--border-color, #e2e8f0);
     min-width: 200px;
     opacity: 0;
     visibility: hidden;
@@ -308,7 +316,7 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    color: #4a5568;
+    color: var(--text-secondary, #4a5568);
     text-decoration: none;
     transition: all 0.2s ease;
     border-radius: 8px;
@@ -316,8 +324,8 @@ body {
 }
 
 .dropdown-item:hover {
-    background: #b9c7cf;
-    color: #2d3748;
+    background: var(--hover-bg, #b9c7cf);
+    color: var(--text-primary, #2d3748);
     border-left-color: #4fd1c7;
     border-radius: 9px;
     font-weight: 500;
@@ -331,9 +339,13 @@ body {
 
 /* Welcome Section */
 .welcome-section {
-    background: linear-gradient(160deg, #0e1c26 0%, #4898aa, #294861 100%);
+    background: linear-gradient(180deg, #ff5f00, #19547b);
     padding: 40px 32px;
     color: white;
+    border-radius: 300px;
+    border-right: 5px solid #003087;
+    border-left: 5px solid #003087;
+    margin: 0px 32px;
 }
 
 .welcome-content {
@@ -411,7 +423,7 @@ body {
     background: linear-gradient(160deg, #08203e 0%, #557c93 100%);
     backdrop-filter: blur(10px);
     border: 3px solid #00baf2;
-    border-radius: 16px;
+    border-radius: 300px;
     padding: 32px;
     min-width: 50%;
 }
@@ -487,7 +499,7 @@ body {
 
 .stat-card {
     background: linear-gradient(160deg, #0070e0, #5bbbfc, #00c4ff40, #5bbbfc, #0070e0);
-    border-radius: 12px;
+    border-radius: 300px;
     padding: 24px;
     display: flex;
     align-items: center;
@@ -533,13 +545,13 @@ body {
 .stat-content h3 {
     font-size: 24px;
     font-weight: 700;
-    color: #2d3748;
+    color: var(--text-primary, #2d3748);
     margin-bottom: 4px;
 }
 
 .stat-content p {
     font-size: 14px;
-    color: #718096;
+    color: var(--text-tertiary, #718096);
     margin-bottom: 8px;
 }
 
@@ -590,7 +602,7 @@ body {
 .section-header h2 {
     font-size: 20px;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-primary, #2d3748);
 }
 
 .add-account-btn {
@@ -625,10 +637,10 @@ body {
 }
 
 .account-card {
-    background: white;
+    background: var(--card-bg, white);
     border-radius: 16px;
     padding: 24px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color, #e2e8f0);
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
@@ -670,13 +682,13 @@ body {
 .account-info h3 {
     font-size: 16px;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-primary, #2d3748);
     margin-bottom: 4px;
 }
 
 .account-info p {
     font-size: 14px;
-    color: #718096;
+    color: var(--text-tertiary, #718096);
 }
 
 .account-menu {
@@ -697,13 +709,13 @@ body {
 .account-balance h2 {
     font-size: 28px;
     font-weight: 700;
-    color: #2d3748;
+    color: var(--text-primary, #2d3748);
     margin-bottom: 4px;
 }
 
 .account-balance p {
     font-size: 14px;
-    color: #718096;
+    color: var(--text-tertiary, #718096);
     margin-bottom: 20px;
 }
 
@@ -734,10 +746,10 @@ body {
 
 .income-sources,
 .expense-tracking {
-    background: white;
+    background: var(--card-bg, white);
     border-radius: 16px;
     padding: 24px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color, #e2e8f0);
 }
 
 .header-actions {
@@ -748,11 +760,11 @@ body {
 
 .time-filter {
     padding: 8px 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 6px;
     font-size: 14px;
-    background: white;
-    color: #4a5568;
+    background: var(--bg-secondary, white);
+    color: var(--text-secondary, #4a5568);
 }
 
 .time-filter:focus {
@@ -1277,7 +1289,7 @@ body {
     background: white;
     border-radius: 16px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin: 0px 32px 32px 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -1452,7 +1464,7 @@ body {
     background: white;
     border-radius: 16px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin: 0px 32px 32px 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -1675,7 +1687,7 @@ body {
     background: white;
     border-radius: 16px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin: 0px 32px 32px 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -1931,7 +1943,7 @@ body {
     background: white;
     border-radius: 16px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin: 0px 32px 32px 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -1982,7 +1994,6 @@ body {
 }
 
 .recommendation-item {
-    display: flex;
     gap: 16px;
     align-items: flex-start;
 }
@@ -2019,6 +2030,7 @@ body {
     font-size: 16px;
     font-weight: 600;
     color: #1e293b;
+    margin-top: 8px;
     margin-bottom: 8px;
 }
 
@@ -2491,7 +2503,7 @@ body {
     background: white;
     border-radius: 16px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin: 0px 32px 32px 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -2743,12 +2755,25 @@ body {
 }
 
 .add-transaction-btn {
-    background: #003087;
-    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    border: 3px solid #003087;
+    border-color: #3182ce;
+    color: #003087;
+    background: #ebf8ff;
 }
 
 .add-transaction-btn:hover {
-    background: #38b2ac;
+    background: #003087;
+    color: white;
     transform: translateY(-1px);
 }
 

@@ -1316,7 +1316,7 @@ async function loadIncomes() {
                         <p>${income.description || income.source || 'Income source'}</p>
                     </div>
                     <div class="income-amount">
-                        <p style="font-size: 14px; color: black; margin: 0 20px 0px 0; text-align: center;"><i class="fas fa-calendar"></i> ${incomeDate}</p>
+                        <p style="font-size: 14px; color: #7bceff; margin: 0 20px 0px 0; text-align: center;"><i class="fas fa-calendar"></i> ${incomeDate}</p>
                         ₹${safeAmount.toFixed(2)}
                         <button class="income-update-btn" data-id="${income.id}" style="margin-left: 12px;">Update</button>
                         <button class="income-remove-btn" data-id="${income.id}" style="margin-left: 8px;">Remove</button>
@@ -1458,7 +1458,7 @@ async function loadExpenses() {
                         <p>${expense.description || expense.merchant || 'Expense details'}</p>
                     </div>
                     <div class="expense-amount">
-                        <p style="font-size: 14px; color: black; margin: 0 20px 0 0; text-align: center;"><i class="fas fa-calendar"></i> ${expenseDate}</p>
+                        <p style="font-size: 14px; color: #7bceff; margin: 0 20px 0 0; text-align: center;"><i class="fas fa-calendar"></i> ${expenseDate}</p>
                         ₹${safeAmount.toFixed(2)}
                         <button class="expense-update-btn" data-id="${expense.id}" style="margin-left: 12px;">Update</button>
                         <button class="expense-remove-btn" data-id="${expense.id}" style="margin-left: 8px;">Remove</button>
@@ -1600,6 +1600,15 @@ async function loadGoals() {
     }
 }
 
+function toggleDarkMode() {
+  document.body.classList.toggle('darkmode');
+}
+
+const themeToggleButton = document.getElementById('theme-toggle');
+if (themeToggleButton) {
+    themeToggleButton.addEventListener('click', toggleDarkMode)
+}
+
 // Load investments from API and display
 async function loadInvestments() {
     const portfolioTable = document.querySelector('.portfolio-table');
@@ -1621,7 +1630,7 @@ async function loadInvestments() {
         if (investments.length === 0) {
             const noData = document.createElement('div');
             noData.className = 'no-data';
-            noData.innerHTML = '<p>No investments yet. Add your first investment to start tracking your portfolio!</p>';
+            noData.innerHTML = '<p style="padding:10px 7px; text-align:center">No investments yet. Add your first investment to start tracking your portfolio!</p>';
             portfolioTable.appendChild(noData);
             return;
         }

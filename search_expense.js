@@ -103,10 +103,10 @@ function displayExpenses(expenses) {
 
 function searchExpenses() {
     console.log('Search button clicked');
-    const amountInput = document.getElementById('amountInput').value;
-    const timeFilter = document.getElementById('timeFilter').value;
+    const amountInput = document.getElementById('expenseAmountInput').value;
+    const timeFilter = document.getElementById('expenseTimeFilter').value;
     const categoryFilter = document.getElementById('expenseCategory').value;
-    const priceOrder = document.getElementById('priceOrder').value;
+    const priceOrder = document.getElementById('expensePriceOrder').value;
     
     console.log('Search params:', { amountInput, timeFilter, categoryFilter, priceOrder });
     

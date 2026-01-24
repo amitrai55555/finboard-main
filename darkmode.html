@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Settings - FinTrackr</title>
+    <link rel="icon" type="image/x-icon" href="tab-logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="darkmode.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400..800&display=swap" rel="stylesheet">
+    
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .settings-card {
+            background: var(--card-bg, #ffffff);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color, #e2e8f0);
+        }
+        
+        .settings-header {
+            margin-bottom: 30px;
+        }
+        
+        .settings-header h1 {
+            font-size: 28px;
+            color: var(--text-primary, #2d3748);
+            margin-bottom: 8px;
+        }
+        
+        .settings-header p {
+            color: var(--text-secondary, #4a5568);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--bg-tertiary, #f1f5f9);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .setting-info h3 {
+            font-size: 18px;
+            color: var(--text-primary, #2d3748);
+            margin-bottom: 4px;
+        }
+        
+        .setting-info p {
+            font-size: 14px;
+            color: var(--text-secondary, #4a5568);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #3b82f6;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        
+        .theme-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .preview-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .preview-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .preview-card.active {
+            border-color: #3b82f6;
+        }
+        
+        .preview-card.light {
+            background: #ffffff;
+            color: #2d3748;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .preview-card.dark {
+            background: #1e293b;
+            color: #f1f5f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .preview-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #3b82f6;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <a href="dashboard.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+        
+        <div class="settings-card">
+            <div class="settings-header">
+                <h1>Appearance Settings</h1>
+                <p>Customize how FinTrackr looks for you</p>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Dark Mode</h3>
+                    <p>Enable dark theme for better visibility in low-light environments</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="theme-preview">
+                <div class="preview-card light" id="lightPreview">
+                    <div class="preview-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h3>Light Mode</h3>
+                    <p>Classic bright theme</p>
+                </div>
+                
+                <div class="preview-card dark" id="darkPreview">
+                    <div class="preview-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3>Dark Mode</h3>
+                    <p>Easy on the eyes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="darkmode.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('darkModeToggle');
+            const lightPreview = document.getElementById('lightPreview');
+            const darkPreview = document.getElementById('darkPreview');
+            
+            function updateUI() {
+                const currentTheme = window.darkModeManager.getCurrentTheme();
+                toggle.checked = currentTheme === 'dark';
+                
+                lightPreview.classList.toggle('active', currentTheme === 'light');
+                darkPreview.classList.toggle('active', currentTheme === 'dark');
+            }
+            
+            toggle.addEventListener('change', () => {
+                window.darkModeManager.toggleTheme();
+                updateUI();
+            });
+            
+            lightPreview.addEventListener('click', () => {
+                window.darkModeManager.setTheme('light');
+                updateUI();
+            });
+            
+            darkPreview.addEventListener('click', () => {
+                window.darkModeManager.setTheme('dark');
+                updateUI();
+            });
+            
+            updateUI();
+        });
+    </script>
+</body>
+</html>

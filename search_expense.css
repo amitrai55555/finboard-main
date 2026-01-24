@@ -1,10 +1,17 @@
+@font-face {
+    font-family: 'Pallada';
+    src: url(fonts/PalladaBold-Regular.woff2);
+    src: url(fonts/Pallada-Regular.woff2);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "TASA Orbiter", sans-serif;
+    font-family: 'Pallada';
+    font-weight: bold;
+    font-style: normal;
     font-optical-sizing: auto;
-    font-weight: 500;
 }
 
 body {
@@ -55,14 +62,14 @@ body {
     font-size: 16px;
 }
 
-#amountInput {
+#expenseAmountInput {
     border: 2px solid #FF331F;
     border-radius: 999px;
     border-radius: 999px;
     text-align: center;
 }
 
-#amountInput:focus {
+#expenseAmountInput:focus {
     outline: none;
 }
 
@@ -83,13 +90,13 @@ body {
     flex: 1;
 }
 
-#timeFilter {
+#expenseTimeFilter {
     border: 2px solid #FF331F;
     border-radius: 999px;
     text-align: center;
 }
 
-#timeFilter:focus {
+#expTimeFilter:focus {
     outline: none;
 }
 
@@ -103,13 +110,13 @@ body {
     outline: none;
 }
 
-#priceOrder {
+#expensePriceOrder {
     border: 2px solid #FF331F;
     border-radius: 999px;
     text-align: center;
 }
 
-#priceOrder:focus {
+#expensePriceOrder:focus {
     outline: none;
 }
 

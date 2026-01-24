@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Reports - FinTrackr</title>
+    <link rel="icon" type="image/x-icon" href="tab-logo.png">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="view_report.css">
+    <link rel="stylesheet" href="darkmode.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,59 +42,38 @@
                     <h3>This Month Overview</h3>
                     <div class="summary-metric">
                         <span class="metric-label">Total Income</span>
-                        <span class="metric-value positive">₹45,000</span>
+                        <span class="metric-value positive" id="monthly-total-income">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Total Expenses</span>
-                        <span class="metric-value negative">₹32,500</span>
+                        <span class="metric-value negative" id="monthly-total-expenses">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Net Savings</span>
-                        <span class="metric-value positive">₹12,500</span>
+                        <span class="metric-value positive" id="monthly-net-savings">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Savings Rate</span>
-                        <span class="metric-value positive">27.8%</span>
+                        <span class="metric-value positive" id="monthly-savings-rate">Loading...</span>
                     </div>
                 </div>
 
                 <div class="summary-card">
                     <h3>Income Breakdown</h3>
-                    <div class="summary-metric">
-                        <span class="metric-label">Salary</span>
-                        <span class="metric-value">₹40,000</span>
-                    </div>
-                    <div class="summary-metric">
-                        <span class="metric-label">Freelance</span>
-                        <span class="metric-value">₹3,500</span>
-                    </div>
-                    <div class="summary-metric">
-                        <span class="metric-label">Investments</span>
-                        <span class="metric-value">₹1,500</span>
-                    </div>
-                    <div class="summary-metric">
-                        <span class="metric-label">Other</span>
-                        <span class="metric-value">₹0</span>
+                    <div id="monthly-income-breakdown">
+                        <div class="summary-metric">
+                            <span class="metric-label">Loading...</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="summary-card">
                     <h3>Expense Breakdown</h3>
-                    <div class="summary-metric">
-                        <span class="metric-label">Housing</span>
-                        <span class="metric-value">₹12,000</span>
-                    </div>
-                    <div class="summary-metric">
-                        <span class="metric-label">Food & Dining</span>
-                        <span class="metric-value">₹8,500</span>
-                    </div>
-                    <div class="summary-metric">
-                        <span class="metric-label">Transportation</span>
-                        <span class="metric-value">₹6,000</span>
-                    </div>
-                    <div class="summary-metric">
-                        <span class="metric-label">Entertainment</span>
-                        <span class="metric-value">₹6,000</span>
+                    <div id="monthly-expense-breakdown">
+                        <div class="summary-metric">
+                            <span class="metric-label">Loading...</span>
+                            <span class="expenseMetric-value">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,45 +82,24 @@
                 <h3>Monthly Trends</h3>
                 <div class="monthly-breakdown">
                     <div class="breakdown-table">
-                        <div class="table-header">Income Categories</div>
-                        <div class="table-row">
-                            <span class="category-name">Salary</span>
-                            <span class="category-amount">₹40,000</span>
-                            <span class="category-change positive">+5.2%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Freelance</span>
-                            <span class="category-amount">₹3,500</span>
-                            <span class="category-change positive">+12.5%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Investments</span>
-                            <span class="category-amount">₹1,500</span>
-                            <span class="category-change negative">-2.1%</span>
+                        <div class="table-header"><h4>Income Categories</h4></div>
+                        <div id="monthly-income-categories">
+                            <div class="table-row">
+                                <span class="category-name">Loading...</span>
+                                <span class="category-amount">Loading...</span>
+                                <span class="category-change">Loading...</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="breakdown-table">
-                        <div class="table-header">Expense Categories</div>
-                        <div class="table-row">
-                            <span class="category-name">Housing</span>
-                            <span class="category-amount">₹12,000</span>
-                            <span class="category-change">0%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Food & Dining</span>
-                            <span class="category-amount">₹8,500</span>
-                            <span class="category-change negative">+8.3%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Transportation</span>
-                            <span class="category-amount">₹6,000</span>
-                            <span class="category-change positive">-3.2%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Entertainment</span>
-                            <span class="category-amount">₹6,000</span>
-                            <span class="category-change negative">+15.7%</span>
+                        <div class="table-header"><h4>Expense Categories</h4></div>
+                        <div id="monthly-expense-categories">
+                            <div class="table-row">
+                                <span class="category-name">Loading...</span>
+                                <span class="category-amount">Loading...</span>
+                                <span class="category-change">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,19 +113,19 @@
                     <h3>Annual Overview</h3>
                     <div class="summary-metric">
                         <span class="metric-label">Total Income</span>
-                        <span class="metric-value positive">₹5,40,000</span>
+                        <span class="metric-value positive" id="annual-total-income">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Total Expenses</span>
-                        <span class="metric-value negative">₹3,85,000</span>
+                        <span class="metric-value negative" id="annual-total-expenses">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Net Savings</span>
-                        <span class="metric-value positive">₹1,55,000</span>
+                        <span class="metric-value positive" id="annual-net-savings">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Savings Rate</span>
-                        <span class="metric-value positive">28.7%</span>
+                        <span class="metric-value positive" id="annual-savings-rate">Loading...</span>
                     </div>
                 </div>
 
@@ -170,19 +133,19 @@
                     <h3>Year-over-Year Growth</h3>
                     <div class="summary-metric">
                         <span class="metric-label">Income Growth</span>
-                        <span class="metric-value positive">+8.5%</span>
+                        <span class="metric-value positive" id="annual-income-growth">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Expense Growth</span>
-                        <span class="metric-value negative">+5.2%</span>
+                        <span class="metric-value negative" id="annual-expense-growth">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Savings Growth</span>
-                        <span class="metric-value positive">+15.3%</span>
+                        <span class="metric-value positive" id="annual-savings-growth">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Investment Returns</span>
-                        <span class="metric-value positive">+12.8%</span>
+                        <span class="metric-value positive" id="annual-investment-returns">Loading...</span>
                     </div>
                 </div>
 
@@ -190,19 +153,19 @@
                     <h3>Financial Health Score</h3>
                     <div class="summary-metric">
                         <span class="metric-label">Overall Score</span>
-                        <span class="metric-value positive">85/100</span>
+                        <span class="metric-value positive" id="financial-health-score">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Budget Adherence</span>
-                        <span class="metric-value positive">92%</span>
+                        <span class="metric-value positive" id="budget-adherence">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Savings Consistency</span>
-                        <span class="metric-value positive">88%</span>
+                        <span class="metric-value positive" id="savings-consistency">Loading...</span>
                     </div>
                     <div class="summary-metric">
                         <span class="metric-label">Investment Performance</span>
-                        <span class="metric-value positive">78%</span>
+                        <span class="metric-value positive" id="investment-performance">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -211,43 +174,11 @@
                 <h3>Annual Trends</h3>
                 <div class="annual-trends">
                     <div class="trend-chart">
-                        <svg viewBox="0 0 600 250" class="annual-chart-svg">
-                            <defs>
-                                <linearGradient id="incomeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3" />
-                                    <stop offset="100%" style="stop-color:#10B981;stop-opacity:0" />
-                                </linearGradient>
-                                <linearGradient id="expenseGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#EF4444;stop-opacity:0.3" />
-                                    <stop offset="100%" style="stop-color:#EF4444;stop-opacity:0" />
-                                </linearGradient>
-                            </defs>
-                            <!-- Income bars -->
-                            <rect x="50" y="150" width="30" height="80" fill="#10B981" rx="4"/>
-                            <rect x="100" y="130" width="30" height="100" fill="#10B981" rx="4"/>
-                            <rect x="150" y="110" width="30" height="120" fill="#10B981" rx="4"/>
-                            <rect x="200" y="90" width="30" height="140" fill="#10B981" rx="4"/>
-                            <rect x="250" y="70" width="30" height="160" fill="#10B981" rx="4"/>
-                            <rect x="300" y="50" width="30" height="180" fill="#10B981" rx="4"/>
-                            <rect x="350" y="60" width="30" height="170" fill="#10B981" rx="4"/>
-                            <rect x="400" y="40" width="30" height="190" fill="#10B981" rx="4"/>
-                            <rect x="450" y="30" width="30" height="200" fill="#10B981" rx="4"/>
-                            <rect x="500" y="20" width="30" height="210" fill="#10B981" rx="4"/>
-                            <rect x="550" y="10" width="30" height="220" fill="#10B981" rx="4"/>
-
-                            <!-- Expense bars -->
-                            <rect x="60" y="160" width="20" height="70" fill="#EF4444" rx="4"/>
-                            <rect x="110" y="150" width="20" height="80" fill="#EF4444" rx="4"/>
-                            <rect x="160" y="140" width="20" height="90" fill="#EF4444" rx="4"/>
-                            <rect x="210" y="130" width="20" height="100" fill="#EF4444" rx="4"/>
-                            <rect x="260" y="120" width="20" height="110" fill="#EF4444" rx="4"/>
-                            <rect x="310" y="110" width="20" height="120" fill="#EF4444" rx="4"/>
-                            <rect x="360" y="120" width="20" height="110" fill="#EF4444" rx="4"/>
-                            <rect x="410" y="100" width="20" height="130" fill="#EF4444" rx="4"/>
-                            <rect x="460" y="90" width="20" height="140" fill="#EF4444" rx="4"/>
-                            <rect x="510" y="80" width="20" height="150" fill="#EF4444" rx="4"/>
-                            <rect x="560" y="70" width="20" height="160" fill="#EF4444" rx="4"/>
-                        </svg>
+                        <div class="chart-container">
+                            <div class="annual-chart-bars">
+                                <!-- Chart bars will be dynamically created by JavaScript -->
+                            </div>
+                        </div>
                         <div class="chart-labels">
                             <span>Jan</span>
                             <span>Feb</span>
@@ -271,44 +202,23 @@
                 <div class="monthly-breakdown">
                     <div class="breakdown-table">
                         <div class="table-header">Top Income Sources</div>
-                        <div class="table-row">
-                            <span class="category-name">Salary</span>
-                            <span class="category-amount">₹4,80,000</span>
-                            <span class="category-change positive">+8.2%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Freelance</span>
-                            <span class="category-amount">₹42,000</span>
-                            <span class="category-change positive">+15.3%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Investments</span>
-                            <span class="category-amount">₹18,000</span>
-                            <span class="category-change positive">+12.8%</span>
+                        <div id="annual-income-sources">
+                            <div class="table-row">
+                                <span class="category-name">Loading...</span>
+                                <span class="category-amount">Loading...</span>
+                                <span class="category-change">Loading...</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="breakdown-table">
                         <div class="table-header">Top Expense Categories</div>
-                        <div class="table-row">
-                            <span class="category-name">Housing</span>
-                            <span class="category-amount">₹1,44,000</span>
-                            <span class="category-change">0%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Food & Dining</span>
-                            <span class="category-amount">₹1,02,000</span>
-                            <span class="category-change negative">+6.8%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Transportation</span>
-                            <span class="category-amount">₹72,000</span>
-                            <span class="category-change positive">-2.5%</span>
-                        </div>
-                        <div class="table-row">
-                            <span class="category-name">Entertainment</span>
-                            <span class="category-amount">₹67,000</span>
-                            <span class="category-change negative">+11.2%</span>
+                        <div id="annual-expense-categories">
+                            <div class="table-row">
+                                <span class="category-name">Loading...</span>
+                                <span class="category-amount">Loading...</span>
+                                <span class="category-change">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,15 +228,15 @@
         <div class="export-section">
             <h3>Export Reports</h3>
             <div class="export-options">
-                <button class="export-btn">
+                <button class="export-btn" onclick="handleExport('pdf', this)">
                     <i class="fas fa-download"></i>
                     Export as PDF
                 </button>
-                <button class="export-btn">
+                <button class="export-btn" onclick="handleExport('excel', this)">
                     <i class="fas fa-file-excel"></i>
                     Export as Excel
                 </button>
-                <button class="export-btn">
+                <button class="export-btn" onclick="handleExport('csv', this)">
                     <i class="fas fa-file-csv"></i>
                     Export as CSV
                 </button>
@@ -334,6 +244,12 @@
         </div>
     </div>
 
+    <!-- API Configuration and Service Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="js/profile-handler.js"></script>
+    <script src="darkmode.js"></script>
     <script src="view_report.js"></script>
 </body>
 </html>
