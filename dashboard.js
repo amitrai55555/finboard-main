@@ -2,9 +2,9 @@
 console.log('🚀 Dashboard.js loaded');
 
 // Initialize dashboard when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('📋 DOMContentLoaded fired');
-    
+
     // Check authentication first
     const userData = sessionStorage.getItem('fintrackr_user');
     const token = sessionStorage.getItem('fintrackr_token');
@@ -39,7 +39,7 @@ const cancelLogoutBtn = document.getElementById('cancelLogout');
 
 // Navigation functionality
 navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
+    link.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
 
         // Check if it's an external link (not starting with #)
@@ -91,15 +91,15 @@ navLinks.forEach(link => {
 // Search functionality
 const searchInput = document.querySelector('.search-bar input');
 if (searchInput) {
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         const query = this.value.toLowerCase();
         if (query.length > 2) {
             console.log(`Searching for: ${query}`);
             // In a real app, you would perform the search here
         }
     });
-    
-    searchInput.addEventListener('keypress', function(e) {
+
+    searchInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             const query = this.value.trim();
             if (query) {
@@ -113,14 +113,14 @@ if (searchInput) {
 
 // Add account functionality
 if (addAccountBtn) {
-    addAccountBtn.addEventListener('click', function() {
+    addAccountBtn.addEventListener('click', function () {
         window.location.href = 'add_account.html';
     });
 }
 
 // Account menu functionality
 accountMenus.forEach(menu => {
-    menu.addEventListener('click', function(e) {
+    menu.addEventListener('click', function (e) {
         e.stopPropagation();
         // In a real app, you would show account options dropdown
     });
@@ -128,7 +128,7 @@ accountMenus.forEach(menu => {
 
 // Action buttons functionality
 actionBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const action = this.textContent.trim();
 
         if (action === 'Add Income') {
@@ -143,14 +143,14 @@ actionBtns.forEach(btn => {
 
 // Upgrade button functionality
 if (upgradeBtn) {
-    upgradeBtn.addEventListener('click', function() {
+    upgradeBtn.addEventListener('click', function () {
         // In a real app, you would redirect to pricing/upgrade page
     });
 }
 
 // Logout functionality
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
+    logoutBtn.addEventListener('click', function (e) {
         e.preventDefault();
         if (logoutModal) {
             logoutModal.classList.add('show');
@@ -163,7 +163,7 @@ if (confirmLogoutBtn) {
 }
 
 if (cancelLogoutBtn) {
-    cancelLogoutBtn.addEventListener('click', function() {
+    cancelLogoutBtn.addEventListener('click', function () {
         if (logoutModal) {
             logoutModal.classList.remove('show');
         }
@@ -172,7 +172,7 @@ if (cancelLogoutBtn) {
 
 // Close modal when clicking outside
 if (logoutModal) {
-    logoutModal.addEventListener('click', function(e) {
+    logoutModal.addEventListener('click', function (e) {
         if (e.target === logoutModal) {
             logoutModal.classList.remove('show');
         }
@@ -231,7 +231,7 @@ function addMobileMenuButton() {
     if (window.innerWidth <= 768) {
         const header = document.querySelector('.dashboard-header');
         const existingMenuBtn = document.querySelector('.mobile-menu-btn');
-        
+
         if (!existingMenuBtn) {
             const menuBtn = document.createElement('button');
             menuBtn.className = 'mobile-menu-btn';
@@ -246,9 +246,9 @@ function addMobileMenuButton() {
                 color: #4a5568;
                 margin-right: 16px;
             `;
-            
+
             menuBtn.addEventListener('click', toggleSidebar);
-            
+
             const headerLeft = document.querySelector('.header-left');
             headerLeft.insertBefore(menuBtn, headerLeft.firstChild);
         }
@@ -256,9 +256,9 @@ function addMobileMenuButton() {
 }
 
 // Handle window resize
-window.addEventListener('resize', function() {
+window.addEventListener('resize', function () {
     addMobileMenuButton();
-    
+
     // Close sidebar on desktop
     if (window.innerWidth > 768) {
         sidebar.classList.remove('open');
@@ -282,7 +282,7 @@ setInterval(updateDashboardData, 30000);
 
 // Handle account card interactions
 document.querySelectorAll('.account-card').forEach(card => {
-    card.addEventListener('click', function(e) {
+    card.addEventListener('click', function (e) {
         // Don't trigger if clicking on menu button
         if (!e.target.closest('.account-menu')) {
             const accountType = this.querySelector('.account-info h3').textContent;
@@ -293,14 +293,14 @@ document.querySelectorAll('.account-card').forEach(card => {
 
 // Handle stat card interactions
 document.querySelectorAll('.stat-card').forEach(card => {
-    card.addEventListener('click', function() {
+    card.addEventListener('click', function () {
         const statType = this.querySelector('.stat-content p').textContent;
         // In a real app, you would show detailed statistics
     });
 });
 
 // Keyboard shortcuts
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // Ctrl/Cmd + K for search
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -309,7 +309,7 @@ document.addEventListener('keydown', function(e) {
             searchInput.focus();
         }
     }
-    
+
     // Escape to close sidebar on mobile
     if (e.key === 'Escape') {
         sidebar.classList.remove('open');
@@ -317,7 +317,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Close sidebar when clicking outside on mobile
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
         if (!sidebar.contains(e.target) && !e.target.closest('.mobile-menu-btn')) {
             sidebar.classList.remove('open');
@@ -329,7 +329,7 @@ document.addEventListener('click', function(e) {
 // Add Income Button
 const addIncomeBtn = document.querySelector('.add-income-btn');
 if (addIncomeBtn) {
-    addIncomeBtn.addEventListener('click', function() {
+    addIncomeBtn.addEventListener('click', function () {
         // Navigate to add_income.html page
         window.location.href = 'add_income.html';
     });
@@ -338,7 +338,7 @@ if (addIncomeBtn) {
 // Back to Dashboard Button
 const backToDashboardBtn = document.getElementById('backToDashboardBtn');
 if (backToDashboardBtn) {
-    backToDashboardBtn.addEventListener('click', function() {
+    backToDashboardBtn.addEventListener('click', function () {
         // Hide add income form and show main dashboard
         document.querySelector('.dashboard-main').style.display = 'block';
         document.getElementById('addIncomeSection').style.display = 'none';
@@ -348,7 +348,7 @@ if (backToDashboardBtn) {
 // Add Expense Button
 const addExpenseBtn = document.querySelector('.add-expense-btn');
 if (addExpenseBtn) {
-    addExpenseBtn.addEventListener('click', function() {
+    addExpenseBtn.addEventListener('click', function () {
         window.location.href = 'add_expense.html';
     });
 }
@@ -356,7 +356,7 @@ if (addExpenseBtn) {
 // Add Transaction Button
 const addTransactionBtn = document.querySelector('.add-transaction-btn');
 if (addTransactionBtn) {
-    addTransactionBtn.addEventListener('click', function() {
+    addTransactionBtn.addEventListener('click', function () {
         window.location.href = 'add_transaction.html';
     });
 }
@@ -364,7 +364,7 @@ if (addTransactionBtn) {
 // Filter Buttons
 const filterBtns = document.querySelectorAll('.filter-btn');
 filterBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         // Filter options coming soon
     });
 });
@@ -372,7 +372,7 @@ filterBtns.forEach(btn => {
 // Time Filter Dropdowns
 const timeFilters = document.querySelectorAll('.time-filter');
 timeFilters.forEach(filter => {
-    filter.addEventListener('change', function() {
+    filter.addEventListener('change', function () {
         // Time filter changed
     });
 });
@@ -380,7 +380,7 @@ timeFilters.forEach(filter => {
 // Load more transactions
 const loadMoreBtn = document.querySelector('.load-more-btn');
 if (loadMoreBtn) {
-    loadMoreBtn.addEventListener('click', function() {
+    loadMoreBtn.addEventListener('click', function () {
         // Simulate loading more transactions
         setTimeout(() => {
             // More transactions loaded
@@ -391,7 +391,7 @@ if (loadMoreBtn) {
 // Financial Goals functionality
 const addGoalBtn = document.querySelector('.add-goal-btn');
 if (addGoalBtn) {
-    addGoalBtn.addEventListener('click', function() {
+    addGoalBtn.addEventListener('click', function () {
         window.location.href = 'add_goal.html';
     });
 }
@@ -401,7 +401,7 @@ const progressBars = document.querySelectorAll('.progress-fill');
 progressBars.forEach((bar, index) => {
     const width = bar.style.width;
     bar.style.width = '0%';
-    
+
     setTimeout(() => {
         bar.style.width = width;
     }, 500 + (index * 200));
@@ -410,14 +410,14 @@ progressBars.forEach((bar, index) => {
 // Multi-Currency functionality
 const addCurrencyBtn = document.querySelector('.add-currency-btn');
 if (addCurrencyBtn) {
-    addCurrencyBtn.addEventListener('click', function() {
+    addCurrencyBtn.addEventListener('click', function () {
         // Add Currency feature coming soon
     });
 }
 
 const currencyFilter = document.querySelector('.currency-filter');
 if (currencyFilter) {
-    currencyFilter.addEventListener('change', function() {
+    currencyFilter.addEventListener('change', function () {
         const selectedCurrency = this.value;
         const currencyCards = document.querySelectorAll('.currency-card');
 
@@ -440,10 +440,10 @@ if (currencyFilter) {
 // Animate currency cards on hover - removed transform to avoid layout shifts
 const currencyCards = document.querySelectorAll('.currency-card');
 currencyCards.forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
         // no-op
     });
-    card.addEventListener('mouseleave', function() {
+    card.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -451,10 +451,10 @@ currencyCards.forEach(card => {
 // Animate goal cards on hover - removed transform to avoid layout shifts
 const goalCards = document.querySelectorAll('.goal-card');
 goalCards.forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
         // no-op
     });
-    card.addEventListener('mouseleave', function() {
+    card.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -465,7 +465,7 @@ svgPaths.forEach((path, index) => {
     const length = path.getTotalLength();
     path.style.strokeDasharray = length;
     path.style.strokeDashoffset = length;
-    
+
     setTimeout(() => {
         path.style.transition = 'stroke-dashoffset 2s ease-in-out';
         path.style.strokeDashoffset = 0;
@@ -475,14 +475,14 @@ svgPaths.forEach((path, index) => {
 // Investment Portfolio functionality
 const addInvestmentBtn = document.querySelector('.add-investment-btn');
 if (addInvestmentBtn) {
-    addInvestmentBtn.addEventListener('click', function() {
+    addInvestmentBtn.addEventListener('click', function () {
         window.location.href = 'add_investment.html';
     });
 }
 
 const portfolioFilter = document.querySelector('.portfolio-filter');
 if (portfolioFilter) {
-    portfolioFilter.addEventListener('change', function() {
+    portfolioFilter.addEventListener('change', function () {
         const selectedType = this.value;
         // Filtered holdings
     });
@@ -494,7 +494,7 @@ if (performancePath) {
     const length = performancePath.getTotalLength();
     performancePath.style.strokeDasharray = length;
     performancePath.style.strokeDashoffset = length;
-    
+
     setTimeout(() => {
         performancePath.style.transition = 'stroke-dashoffset 3s ease-in-out';
         performancePath.style.strokeDashoffset = 0;
@@ -504,10 +504,10 @@ if (performancePath) {
 // Holding items hover effects - removed transform to avoid layout shifts
 const holdingItems = document.querySelectorAll('.holding-item');
 holdingItems.forEach(item => {
-    item.addEventListener('mouseenter', function() {
+    item.addEventListener('mouseenter', function () {
         // no-op
     });
-    item.addEventListener('mouseleave', function() {
+    item.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -515,14 +515,14 @@ holdingItems.forEach(item => {
 // AI Financial Advisor functionality
 const askAdvisorBtn = document.querySelector('.ask-advisor-btn');
 if (askAdvisorBtn) {
-    askAdvisorBtn.addEventListener('click', function() {
+    askAdvisorBtn.addEventListener('click', function () {
         // AI Advisor chat feature coming soon
     });
 }
 
 const adviceFilter = document.querySelector('.advice-filter');
 if (adviceFilter) {
-    adviceFilter.addEventListener('change', function() {
+    adviceFilter.addEventListener('change', function () {
         const selectedAdvice = this.value;
         // Filtered advice
     });
@@ -530,7 +530,7 @@ if (adviceFilter) {
 
 const chatBtn = document.querySelector('.chat-btn');
 if (chatBtn) {
-    chatBtn.addEventListener('click', function() {
+    chatBtn.addEventListener('click', function () {
         setTimeout(() => {
             // FinBot ready
         }, 1000);
@@ -540,7 +540,7 @@ if (chatBtn) {
 // Action buttons in recommendations
 const recommendationActionBtns = document.querySelectorAll('.action-btn');
 recommendationActionBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const action = this.textContent.trim();
         // Action triggered
     });
@@ -551,7 +551,7 @@ const scoreFills = document.querySelectorAll('.score-fill');
 scoreFills.forEach((fill, index) => {
     const width = fill.style.width;
     fill.style.width = '0%';
-    
+
     setTimeout(() => {
         fill.style.width = width;
     }, 2000 + (index * 300));
@@ -560,10 +560,10 @@ scoreFills.forEach((fill, index) => {
 // Recommendation items hover effects - removed transform to avoid layout shifts
 const recommendationItems = document.querySelectorAll('.recommendation-item');
 recommendationItems.forEach(item => {
-    item.addEventListener('mouseenter', function() {
+    item.addEventListener('mouseenter', function () {
         // no-op
     });
-    item.addEventListener('mouseleave', function() {
+    item.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -571,10 +571,10 @@ recommendationItems.forEach(item => {
 // Insight cards hover effects - removed transform to avoid layout shifts
 const insightCards = document.querySelectorAll('.insight-card');
 insightCards.forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
         // no-op
     });
-    card.addEventListener('mouseleave', function() {
+    card.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -582,10 +582,10 @@ insightCards.forEach(card => {
 // Income Item Hover Effects - removed transform to avoid layout shifts
 const incomeItems = document.querySelectorAll('.income-item');
 incomeItems.forEach(item => {
-    item.addEventListener('mouseenter', function() {
+    item.addEventListener('mouseenter', function () {
         // no-op
     });
-    item.addEventListener('mouseleave', function() {
+    item.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -593,10 +593,10 @@ incomeItems.forEach(item => {
 // Category Item Hover Effects - removed transform to avoid layout shifts
 const categoryItems = document.querySelectorAll('.category-item');
 categoryItems.forEach(item => {
-    item.addEventListener('mouseenter', function() {
+    item.addEventListener('mouseenter', function () {
         // no-op
     });
-    item.addEventListener('mouseleave', function() {
+    item.addEventListener('mouseleave', function () {
         // no-op
     });
 });
@@ -604,7 +604,7 @@ categoryItems.forEach(item => {
 // Transaction Item Click Events
 const transactionItems = document.querySelectorAll('.transaction-item');
 transactionItems.forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function () {
         const transactionName = this.querySelector('h4').textContent;
         // Viewing transaction details
     });
@@ -613,7 +613,7 @@ transactionItems.forEach(item => {
 // Chart Bar Hover Effects with Data Display
 const chartBars = document.querySelectorAll('.chart-bar');
 chartBars.forEach((bar) => {
-    bar.addEventListener('mouseenter', function() {
+    bar.addEventListener('mouseenter', function () {
         // No dummy income amounts; real values will be shown when integrated with data
     });
 });
@@ -622,7 +622,7 @@ chartBars.forEach((bar) => {
 const trendBars = document.querySelectorAll('.trend-bar');
 trendBars.forEach((bar, index) => {
     const expenses = ['₹0', '₹0', '₹0', '₹0', '₹0', '₹0'];
-    bar.addEventListener('mouseenter', function() {
+    bar.addEventListener('mouseenter', function () {
         if (expenses[index]) {
             // Show expenses
         }
@@ -633,7 +633,7 @@ trendBars.forEach((bar, index) => {
 function animateCharts() {
     const chartBars = document.querySelectorAll('.chart-bar');
     const trendBars = document.querySelectorAll('.trend-bar');
-    
+
     // When no real data is available, do not set arbitrary heights.
     chartBars.forEach((bar) => {
         // Keep default CSS height; real data updates should adjust these.
@@ -654,7 +654,7 @@ const userItems = document.querySelectorAll('.user-item');
 const userActionBtns = document.querySelectorAll('.user-actions .action-btn');
 
 if (adminFilter) {
-    adminFilter.addEventListener('change', function() {
+    adminFilter.addEventListener('change', function () {
         const filterValue = this.value;
         userItems.forEach(item => {
             if (filterValue === 'all') {
@@ -668,13 +668,13 @@ if (adminFilter) {
 }
 
 if (addUserBtn) {
-    addUserBtn.addEventListener('click', function() {
+    addUserBtn.addEventListener('click', function () {
         // Add User feature coming soon
     });
 }
 
 userActionBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const action = this.classList.contains('edit') ? 'Edit' : 'Delete';
         const userName = this.closest('.user-item').querySelector('.user-details h4').textContent;
         // User action feature coming soon
@@ -708,7 +708,7 @@ const reportPeriod = document.querySelector('.report-period');
 const exportReportBtn = document.querySelector('.export-report-btn');
 
 if (reportPeriod) {
-    reportPeriod.addEventListener('change', function() {
+    reportPeriod.addEventListener('change', function () {
         const period = this.value;
         // Filtering reports
 
@@ -733,7 +733,7 @@ if (reportPeriod) {
 }
 
 if (exportReportBtn) {
-    exportReportBtn.addEventListener('click', function() {
+    exportReportBtn.addEventListener('click', function () {
         // Simulate export process
         setTimeout(() => {
             // Report exported
@@ -747,7 +747,7 @@ trendLines.forEach((line, index) => {
     const pathLength = line.getTotalLength();
     line.style.strokeDasharray = pathLength + ' ' + pathLength;
     line.style.strokeDashoffset = pathLength;
-    
+
     setTimeout(() => {
         line.style.transition = 'stroke-dashoffset 2s ease-in-out';
         line.style.strokeDashoffset = '0';
@@ -760,10 +760,10 @@ donutSegments.forEach((segment, index) => {
     const circumference = 2 * Math.PI * 70; // radius = 70
     const percentage = parseFloat(segment.getAttribute('data-percentage')) || 0;
     const offset = circumference - (percentage / 100) * circumference;
-    
+
     segment.style.strokeDasharray = circumference;
     segment.style.strokeDashoffset = circumference;
-    
+
     setTimeout(() => {
         segment.style.transition = 'stroke-dashoffset 1.5s ease-in-out';
         segment.style.strokeDashoffset = offset;
@@ -808,12 +808,12 @@ summaryCards.forEach(card => {
 // Hover effects for breakdown items
 const breakdownItems = document.querySelectorAll('.breakdown-item');
 breakdownItems.forEach(item => {
-    item.addEventListener('mouseenter', function() {
+    item.addEventListener('mouseenter', function () {
         this.style.transform = 'translateX(8px)';
         this.style.transition = 'transform 0.2s ease';
     });
-    
-    item.addEventListener('mouseleave', function() {
+
+    item.addEventListener('mouseleave', function () {
         this.style.transform = 'translateX(0)';
     });
 });
@@ -852,6 +852,7 @@ function mapExpenseCategoryToEnum(category) {
 
 // State for edit/delete modals
 let pendingDelete = null;
+let pendingAccountDelete = null;
 
 // Attach event listeners for income & expense cards and modals once DOM is ready
 if (typeof document !== 'undefined') {
@@ -894,13 +895,86 @@ if (typeof document !== 'undefined') {
         if (confirmDelete) {
             confirmDelete.addEventListener('click', performDelete);
         }
-        
+
         const deleteModal = document.getElementById('deleteConfirmModal');
         if (deleteModal) {
             deleteModal.addEventListener('click', (e) => {
                 if (e.target === deleteModal) {
                     pendingDelete = null;
                     toggleModal('deleteConfirmModal', false);
+                }
+            });
+        }
+
+        // Account removal modal event listeners
+        const accountsGrid = document.querySelector('.accounts-grid');
+        if (accountsGrid) {
+            accountsGrid.addEventListener('click', handleAccountsGridClick);
+        }
+
+        const cancelAccountRemove = document.getElementById('cancelAccountRemove');
+        const confirmAccountRemove = document.getElementById('confirmAccountRemove');
+        const cancelAccountOtp = document.getElementById('cancelAccountOtp');
+        const verifyAccountOtp = document.getElementById('verifyAccountOtp');
+
+        if (cancelAccountRemove) {
+            cancelAccountRemove.addEventListener('click', () => {
+                pendingAccountDelete = null;
+                toggleModal('accountRemoveWarningModal', false);
+            });
+        }
+        if (confirmAccountRemove) {
+            confirmAccountRemove.addEventListener('click', requestAccountDeleteOtp);
+        }
+        if (cancelAccountOtp) {
+            cancelAccountOtp.addEventListener('click', closeAccountOtpModal);
+        }
+        if (verifyAccountOtp) {
+            verifyAccountOtp.addEventListener('click', verifyAndDeleteAccount);
+        }
+
+        // Close button for OTP modal
+        const closeAccountOtpBtn = document.getElementById('closeAccountOtp');
+        if (closeAccountOtpBtn) {
+            closeAccountOtpBtn.addEventListener('click', closeAccountOtpModal);
+        }
+
+        // Resend OTP link
+        const resendAccountOtpLink = document.getElementById('resendAccountOtp');
+        if (resendAccountOtpLink) {
+            resendAccountOtpLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (pendingAccountDelete) {
+                    try {
+                        resendAccountOtpLink.classList.add('disabled');
+                        await apiService.requestAccountDeleteOtp(pendingAccountDelete.id);
+                        resendAccountOtpLink.classList.remove('disabled');
+                    } catch (err) {
+                        console.error('Error resending OTP:', err);
+                        resendAccountOtpLink.classList.remove('disabled');
+                    }
+                }
+            });
+        }
+
+        // Setup OTP input navigation for account delete
+        setupAccountOtpInputs();
+
+        // Close modals on outside click
+        const accountWarningModal = document.getElementById('accountRemoveWarningModal');
+        if (accountWarningModal) {
+            accountWarningModal.addEventListener('click', (e) => {
+                if (e.target === accountWarningModal) {
+                    pendingAccountDelete = null;
+                    toggleModal('accountRemoveWarningModal', false);
+                }
+            });
+        }
+        const accountOtpOverlay = document.getElementById('accountOtpOverlay');
+        if (accountOtpOverlay) {
+            accountOtpOverlay.addEventListener('click', (e) => {
+                if (e.target === accountOtpOverlay) {
+                    closeAccountOtpModal();
                 }
             });
         }
@@ -915,6 +989,240 @@ function toggleModal(id, show) {
     } else {
         el.classList.remove('show');
     }
+}
+
+// Account removal handlers
+function handleAccountsGridClick(e) {
+    const removeBtn = e.target.closest('.removeAccount');
+    if (!removeBtn) return;
+
+    const accountId = removeBtn.dataset.id;
+    const accountName = removeBtn.dataset.name || 'this bank account';
+
+    if (!accountId) {
+        console.error('No account ID found on remove button');
+        return;
+    }
+
+    pendingAccountDelete = { id: accountId, name: accountName };
+
+    const msgEl = document.getElementById('accountRemoveWarningMessage');
+    if (msgEl) {
+        msgEl.textContent = `Are you sure you want to remove "${accountName}"?`;
+    }
+
+    toggleModal('accountRemoveWarningModal', true);
+}
+
+async function requestAccountDeleteOtp() {
+    if (!pendingAccountDelete) {
+        toggleModal('accountRemoveWarningModal', false);
+        return;
+    }
+
+    const confirmBtn = document.getElementById('confirmAccountRemove');
+    const originalText = confirmBtn ? confirmBtn.textContent : 'Remove';
+
+    try {
+        if (confirmBtn) {
+            confirmBtn.textContent = 'Sending OTP...';
+            confirmBtn.disabled = true;
+        }
+
+        await apiService.requestAccountDeleteOtp(pendingAccountDelete.id);
+
+        toggleModal('accountRemoveWarningModal', false);
+
+        // Show the new OTP overlay
+        const otpOverlay = document.getElementById('accountOtpOverlay');
+        if (otpOverlay) {
+            otpOverlay.classList.add('active');
+            // Focus first OTP input
+            const firstInput = otpOverlay.querySelector('.otp-input');
+            if (firstInput) firstInput.focus();
+        }
+
+        // Reset the warning modal button state
+        if (confirmBtn) {
+            confirmBtn.textContent = originalText;
+            confirmBtn.disabled = false;
+        }
+    } catch (err) {
+        console.error('Failed to request delete OTP:', err);
+        alert('Failed to request OTP for deletion: ' + (err.message || 'Please try again.'));
+
+        if (confirmBtn) {
+            confirmBtn.textContent = originalText;
+            confirmBtn.disabled = false;
+        }
+    }
+}
+
+async function verifyAndDeleteAccount() {
+    if (!pendingAccountDelete) {
+        closeAccountOtpModal();
+        return;
+    }
+
+    // Get OTP from 6 individual inputs
+    const otpContainer = document.getElementById('accountOtpInputs');
+    const otpInputs = otpContainer ? otpContainer.querySelectorAll('.otp-input') : [];
+    const errorEl = document.getElementById('accountOtpError');
+    const verifyBtn = document.getElementById('verifyAccountOtp');
+    const originalHTML = verifyBtn ? verifyBtn.innerHTML : '<i class="fas fa-trash-alt"></i> Delete Account';
+
+    // Combine all OTP digits
+    let otp = '';
+    otpInputs.forEach(input => {
+        otp += input.value;
+    });
+
+    if (!otp || otp.length < 6) {
+        if (errorEl) {
+            errorEl.textContent = 'Please enter the complete 6-digit OTP';
+            errorEl.style.display = 'block';
+        }
+        // Add error class to inputs
+        otpInputs.forEach(input => input.classList.add('error'));
+        setTimeout(() => {
+            otpInputs.forEach(input => input.classList.remove('error'));
+        }, 500);
+        return;
+    }
+
+    try {
+        if (verifyBtn) {
+            verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            verifyBtn.disabled = true;
+        }
+        if (errorEl) {
+            errorEl.style.display = 'none';
+        }
+
+        await apiService.confirmAccountDelete(pendingAccountDelete.id, otp);
+
+        // Success - close modal and refresh accounts
+        closeAccountOtpModal();
+        pendingAccountDelete = null;
+
+        if (verifyBtn) {
+            verifyBtn.innerHTML = originalHTML;
+            verifyBtn.disabled = false;
+        }
+
+        // Clear cache and reload accounts
+        if (typeof dataService !== 'undefined') {
+            dataService.clearCache('accounts');
+        }
+        await loadAccounts();
+    } catch (err) {
+        console.error('Failed to delete account:', err);
+
+        if (errorEl) {
+            errorEl.textContent = err.message || 'Failed to verify OTP. Please try again.';
+            errorEl.style.display = 'block';
+        }
+
+        // Add error class to inputs
+        otpInputs.forEach(input => input.classList.add('error'));
+        setTimeout(() => {
+            otpInputs.forEach(input => input.classList.remove('error'));
+        }, 500);
+
+        if (verifyBtn) {
+            verifyBtn.innerHTML = originalHTML;
+            verifyBtn.disabled = false;
+        }
+    }
+}
+
+// Helper function to close OTP modal and reset inputs
+function closeAccountOtpModal() {
+    const otpOverlay = document.getElementById('accountOtpOverlay');
+    const otpInputs = document.querySelectorAll('#accountOtpInputs .otp-input');
+    const errorEl = document.getElementById('accountOtpError');
+
+    if (otpOverlay) {
+        otpOverlay.classList.remove('active');
+    }
+
+    // Clear all OTP inputs
+    otpInputs.forEach(input => {
+        input.value = '';
+        input.classList.remove('filled', 'error');
+    });
+
+    if (errorEl) {
+        errorEl.style.display = 'none';
+    }
+
+    pendingAccountDelete = null;
+}
+
+// Setup OTP input navigation (auto-focus next input on digit entry)
+function setupAccountOtpInputs() {
+    const container = document.getElementById('accountOtpInputs');
+    if (!container) return;
+
+    const inputs = container.querySelectorAll('.otp-input');
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+
+            // Only allow digits
+            if (!/^\d*$/.test(value)) {
+                e.target.value = '';
+                return;
+            }
+
+            // Add filled class
+            if (value) {
+                e.target.classList.add('filled');
+            } else {
+                e.target.classList.remove('filled');
+            }
+
+            // Auto-focus next input
+            if (value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            // Handle backspace - go to previous input
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+
+            // Handle arrow keys
+            if (e.key === 'ArrowLeft' && index > 0) {
+                inputs[index - 1].focus();
+            }
+            if (e.key === 'ArrowRight' && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        // Handle paste - spread across all inputs
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+
+            pastedData.split('').forEach((digit, i) => {
+                if (inputs[i]) {
+                    inputs[i].value = digit;
+                    inputs[i].classList.add('filled');
+                }
+            });
+
+            // Focus last filled or next empty
+            const lastIndex = Math.min(pastedData.length, inputs.length) - 1;
+            if (lastIndex >= 0) {
+                inputs[Math.min(lastIndex + 1, inputs.length - 1)].focus();
+            }
+        });
+    });
 }
 
 async function populateBankAccountsSelect(selectEl, selectedId) {
@@ -1181,7 +1489,7 @@ async function performDelete() {
 function updateUserInfo() {
     const userData = sessionStorage.getItem('fintrackr_user');
     let username = 'User';
-    
+
     if (userData) {
         try {
             const user = JSON.parse(userData);
@@ -1248,11 +1556,11 @@ async function loadIncomes() {
                         item.dataset.amount = String(safeAmount);
 
                         const category = income.category || 'Income';
-                        
-                        const incomeDate = income.date ? new Date(income.date).toLocaleDateString('en-IN', { 
-                            day: '2-digit', 
-                            month: 'short', 
-                            year: 'numeric' 
+
+                        const incomeDate = income.date ? new Date(income.date).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
                         }) : 'N/A';
 
                         item.innerHTML = `
@@ -1300,10 +1608,10 @@ async function loadIncomes() {
             const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
             item.dataset.amount = String(safeAmount);
 
-            const incomeDate = income.date ? new Date(income.date).toLocaleDateString('en-IN', { 
-                day: '2-digit', 
-                month: 'short', 
-                year: 'numeric' 
+            const incomeDate = income.date ? new Date(income.date).toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
             }) : 'N/A';
 
             item.innerHTML = `
@@ -1390,11 +1698,11 @@ async function loadExpenses() {
                         item.dataset.amount = String(safeAmount);
 
                         const category = expense.category || 'Expense';
-                        
-                        const expenseDate = expense.date ? new Date(expense.date).toLocaleDateString('en-IN', { 
-                            day: '2-digit', 
-                            month: 'short', 
-                            year: 'numeric' 
+
+                        const expenseDate = expense.date ? new Date(expense.date).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
                         }) : 'N/A';
 
                         item.innerHTML = `
@@ -1442,10 +1750,10 @@ async function loadExpenses() {
             const safeAmount = Number.isFinite(amountNumber) ? amountNumber : 0;
             item.dataset.amount = String(safeAmount);
 
-            const expenseDate = expense.date ? new Date(expense.date).toLocaleDateString('en-IN', { 
-                day: '2-digit', 
-                month: 'short', 
-                year: 'numeric' 
+            const expenseDate = expense.date ? new Date(expense.date).toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
             }) : 'N/A';
 
             item.innerHTML = `
@@ -1496,15 +1804,15 @@ async function loadAccounts() {
     try {
         // Show loading state
         accountList.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading accounts...</div>';
-        
+
         const accounts = await dataService.getAccounts();
         accountList.innerHTML = '';
-        
+
         if (accounts.length === 0) {
             accountList.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No accounts yet. Add your first account to get started!</p>';
             return;
         }
-        
+
         accounts.forEach(account => {
             const card = document.createElement('div');
             card.className = 'account-card';
@@ -1525,6 +1833,9 @@ async function loadAccounts() {
                     <span><h4 style="color:black; display:inline-block; font-weight:bold;">Account Holder : </h4> ${account.accountHolderName || ''}</span>
                     <br><br>
                     <span><h4 style="color:black; display:inline-block; font-weight:bold;">IFSC Code : </h4> ${account.ifscCode || ''}</span>
+                    <button class="removeAccount" data-id="${account.id}" data-name="${title}">
+                        Remove Account
+                    </button>
                 </div>
                 </div>
             `;
@@ -1544,10 +1855,10 @@ async function loadGoals() {
     try {
         // Show loading state
         goalsGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading goals...</div>';
-        
+
         const goals = await dataService.getGoals();
         goalsGrid.innerHTML = '';
-        
+
         if (goals.length === 0) {
             goalsGrid.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No financial goals yet. Add your first goal to start tracking!</p>';
             return;
@@ -1601,7 +1912,7 @@ async function loadGoals() {
 }
 
 function toggleDarkMode() {
-  document.body.classList.toggle('darkmode');
+    document.body.classList.toggle('darkmode');
 }
 
 const themeToggleButton = document.getElementById('theme-toggle');
@@ -1617,9 +1928,9 @@ async function loadInvestments() {
     try {
         // Show loading state
         portfolioTable.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading investments...</div>';
-        
+
         const investments = await dataService.getInvestments();
-        
+
         // Clear existing content except header
         const tableHeader = portfolioTable.querySelector('.table-header');
         portfolioTable.innerHTML = '';
@@ -1884,7 +2195,7 @@ function setupDashboardNavigation() {
             // Backend returns role as "ROLE_ADMIN" from getAuthority()
             const roleStr = String(user.role || '').toUpperCase();
             const isAdmin = roleStr === 'ROLE_ADMIN' || roleStr === 'ADMIN' || user.isAdmin === true;
-            
+
             if (isAdmin) {
                 adminLink.style.display = 'block';
                 console.log('✅ Dashboard.js: Admin link visible');
@@ -1935,7 +2246,7 @@ async function initializeDashboard() {
             // Check if chart containers have children; if not, render them
             const incomeChartBars = document.querySelector('.chart-bars');
             const expenseChartBars = document.querySelector('.expense-chart-bars');
-            
+
             if (incomeChartBars && incomeChartBars.children.length === 0) {
                 console.log('Income chart empty, rendering from trends...');
                 await updateIncomeChart([]);
@@ -1972,19 +2283,19 @@ async function updateDashboardSummary() {
         const monthlySavings = summary.monthlyNet != null
             ? Number(summary.monthlyNet)
             : (monthlyIncome - monthlyExpenses);
-        
+
         // Update balance cards (top card)
         const totalBalanceEl = document.querySelector('.balance-card h3');
         if (totalBalanceEl) {
             totalBalanceEl.textContent = `₹${netBalance.toLocaleString()}`;
         }
-        
+
         // Update income/expense summary
         const incomeAmountEl = document.querySelector('.balance-item:first-child .amount');
         const expenseAmountEl = document.querySelector('.balance-item:last-child .amount');
         if (incomeAmountEl) incomeAmountEl.textContent = `₹${monthlyIncome.toLocaleString()}`;
         if (expenseAmountEl) expenseAmountEl.textContent = `₹${monthlyExpenses.toLocaleString()}`;
-        
+
         // Update stat cards
         const statCards = document.querySelectorAll('.stat-card');
         if (statCards.length >= 3) {
@@ -1992,7 +2303,7 @@ async function updateDashboardSummary() {
             statCards[1].querySelector('h3').textContent = `₹${monthlyExpenses.toLocaleString()}`;
             statCards[2].querySelector('h3').textContent = `₹${monthlySavings.toLocaleString()}`;
         }
-        
+
         console.log('Dashboard summary updated:', summary);
     } catch (error) {
         console.error('Error updating dashboard summary:', error);
@@ -2057,13 +2368,13 @@ function resetCharts() {
 // Update expense chart based on backend monthly trends (with fallback to raw expenses)
 async function updateExpenseChart(expenses) {
     console.log('updateExpenseChart called with', expenses?.length || 0, 'expenses');
-    
+
     const chartBarsContainer = document.querySelector('.expense-chart-bars');
     if (!chartBarsContainer) {
         console.error('Expense chart container .expense-chart-bars not found!');
         return;
     }
-    
+
     console.log('Expense chart container found:', chartBarsContainer);
 
     // Clear existing chart bars
@@ -2135,7 +2446,7 @@ async function updateExpenseChart(expenses) {
         bar.style.transition = 'height 2s ease-in-out';
         bar.style.height = newHeight;
 
-        bar.addEventListener('mouseenter', function() {
+        bar.addEventListener('mouseenter', function () {
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
             tooltip.innerHTML = `₹${expense.toLocaleString()}`;
@@ -2154,7 +2465,7 @@ async function updateExpenseChart(expenses) {
             `;
             document.body.appendChild(tooltip);
 
-            this.addEventListener('mouseleave', function() {
+            this.addEventListener('mouseleave', function () {
                 tooltip.remove();
             }, { once: true });
         });
@@ -2168,13 +2479,13 @@ async function updateExpenseChart(expenses) {
 // Update income chart based on backend monthly trends (with fallback to raw incomes)
 async function updateIncomeChart(incomes) {
     console.log('updateIncomeChart called with', incomes?.length || 0, 'incomes');
-    
+
     const chartBarsContainer = document.querySelector('.chart-bars');
     if (!chartBarsContainer) {
         console.error('Income chart container .chart-bars not found!');
         return;
     }
-    
+
     console.log('Income chart container found:', chartBarsContainer);
 
     // Clear existing chart bars
@@ -2246,7 +2557,7 @@ async function updateIncomeChart(incomes) {
         bar.style.transition = 'height 2s ease-in-out';
         bar.style.height = newHeight;
 
-        bar.addEventListener('mouseenter', function() {
+        bar.addEventListener('mouseenter', function () {
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
             tooltip.innerHTML = `₹${income.toLocaleString()}`;
@@ -2265,7 +2576,7 @@ async function updateIncomeChart(incomes) {
             `;
             document.body.appendChild(tooltip);
 
-            this.addEventListener('mouseleave', function() {
+            this.addEventListener('mouseleave', function () {
                 tooltip.remove();
             }, { once: true });
         });

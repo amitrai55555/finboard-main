@@ -36,7 +36,7 @@ function initializeSmoothScrolling() {
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         if (!link.closest('button') || !link.onclick) {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 const targetElement = document.querySelector(this.getAttribute('href'));
                 if (targetElement) {
                     e.preventDefault();
@@ -128,7 +128,7 @@ function toggleAuthMode() {
 }
 
 // Password visibility toggle
-togglePassword.addEventListener('click', function() {
+togglePassword.addEventListener('click', function () {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
 
@@ -177,7 +177,7 @@ function clearError(input) {
 }
 
 // Real-time validation
-usernameOrEmailInput.addEventListener('input', function() {
+usernameOrEmailInput.addEventListener('input', function () {
     const value = this.value.trim();
     if (!value) {
         showError(this, 'Username or email is required');
@@ -188,7 +188,7 @@ usernameOrEmailInput.addEventListener('input', function() {
     }
 });
 
-passwordInput.addEventListener('input', function() {
+passwordInput.addEventListener('input', function () {
     if (this.value && !validatePassword(this.value)) {
         showError(this, 'Password must be at least 6 characters long');
     } else {
@@ -197,7 +197,7 @@ passwordInput.addEventListener('input', function() {
 });
 
 // Real-time validation for registration fields
-document.getElementById('firstName').addEventListener('input', function() {
+document.getElementById('firstName').addEventListener('input', function () {
     if (!this.value.trim()) {
         showError(this, 'First name is required');
     } else {
@@ -205,7 +205,7 @@ document.getElementById('firstName').addEventListener('input', function() {
     }
 });
 
-document.getElementById('lastName').addEventListener('input', function() {
+document.getElementById('lastName').addEventListener('input', function () {
     if (!this.value.trim()) {
         showError(this, 'Last name is required');
     } else {
@@ -213,15 +213,88 @@ document.getElementById('lastName').addEventListener('input', function() {
     }
 });
 
-document.getElementById('username').addEventListener('input', function() {
-    if (!this.value.trim()) {
+// Username check with debounce (800ms)
+let usernameCheckTimeout = null;
+let lastCheckedUsername = '';
+const usernameInput = document.getElementById('username');
+const usernameStatus = document.getElementById('usernameStatus');
+
+console.log('Username check initialized:', { usernameInput: !!usernameInput, usernameStatus: !!usernameStatus });
+
+usernameInput.addEventListener('input', function () {
+    const value = this.value.trim();
+    console.log('Username input:', value);
+
+    // Clear any pending check
+    if (usernameCheckTimeout) {
+        clearTimeout(usernameCheckTimeout);
+        usernameCheckTimeout = null;
+    }
+
+    // Basic validation
+    if (!value) {
         showError(this, 'Username is required');
+        if (usernameStatus) {
+            usernameStatus.textContent = '';
+        }
+        lastCheckedUsername = '';
+        return;
     } else {
         clearError(this);
     }
+
+    // Don't check if username is too short
+    if (value.length < 3) {
+        if (usernameStatus) {
+            usernameStatus.textContent = '';
+        }
+        lastCheckedUsername = '';
+        return;
+    }
+
+    // If username hasn't changed from last check, keep the existing status
+    if (value === lastCheckedUsername) {
+        return;
+    }
+
+    // Show checking indicator immediately
+    if (usernameStatus) {
+        usernameStatus.textContent = 'Checking...';
+        usernameStatus.style.color = '#718096';
+        console.log('Showing "Checking..." status');
+    }
+
+    // Set 800ms debounce for API check
+    usernameCheckTimeout = setTimeout(async () => {
+        console.log('Calling API to check username:', value);
+        try {
+            const result = await apiService.checkUsernameAvailability(value);
+            console.log('API result:', result);
+
+            // Only update if the value hasn't changed during the check
+            if (usernameInput.value.trim() === value && usernameStatus) {
+                lastCheckedUsername = value;
+                if (result.available) {
+                    usernameStatus.textContent = 'Username is available';
+                    usernameStatus.style.color = '#48bb78'; // Green
+                } else {
+                    usernameStatus.textContent = 'Username already taken';
+                    usernameStatus.style.color = '#e53e3e'; // Red
+                }
+            }
+        } catch (error) {
+            console.error('Username check failed:', error);
+            if (usernameInput.value.trim() === value && usernameStatus) {
+                // Show error state so user knows something went wrong
+                usernameStatus.textContent = 'Error checking username';
+                usernameStatus.style.color = '#ed8936'; // Orange
+                lastCheckedUsername = '';
+            }
+        }
+    }, 800);
 });
 
-document.getElementById('email').addEventListener('input', function() {
+document.getElementById('email').addEventListener('input', function () {
     const value = this.value.trim();
     if (!value) {
         showError(this, 'Email is required');
@@ -233,7 +306,7 @@ document.getElementById('email').addEventListener('input', function() {
 });
 
 // Form submission
-loginForm.addEventListener('submit', function(e) {
+loginForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
     let isValid = true;
@@ -525,14 +598,14 @@ function showBackendStatus(isConnected, message = '') {
 // Social login handlers
 const googleBtn = document.querySelector('.google-btn');
 if (googleBtn) {
-    googleBtn.addEventListener('click', function() {
+    googleBtn.addEventListener('click', function () {
         showInfoMessage('Google Sign-In would be implemented here');
     });
 }
 
 const microsoftBtn = document.querySelector('.microsoft-btn');
 if (microsoftBtn) {
-    microsoftBtn.addEventListener('click', function() {
+    microsoftBtn.addEventListener('click', function () {
         showInfoMessage('Microsoft Sign-In would be implemented here');
     });
 }
@@ -559,7 +632,7 @@ function showInfoMessage(message) {
 }
 
 // Load remembered credentials on page load
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     const userData = sessionStorage.getItem('fintrackr_user');
     if (userData) {
         try {
@@ -579,7 +652,7 @@ window.addEventListener('load', function() {
 // Forgot password handler
 const forgotPasswordLink = document.querySelector('.forgot');
 if (forgotPasswordLink) {
-    forgotPasswordLink.addEventListener('click', function(e) {
+    forgotPasswordLink.addEventListener('click', function (e) {
         e.preventDefault();
         window.location.href = 'forgot.html';
     });
@@ -588,7 +661,7 @@ if (forgotPasswordLink) {
 // Create account handler
 const signupLink = document.querySelector('.signup-link a');
 if (signupLink) {
-    signupLink.addEventListener('click', function(e) {
+    signupLink.addEventListener('click', function (e) {
         e.preventDefault();
         showInfoMessage('Account creation would redirect to signup page');
     });
@@ -616,12 +689,12 @@ document.head.appendChild(style);
 
 // Input focus effects
 document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('focus', function() {
+    input.addEventListener('focus', function () {
         this.parentNode.style.transform = 'translateY(-1px)';
         this.parentNode.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
     });
 
-    input.addEventListener('blur', function() {
+    input.addEventListener('blur', function () {
         this.parentNode.style.transform = 'translateY(0)';
         this.parentNode.style.boxShadow = 'none';
     });
@@ -629,12 +702,12 @@ document.querySelectorAll('input').forEach(input => {
 
 // Feature cards hover effect
 document.querySelectorAll('.feature-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
         this.style.transform = 'translateY(-2px)';
         this.style.transition = 'transform 0.2s ease';
     });
 
-    card.addEventListener('mouseleave', function() {
+    card.addEventListener('mouseleave', function () {
         this.style.transform = 'translateY(0)';
     });
 });

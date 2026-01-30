@@ -10,7 +10,7 @@ class ApiService {
 
         this.baseUrl = API_CONFIG.BASE_URL;
         this.endpoints = API_CONFIG.ENDPOINTS;
-        
+
         instance = this;
     }
 
@@ -71,7 +71,7 @@ class ApiService {
                 try {
                     const errorData = await response.json();
                     errorText = errorData.message || errorData.error || errorText;
-                } catch (_) {}
+                } catch (_) { }
                 throw new Error(errorText);
             }
 
@@ -124,6 +124,26 @@ class ApiService {
         }
     }
 
+    // Check username availability
+    async checkUsernameAvailability(username) {
+        try {
+            const response = await fetch(this.baseUrl + this.endpoints.CHECK_USERNAME(username), {
+                method: 'GET',
+                headers: this.getHeaders(false)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Failed to check username');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Username check error:', error);
+            throw error;
+        }
+    }
+
     // Logout method
     async logout() {
         try {
@@ -133,11 +153,11 @@ class ApiService {
                     method: 'POST',
                     headers: this.getHeaders(true)
                 });
-            } catch (_) {}
-            
+            } catch (_) { }
+
             // Clear user data
             this.clearTokens();
-            
+
             return { success: true };
         } catch (error) {
             console.error('Logout error:', error);
@@ -685,6 +705,35 @@ class ApiService {
         return response.json();
     }
 
+    async requestAccountDeleteOtp(accountId) {
+        const response = await fetch(this.baseUrl + this.endpoints.BANK_ACCOUNT_DELETE_REQUEST_OTP(accountId), {
+            method: 'POST',
+            headers: this.getHeaders(true)
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || err.message || 'Failed to request OTP for deletion');
+        }
+
+        return response.json();
+    }
+
+    async confirmAccountDelete(accountId, otp) {
+        const response = await fetch(this.baseUrl + this.endpoints.BANK_ACCOUNT_DELETE_CONFIRM(accountId), {
+            method: 'DELETE',
+            headers: this.getHeaders(true),
+            body: JSON.stringify({ otp })
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || err.message || 'Failed to delete bank account');
+        }
+
+        return response.json();
+    }
+
     // ===============================
     // Password Reset APIs
     // ===============================
@@ -777,7 +826,7 @@ class ApiService {
             try {
                 const err = await response.json();
                 msg = err.error || err.message || msg;
-            } catch (_) {}
+            } catch (_) { }
             throw new Error(`${msg} (${response.status})`);
         }
 
@@ -796,7 +845,7 @@ class ApiService {
             try {
                 const err = await response.json();
                 msg = err.error || err.message || msg;
-            } catch (_) {}
+            } catch (_) { }
             throw new Error(`${msg} (${response.status})`);
         }
 
@@ -816,7 +865,7 @@ class ApiService {
             try {
                 const err = await response.json();
                 msg = err.error || err.message || msg;
-            } catch (_) {}
+            } catch (_) { }
             throw new Error(`${msg} (${response.status})`);
         }
 

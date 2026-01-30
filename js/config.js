@@ -53,6 +53,7 @@ const API_CONFIG = {
         ME: '/api/auth/me',
         FORGOT_PASSWORD: '/api/auth/forgot-password',
         RESET_PASSWORD: '/api/auth/reset-password',
+        CHECK_USERNAME: (username) => `/api/auth/check-username/${username}`,
 
         // User Profile
         USER_PROFILE: '/api/auth/me',
@@ -96,6 +97,8 @@ const API_CONFIG = {
         BANK_ACCOUNT_ADD: '/api/bank-account/add',
         BANK_ACCOUNT_VERIFY: '/api/bank-account/verify',
         BANK_ACCOUNT_MY: '/api/bank-account/my',
+        BANK_ACCOUNT_DELETE_REQUEST_OTP: (id) => `/api/bank-account/${id}/delete/request-otp`,
+        BANK_ACCOUNT_DELETE_CONFIRM: (id) => `/api/bank-account/${id}/delete/confirm`,
 
         // Dashboard & Analytics
         DASHBOARD_OVERVIEW: '/api/dashboard/overview',
