@@ -105,6 +105,7 @@ const API_CONFIG = {
         DASHBOARD_SPENDING_ANALYSIS: '/api/dashboard/spending-analysis',
         DASHBOARD_MONTHLY_TRENDS: '/api/dashboard/monthly-trends',
         DASHBOARD_INSIGHTS: '/api/dashboard/insights',
+        DASHBOARD_TRANSACTIONS: '/api/dashboard/transactions',
 
         // Admin
         ADMIN_PING: '/api/admin/ping',

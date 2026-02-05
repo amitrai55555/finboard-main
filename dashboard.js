@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initialize dashboard
     initializeDashboard();
+
+    // Initial load of transactions
+    loadTransactions(0);
 });
 
 // DOM Elements
@@ -354,12 +357,8 @@ if (addExpenseBtn) {
 }
 
 // Add Transaction Button
-const addTransactionBtn = document.querySelector('.add-transaction-btn');
-if (addTransactionBtn) {
-    addTransactionBtn.addEventListener('click', function () {
-        window.location.href = 'add_transaction.html';
-    });
-}
+// Add Transaction Button Removed
+
 
 // Filter Buttons
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -381,10 +380,8 @@ timeFilters.forEach(filter => {
 const loadMoreBtn = document.querySelector('.load-more-btn');
 if (loadMoreBtn) {
     loadMoreBtn.addEventListener('click', function () {
-        // Simulate loading more transactions
-        setTimeout(() => {
-            // More transactions loaded
-        }, 1000);
+        currentTransactionPage++;
+        loadTransactions(currentTransactionPage, true);
     });
 }
 
@@ -1797,6 +1794,104 @@ async function loadExpenses() {
 }
 
 // Load accounts from data service and display
+
+let currentTransactionPage = 0;
+
+async function loadTransactions(page = 0, append = false) {
+    const list = document.querySelector('.transactions-list');
+    const loadMoreBtn = document.querySelector('.load-more-btn');
+    if (!list) return;
+
+    if (!append) {
+        list.innerHTML = '<div class="loading-spinner" style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading transactions...</div>';
+        currentTransactionPage = 0;
+    } else {
+        if (loadMoreBtn) {
+            loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            loadMoreBtn.disabled = true;
+        }
+    }
+
+    try {
+        const token = sessionStorage.getItem('fintrackr_token');
+        const url = getApiUrl(API_CONFIG.ENDPOINTS.DASHBOARD_TRANSACTIONS) + `?page=${page}&size=5`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch transactions');
+        const transactions = await response.json();
+
+        if (!append) {
+            list.innerHTML = '';
+        }
+
+        if (transactions.length === 0) {
+            if (!append) {
+                list.innerHTML = '<p class="no-transactions" style="text-align:center; padding: 20px; color: #888;">No transactions found.</p>';
+            } else {
+                if (loadMoreBtn) {
+                    loadMoreBtn.textContent = 'No more transactions';
+                    loadMoreBtn.disabled = true;
+                }
+            }
+            return;
+        }
+
+        transactions.forEach(t => {
+            const item = document.createElement('div');
+            item.className = 'transaction-item';
+
+            const dateStr = new Date(t.date).toLocaleDateString(undefined, {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+            const isIncome = t.type === 'INCOME';
+            const amountColor = isIncome ? '#10B981' : '#EF4444';
+            const iconClass = isIncome ? 'fa-arrow-up' : 'fa-arrow-down';
+
+            item.innerHTML = `
+                <div class="transaction-icon" style="background-color: ${isIncome ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${amountColor}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="transaction-info" style="flex: 1;">
+                    <h4 style="margin: 0; font-size: 16px; color: inherit;">${t.description}</h4>
+                    <p style="margin: 5px 0 0; font-size: 13px; color: #888;">${t.category} • ${dateStr}</p>
+                </div>
+                <div class="transaction-amount" style="color: ${amountColor}; font-weight: 600;">
+                    ${isIncome ? '+' : '-'}₹${Number(t.amount).toFixed(2)}
+                </div>
+            `;
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.padding = '15px';
+            item.style.borderBottom = '1px solid rgba(0,0,0,0.1)';
+
+            list.appendChild(item);
+        });
+
+        if (loadMoreBtn) {
+            loadMoreBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Load More Transactions';
+            loadMoreBtn.disabled = false;
+            // If we got fewer than requested, we are at the end
+            if (transactions.length < 5) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+
+    } catch (error) {
+        console.error('Error loading transactions', error);
+        if (!append) list.innerHTML = '<p class="error" style="text-align:center; padding: 20px; color: #ef4444;">Error loading transactions</p>';
+        if (loadMoreBtn) {
+            loadMoreBtn.innerHTML = 'Try Again';
+            loadMoreBtn.disabled = false;
+        }
+    }
+}
 async function loadAccounts() {
     const accountList = document.querySelector('.accounts-grid');
     if (!accountList) return;
@@ -1819,7 +1914,7 @@ async function loadAccounts() {
 
             const title = account.bankName || account.bank || 'Bank Account';
             const subtitle = account.accountType || account.type || '';
-            const masked = account.accountNumber || (account.number ? ('•••• ' + String(account.number).slice(-4)) : '');
+            const masked = account.accountNumber || (account.number ? ('****' + String(account.number).slice(-4)) : '');
             const verified = account.verified === true;
 
             card.innerHTML = `

@@ -30,6 +30,17 @@ function showTab(tabName, event) {
     }
 }
 
+// Helper to format category name (e.g., "SALARY" -> "Salary")
+function formatCategory(category) {
+    if (!category) return 'Other';
+    // Handle cases like "FOOD_AND_DINING" -> "Food And Dining"
+    return category
+        .toLowerCase()
+        .split(/[_\s]+/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 // Load monthly report data
 async function loadMonthlyReport() {
     try {
@@ -38,11 +49,26 @@ async function loadMonthlyReport() {
         const currentYear = currentDate.getFullYear();
 
         // Get incomes and expenses for current month
-        const incomes = await dataService.getIncome(false);
-        const expenses = await dataService.getExpenses(false);
+        let incomes = await dataService.getIncome(false);
+        let expenses = await dataService.getExpenses(false);
+
+        // Debug: Log received data
+        console.log('Raw Incomes:', incomes);
+        console.log('Raw Expenses:', expenses);
+
+        // Unwrap response if wrapped in 'data' or 'content' (common in Spring Boot/Axios)
+        if (incomes && !Array.isArray(incomes) && Array.isArray(incomes.content)) incomes = incomes.content;
+        else if (incomes && !Array.isArray(incomes) && Array.isArray(incomes.data)) incomes = incomes.data;
+
+        if (expenses && !Array.isArray(expenses) && Array.isArray(expenses.content)) expenses = expenses.content;
+        else if (expenses && !Array.isArray(expenses) && Array.isArray(expenses.data)) expenses = expenses.data;
 
         const currentIncomes = filterByMonth(incomes, currentMonth, currentYear);
         const currentExpenses = filterByMonth(expenses, currentMonth, currentYear);
+
+        console.log('Filtered Incomes (Month ' + currentMonth + '/' + currentYear + '):', currentIncomes);
+        console.log('Filtered Expenses (Month ' + currentMonth + '/' + currentYear + '):', currentExpenses);
+
 
         // Calculate totals
         const totalIncome = sumAmount(currentIncomes);
@@ -60,12 +86,15 @@ async function loadMonthlyReport() {
         const incomeBreakdown = document.getElementById('monthly-income-breakdown');
         const incomeCategories = {};
         currentIncomes.forEach(income => {
-            const category = income.category || 'Other';
+            const rawCategory = income.category || 'Other';
+            const category = formatCategory(rawCategory);
             incomeCategories[category] = (incomeCategories[category] || 0) + Number(income.amount);
         });
 
         let incomeBreakdownHTML = '';
-        Object.entries(incomeCategories).forEach(([category, amount]) => {
+        const sortedIncomeCategories = Object.entries(incomeCategories).sort((a, b) => b[1] - a[1]); // Sort by amount descending
+
+        sortedIncomeCategories.forEach(([category, amount]) => {
             incomeBreakdownHTML += `
                 <div class="summary-metric">
                     <span class="metric-label">${category}</span>
@@ -76,14 +105,18 @@ async function loadMonthlyReport() {
         incomeBreakdown.innerHTML = incomeBreakdownHTML || '<div class="summary-metric"><span class="metric-label">No income data</span></div>';
 
         // Update expense breakdown
+        const expenseBreakdown = document.getElementById('monthly-expense-breakdown');
         const expenseCategories = {};
         currentExpenses.forEach(expense => {
-            const category = expense.category || 'Other';
+            const rawCategory = expense.category || 'Other';
+            const category = formatCategory(rawCategory);
             expenseCategories[category] = (expenseCategories[category] || 0) + Number(expense.amount);
         });
 
         let expenseBreakdownHTML = '';
-        Object.entries(expenseCategories).forEach(([category, amount]) => {
+        const sortedExpenseCategories = Object.entries(expenseCategories).sort((a, b) => b[1] - a[1]);
+
+        sortedExpenseCategories.forEach(([category, amount]) => {
             expenseBreakdownHTML += `
                 <div class="summary-metric">
                     <span class="metric-label">${category}</span>
@@ -91,17 +124,20 @@ async function loadMonthlyReport() {
                 </div>
             `;
         });
-        document.getElementById('monthly-expense-breakdown').innerHTML = expenseBreakdownHTML || '<div class="summary-metric"><span class="metric-label">No expense data</span></div>';
+        expenseBreakdown.innerHTML = expenseBreakdownHTML || '<div class="summary-metric"><span class="metric-label">No expense data</span></div>';
 
         // Update category tables
         const incomeTable = document.getElementById('monthly-income-categories');
         let incomeTableHTML = '';
-        Object.entries(incomeCategories).forEach(([category, amount]) => {
+        sortedIncomeCategories.forEach(([category, amount]) => {
+            // Calculate percentage of total
+            const percent = totalIncome > 0 ? (amount / totalIncome * 100).toFixed(1) + '%' : '0%';
+
             incomeTableHTML += `
                 <div class="table-row">
                     <span class="category-name">${category}</span>
                     <span class="category-amount">₹${amount.toLocaleString()}</span>
-                    <span class="category-change">N/A</span>
+                    <span class="category-change">${percent}</span>
                 </div>
             `;
         });
@@ -109,12 +145,15 @@ async function loadMonthlyReport() {
 
         const expenseTable = document.getElementById('monthly-expense-categories');
         let expenseTableHTML = '';
-        Object.entries(expenseCategories).forEach(([category, amount]) => {
+        sortedExpenseCategories.forEach(([category, amount]) => {
+            // Calculate percentage of total
+            const percent = totalExpense > 0 ? (amount / totalExpense * 100).toFixed(1) + '%' : '0%';
+
             expenseTableHTML += `
                 <div class="table-row">
                     <span class="category-name">${category}</span>
                     <span class="category-amount">₹${amount.toLocaleString()}</span>
-                    <span class="category-change">N/A</span>
+                    <span class="category-change">${percent}</span>
                 </div>
             `;
         });
@@ -123,10 +162,10 @@ async function loadMonthlyReport() {
     } catch (error) {
         console.error('Error loading monthly report:', error);
         // Show error messages
-        document.getElementById('monthly-total-income').textContent = 'Error loading data';
-        document.getElementById('monthly-total-expenses').textContent = 'Error loading data';
-        document.getElementById('monthly-net-savings').textContent = 'Error loading data';
-        document.getElementById('monthly-savings-rate').textContent = 'Error loading data';
+        document.getElementById('monthly-total-income').textContent = 'Error';
+        document.getElementById('monthly-total-expenses').textContent = 'Error';
+        document.getElementById('monthly-net-savings').textContent = 'Error';
+        document.getElementById('monthly-savings-rate').textContent = 'Error';
     }
 }
 
@@ -136,8 +175,19 @@ async function loadAnnualReport() {
         const currentYear = new Date().getFullYear();
 
         // Get incomes and expenses for current year
-        const incomes = await dataService.getIncome(false);
-        const expenses = await dataService.getExpenses(false);
+        let incomes = await dataService.getIncome(false);
+        let expenses = await dataService.getExpenses(false);
+
+        // Debug: Log received data  
+        console.log('Annual Report - Raw Incomes:', incomes);
+        console.log('Annual Report - Raw Expenses:', expenses);
+
+        // Unwrap response if wrapped in 'data' or 'content' (common in Spring Boot/Axios)
+        if (incomes && !Array.isArray(incomes) && Array.isArray(incomes.content)) incomes = incomes.content;
+        else if (incomes && !Array.isArray(incomes) && Array.isArray(incomes.data)) incomes = incomes.data;
+
+        if (expenses && !Array.isArray(expenses) && Array.isArray(expenses.content)) expenses = expenses.content;
+        else if (expenses && !Array.isArray(expenses) && Array.isArray(expenses.data)) expenses = expenses.data;
 
         const currentYearIncomes = filterByYear(incomes, currentYear);
         const currentYearExpenses = filterByYear(expenses, currentYear);
@@ -169,24 +219,30 @@ async function loadAnnualReport() {
         // Update category analysis
         const incomeCategories = {};
         currentYearIncomes.forEach(income => {
-            const category = income.category || 'Other';
+            const rawCategory = income.category || 'Other';
+            const category = formatCategory(rawCategory);
             incomeCategories[category] = (incomeCategories[category] || 0) + Number(income.amount);
         });
 
         const expenseCategories = {};
         currentYearExpenses.forEach(expense => {
-            const category = expense.category || 'Other';
+            const rawCategory = expense.category || 'Other';
+            const category = formatCategory(rawCategory);
             expenseCategories[category] = (expenseCategories[category] || 0) + Number(expense.amount);
         });
 
+        const sortedIncomeCategories = Object.entries(incomeCategories).sort((a, b) => b[1] - a[1]);
+        const sortedExpenseCategories = Object.entries(expenseCategories).sort((a, b) => b[1] - a[1]);
+
         const incomeSourcesTable = document.getElementById('annual-income-sources');
         let incomeSourcesHTML = '';
-        Object.entries(incomeCategories).forEach(([category, amount]) => {
+        sortedIncomeCategories.forEach(([category, amount]) => {
+            const percent = totalIncome > 0 ? (amount / totalIncome * 100).toFixed(1) + '%' : '0%';
             incomeSourcesHTML += `
                 <div class="table-row">
                     <span class="category-name">${category}</span>
                     <span class="category-amount">₹${amount.toLocaleString()}</span>
-                    <span class="category-change">N/A</span>
+                    <span class="category-change">${percent}</span>
                 </div>
             `;
         });
@@ -194,12 +250,13 @@ async function loadAnnualReport() {
 
         const expenseCategoriesTable = document.getElementById('annual-expense-categories');
         let expenseCategoriesHTML = '';
-        Object.entries(expenseCategories).forEach(([category, amount]) => {
+        sortedExpenseCategories.forEach(([category, amount]) => {
+            const percent = totalExpense > 0 ? (amount / totalExpense * 100).toFixed(1) + '%' : '0%';
             expenseCategoriesHTML += `
                 <div class="table-row">
                     <span class="category-name">${category}</span>
                     <span class="category-amount">₹${amount.toLocaleString()}</span>
-                    <span class="category-change">N/A</span>
+                    <span class="category-change">${percent}</span>
                 </div>
             `;
         });
@@ -208,46 +265,16 @@ async function loadAnnualReport() {
     } catch (error) {
         console.error('Error loading annual report:', error);
         // Show error messages
-        document.getElementById('annual-total-income').textContent = 'Error loading data';
-        document.getElementById('annual-total-expenses').textContent = 'Error loading data';
-        document.getElementById('annual-net-savings').textContent = 'Error loading data';
-        document.getElementById('annual-savings-rate').textContent = 'Error loading data';
+        document.getElementById('annual-total-income').textContent = 'Error';
+        document.getElementById('annual-total-expenses').textContent = 'Error';
+        document.getElementById('annual-net-savings').textContent = 'Error';
+        document.getElementById('annual-savings-rate').textContent = 'Error';
     }
 }
 
 // Initialize with monthly tab active
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     showTab('monthly');
-    
-    // Use Event Capture (true as 3rd argument) to intercept clicks before other scripts
-    document.addEventListener('click', function(e) {
-        // Check if the clicked element or its parent is a button/link that looks like an export button
-        const btn = e.target.closest('button, .btn, .export-btn, .export-report-btn, a.btn, .action-btn');
-        
-        if (btn) {
-            const text = (btn.textContent || '').toLowerCase();
-            const id = (btn.id || '').toLowerCase();
-            const classes = (btn.className || '').toLowerCase();
-            
-            const isPdf = text.includes('pdf') || id.includes('pdf') || classes.includes('pdf');
-            const isExcel = text.includes('excel') || id.includes('excel') || classes.includes('excel');
-            const isCsv = text.includes('csv') || id.includes('csv') || classes.includes('csv');
-            const isGenericExport = text.includes('export') || text.includes('download');
-
-            if (isPdf || isExcel || isCsv || isGenericExport) {
-                console.log('Export button detected:', { text, id, classes, isPdf, isExcel, isCsv, isGenericExport });
-                e.preventDefault();
-                e.stopPropagation(); // Stop dashboard.js or other scripts from handling this
-
-                let type = 'csv';
-                if (isPdf) type = 'pdf';
-                else if (isExcel) type = 'excel';
-
-                console.log('Calling handleExport with type:', type);
-                handleExport(type, btn);
-            }
-        }
-    }, true);
 });
 
 // Load and render the annual chart
@@ -309,9 +336,9 @@ async function loadAnnualChart() {
             if (Array.isArray(incomes)) {
                 incomes.forEach(income => {
                     if (!income || !income.date) return;
-                    const incomeDate = new Date(income.date);
+                    const incomeDate = parseDate(income.date);
                     const amountNumber = Number(income.amount);
-                    if (Number.isNaN(incomeDate.getTime()) || !Number.isFinite(amountNumber)) return;
+                    if (!incomeDate || Number.isNaN(incomeDate.getTime()) || !Number.isFinite(amountNumber)) return;
                     const monthKey = `${incomeDate.getFullYear()}-${String(incomeDate.getMonth() + 1).padStart(2, '0')}`;
                     if (monthlyData.hasOwnProperty(monthKey)) {
                         monthlyData[monthKey].income += amountNumber;
@@ -323,9 +350,9 @@ async function loadAnnualChart() {
             if (Array.isArray(expenses)) {
                 expenses.forEach(expense => {
                     if (!expense || !expense.date) return;
-                    const expenseDate = new Date(expense.date);
+                    const expenseDate = parseDate(expense.date);
                     const amountNumber = Number(expense.amount);
-                    if (Number.isNaN(expenseDate.getTime()) || !Number.isFinite(amountNumber)) return;
+                    if (!expenseDate || Number.isNaN(expenseDate.getTime()) || !Number.isFinite(amountNumber)) return;
                     const monthKey = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
                     if (monthlyData.hasOwnProperty(monthKey)) {
                         monthlyData[monthKey].expense += amountNumber;
@@ -360,7 +387,7 @@ async function loadAnnualChart() {
         incomeBar.style.borderRadius = '4px 4px 0 0';
         incomeBar.style.position = 'relative';
 
-        incomeBar.addEventListener('mouseenter', function() {
+        incomeBar.addEventListener('mouseenter', function () {
             const rect = this.getBoundingClientRect();
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
@@ -380,7 +407,7 @@ async function loadAnnualChart() {
             `;
             document.body.appendChild(tooltip);
 
-            this.addEventListener('mouseleave', function() {
+            this.addEventListener('mouseleave', function () {
                 if (tooltip.parentNode) {
                     tooltip.remove();
                 }
@@ -397,7 +424,7 @@ async function loadAnnualChart() {
         expenseBar.style.borderRadius = '4px 4px 0 0';
         expenseBar.style.position = 'relative';
 
-        expenseBar.addEventListener('mouseenter', function() {
+        expenseBar.addEventListener('mouseenter', function () {
             const rect = this.getBoundingClientRect();
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
@@ -417,7 +444,7 @@ async function loadAnnualChart() {
             `;
             document.body.appendChild(tooltip);
 
-            this.addEventListener('mouseleave', function() {
+            this.addEventListener('mouseleave', function () {
                 if (tooltip.parentNode) {
                     tooltip.remove();
                 }
@@ -471,11 +498,11 @@ async function handleExport(type, btn) {
         // Check active tab
         const monthlyTab = document.getElementById('monthly');
         const isMonthly = monthlyTab && monthlyTab.classList.contains('active');
-        
+
         // Get selected date
         const monthInput = document.querySelector('input[type="month"]') || document.getElementById('reportMonth');
         const yearInput = document.getElementById('reportYear');
-        
+
         const now = new Date();
         let selectedMonth = now.getMonth();
         let selectedYear = now.getFullYear();
@@ -726,24 +753,54 @@ async function generateReportData(isMonthly, month, year) {
 }
 
 function filterByMonth(items, month, year) {
+    if (!Array.isArray(items)) return [];
     return items.filter(item => {
-        const d = new Date(item.date);
-        return d.getMonth() === month && d.getFullYear() === year;
+        const d = parseDate(item.date);
+        return d && d.getMonth() === month && d.getFullYear() === year;
     });
 }
 
 function filterByYear(items, year) {
+    if (!Array.isArray(items)) return [];
     return items.filter(item => {
-        const d = new Date(item.date);
-        return d.getFullYear() === year;
+        const d = parseDate(item.date);
+        return d && d.getFullYear() === year;
     });
 }
 
+// Helper to robustly parse dates (handles "YYYY-MM-DD" string and [YYYY, MM, DD] array)
+function parseDate(dateInput) {
+    if (!dateInput) return null;
+
+    // Handle Java LocalDate array format [2024, 1, 31]
+    if (Array.isArray(dateInput)) {
+        // Javascript Date month is 0-indexed (0=Jan, 11=Dec)
+        // Java LocalDate array is usually 1-indexed for month? 
+        // Standard Spring Boot serialization for LocalDate is [year, month, day] where month is 1-12
+        return new Date(dateInput[0], dateInput[1] - 1, dateInput[2]);
+    }
+
+    // Handle Timestamp (number)
+    if (typeof dateInput === 'number') {
+        return new Date(dateInput);
+    }
+
+    // Handle String
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) {
+        console.warn('Invalid date encountered:', dateInput);
+        return null;
+    }
+    return d;
+}
+
 function sumAmount(items) {
+    if (!Array.isArray(items)) return 0;
     return items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
 }
 
 function sumByCategory(items, category) {
+    if (!Array.isArray(items)) return 0;
     return items
         .filter(item => (item.category || '').toLowerCase() === category.toLowerCase())
         .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
