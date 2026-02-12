@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400..800&display=swap" rel="stylesheet">
 
 </head>
+
 <body>
     <div class="dashboard-container">
         <!-- Main Content -->
@@ -46,7 +48,8 @@
                                 <label for="investmentName">Investment Name *</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-chart-line"></i>
-                                    <input type="text" id="investmentName" name="name" placeholder="e.g., Reliance Industries" required>
+                                    <input type="text" id="investmentName" name="name"
+                                        placeholder="e.g., Reliance Industries" required>
                                 </div>
                             </div>
 
@@ -73,7 +76,8 @@
                                 <label for="investmentAmount">Amount Invested *</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-rupee-sign"></i>
-                                    <input type="number" id="investmentAmount" name="amount" placeholder="0.00" required min="0" step="0.01">
+                                    <input type="number" id="investmentAmount" name="amount" placeholder="0.00" required
+                                        min="0" step="0.01">
                                 </div>
                             </div>
 
@@ -81,7 +85,8 @@
                                 <label for="currentValue">Current Value</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-chart-area"></i>
-                                    <input type="number" id="currentValue" name="currentValue" placeholder="0.00" min="0" step="0.01">
+                                    <input type="number" id="currentValue" name="currentValue" placeholder="0.00"
+                                        min="0" step="0.01">
                                 </div>
                             </div>
 
@@ -97,7 +102,8 @@
                                 <label for="quantity">Quantity/Units</label>
                                 <div class="input-wrapper">
                                     <i class="fas fa-hashtag"></i>
-                                    <input type="number" id="quantity" name="quantity" placeholder="e.g., 100 shares" min="0" step="0.01">
+                                    <input type="number" id="quantity" name="quantity" placeholder="e.g., 100 shares"
+                                        min="0" step="0.01">
                                 </div>
                             </div>
                         </div>
@@ -106,7 +112,8 @@
                             <label for="broker">Broker/Platform</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-building"></i>
-                                <input type="text" id="broker" name="broker" placeholder="e.g., Zerodha, Groww, HDFC Bank">
+                                <input type="text" id="broker" name="broker"
+                                    placeholder="e.g., Zerodha, Groww, HDFC Bank">
                             </div>
                         </div>
 
@@ -114,12 +121,14 @@
                             <label for="investmentDescription">Description</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-comment"></i>
-                                <textarea id="investmentDescription" name="description" placeholder="Additional details about this investment..." rows="3"></textarea>
+                                <textarea id="investmentDescription" name="description"
+                                    placeholder="Additional details about this investment..." rows="3"></textarea>
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="cancel-btn" onclick="window.location.href='dashboard.html#investments'">
+                            <button type="button" class="cancel-btn"
+                                onclick="window.location.href='dashboard.html#investments'">
                                 <i class="fas fa-times"></i>
                                 Cancel
                             </button>
@@ -138,4 +147,5 @@
     <script src="dashboard.js"></script>
     <script src="add_investment.js"></script>
 </body>
+
 </html>

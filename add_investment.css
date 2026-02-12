@@ -15,6 +15,7 @@
     font-style: normal;
     font-optical-sizing: auto;
 }
+
 body {
     background-color: #f9fafb;
     margin: 0;
@@ -206,7 +207,7 @@ textarea {
     position: relative;
 }
 
-.checkbox-wrapper input:checked ~ .checkmark {
+.checkbox-wrapper input:checked~.checkmark {
     background-color: #4fd1c5;
 }
 
@@ -216,7 +217,7 @@ textarea {
     display: none;
 }
 
-.checkbox-wrapper input:checked ~ .checkmark:after {
+.checkbox-wrapper input:checked~.checkmark:after {
     display: block;
 }
 
@@ -313,6 +314,7 @@ textarea {
         transform: translateX(100%);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;

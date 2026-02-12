@@ -37,7 +37,7 @@ function saveInvestmentData(investmentData) {
 document.getElementById('investmentDate').valueAsDate = new Date();
 
 // Auto-fill current value with invested amount if empty
-document.getElementById('investmentAmount').addEventListener('input', function() {
+document.getElementById('investmentAmount').addEventListener('input', function () {
     const currentValueField = document.getElementById('currentValue');
     if (!currentValueField.value) {
         currentValueField.value = this.value;
@@ -45,7 +45,7 @@ document.getElementById('investmentAmount').addEventListener('input', function()
 });
 
 // Form submission
-document.getElementById('investmentForm').addEventListener('submit', function(e) {
+document.getElementById('investmentForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     try {

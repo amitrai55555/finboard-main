@@ -2379,6 +2379,23 @@ async function updateDashboardSummary() {
             ? Number(summary.monthlyNet)
             : (monthlyIncome - monthlyExpenses);
 
+        // Previous month data for percentage change
+        const prevMonthlyIncome = Number(summary.prevMonthlyIncome || 0);
+        const prevMonthlyExpenses = Number(summary.prevMonthlyExpenses || 0);
+        const prevMonthlySavings = prevMonthlyIncome - prevMonthlyExpenses;
+
+        // Helper: calculate percentage change
+        function calcPercentChange(current, previous) {
+            if (previous === 0) {
+                return current > 0 ? 100 : 0;
+            }
+            return ((current - previous) / previous) * 100;
+        }
+
+        const incomeChange = calcPercentChange(monthlyIncome, prevMonthlyIncome);
+        const expenseChange = calcPercentChange(monthlyExpenses, prevMonthlyExpenses);
+        const savingsChange = calcPercentChange(monthlySavings, prevMonthlySavings);
+
         // Update balance cards (top card)
         const totalBalanceEl = document.querySelector('.balance-card h3');
         if (totalBalanceEl) {
@@ -2388,15 +2405,39 @@ async function updateDashboardSummary() {
         // Update income/expense summary
         const incomeAmountEl = document.querySelector('.balance-item:first-child .amount');
         const expenseAmountEl = document.querySelector('.balance-item:last-child .amount');
-        if (incomeAmountEl) incomeAmountEl.textContent = `₹${monthlyIncome.toLocaleString()}`;
-        if (expenseAmountEl) expenseAmountEl.textContent = `₹${monthlyExpenses.toLocaleString()}`;
+        if (incomeAmountEl) incomeAmountEl.textContent = `₹${totalIncome.toLocaleString()}`;
+        if (expenseAmountEl) expenseAmountEl.textContent = `₹${totalExpenses.toLocaleString()}`;
 
         // Update stat cards
         const statCards = document.querySelectorAll('.stat-card');
         if (statCards.length >= 3) {
+            // Income stat card
             statCards[0].querySelector('h3').textContent = `₹${monthlyIncome.toLocaleString()}`;
+            const incomeChangeEl = statCards[0].querySelector('.stat-change');
+            if (incomeChangeEl) {
+                const sign = incomeChange >= 0 ? '+' : '';
+                incomeChangeEl.textContent = `${sign}${incomeChange.toFixed(1)}%`;
+                incomeChangeEl.className = `stat-change ${incomeChange >= 0 ? 'positive' : 'negative'}`;
+            }
+
+            // Expense stat card
             statCards[1].querySelector('h3').textContent = `₹${monthlyExpenses.toLocaleString()}`;
+            const expenseChangeEl = statCards[1].querySelector('.stat-change');
+            if (expenseChangeEl) {
+                const sign = expenseChange >= 0 ? '+' : '';
+                expenseChangeEl.textContent = `${sign}${expenseChange.toFixed(1)}%`;
+                // For expenses, increase is negative (bad) and decrease is positive (good)
+                expenseChangeEl.className = `stat-change ${expenseChange <= 0 ? 'positive' : 'negative'}`;
+            }
+
+            // Savings stat card
             statCards[2].querySelector('h3').textContent = `₹${monthlySavings.toLocaleString()}`;
+            const savingsChangeEl = statCards[2].querySelector('.stat-change');
+            if (savingsChangeEl) {
+                const sign = savingsChange >= 0 ? '+' : '';
+                savingsChangeEl.textContent = `${sign}${savingsChange.toFixed(1)}%`;
+                savingsChangeEl.className = `stat-change ${savingsChange >= 0 ? 'positive' : 'negative'}`;
+            }
         }
 
         console.log('Dashboard summary updated:', summary);

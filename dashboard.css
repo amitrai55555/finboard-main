@@ -385,19 +385,6 @@ body {
     transition: all 0.2s ease;
 }
 
-.action-btn.primary {
-    background: white;
-    color: #667eea;
-}
-
-.action-btn.primary:hover {
-    background: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-    color: #305eff;
-    border: 2px solid #305eff;
-}
-
 /* Make the welcome section View Reports button more visible */
 .welcome-section .action-btn.secondary {
     background: #ffffff;
@@ -416,6 +403,7 @@ body {
     background: transparent;
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 30px 10px 30px;
 }
 
 .action-btn.secondary:hover {
