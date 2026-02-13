@@ -547,6 +547,19 @@ class ApiService {
         return response.json();
     }
 
+    async quickUpdateGoal(id, data) {
+        const response = await fetch(this.baseUrl + this.endpoints.GOAL_QUICK_UPDATE(id), {
+            method: 'PATCH',
+            headers: this.getHeaders(),
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || err.message || 'Failed to update goal');
+        }
+        return response.json();
+    }
+
     // Investments management
     async getInvestments() {
         try {
@@ -584,6 +597,43 @@ class ApiService {
             console.error('Create investment error:', error);
             throw error;
         }
+    }
+
+    // Currency
+    async getCurrencyRates() {
+        // This endpoint is public as per SecurityConfig, so no auth headers strictly needed
+        // but no harm sending them if available.
+        const response = await fetch(this.baseUrl + this.endpoints.CURRENCY_RATES, {
+            method: 'GET',
+            headers: this.getHeaders(false) // false = optional auth
+        });
+        if (!response.ok) {
+            throw new Error('Failed to fetch currency rates');
+        }
+        return response.json();
+    }
+
+    async getCurrencyAllRates() {
+        const response = await fetch(this.baseUrl + this.endpoints.CURRENCY_ALL_RATES, {
+            method: 'GET',
+            headers: this.getHeaders(false)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to fetch all currency rates');
+        }
+        return response.json();
+    }
+
+    async searchSecurities(query, minChars = 2) {
+        if (!query || String(query).trim().length < minChars) return [];
+        const q = encodeURIComponent(String(query).trim());
+        const url = this.baseUrl + this.endpoints.SECURITIES_SEARCH + `?q=${q}&min=${minChars}`;
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: this.getHeaders(true)
+        });
+        if (!response.ok) return [];
+        return response.json();
     }
 
     // Dashboard & Analytics

@@ -19,76 +19,89 @@ function showNotification(message, type) {
     }, 3000);
 }
 
-// Function to save goal data to localStorage
-function saveGoalData(goalData) {
-    // Get existing goals or initialize empty array
-    let goals = JSON.parse(localStorage.getItem('goals') || '[]');
-
-    // Add new goal with unique ID
-    goalData.id = Date.now();
-    goalData.timestamp = new Date().toISOString();
-    goals.push(goalData);
-
-    // Save back to localStorage
-    localStorage.setItem('goals', JSON.stringify(goals));
-}
-
 // Set default target date to one year from now
 const oneYearFromNow = new Date();
 oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 document.getElementById('goalTargetDate').valueAsDate = oneYearFromNow;
 
 // Form submission
-document.getElementById('goalForm').addEventListener('submit', function(e) {
+document.getElementById('goalForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     try {
         const formData = new FormData(this);
-        const goalData = {
-            name: formData.get('name').trim(),
-            targetAmount: parseFloat(formData.get('targetAmount')),
-            currentAmount: parseFloat(formData.get('currentAmount') || 0),
-            targetDate: formData.get('targetDate'),
-            category: formData.get('category'),
-            priority: formData.get('priority'),
-            description: formData.get('description').trim()
-        };
+
+        const name = formData.get('name').trim();
+        const targetAmount = parseFloat(formData.get('targetAmount'));
+        let currentAmount = parseFloat(formData.get('currentAmount') || 0);
+        const targetDate = formData.get('targetDate');
+        const category = formData.get('category');
+        const priority = formData.get('priority');
+        const description = formData.get('description').trim();
 
         // Validate name
-        if (!goalData.name) {
+        if (!name) {
             throw new Error('Please enter a goal name');
         }
 
         // Validate target amount
-        if (isNaN(goalData.targetAmount) || goalData.targetAmount <= 0) {
+        if (isNaN(targetAmount) || targetAmount <= 0) {
             throw new Error('Please enter a valid target amount greater than 0');
         }
 
         // Validate current amount
-        if (isNaN(goalData.currentAmount) || goalData.currentAmount < 0) {
-            goalData.currentAmount = 0;
+        if (isNaN(currentAmount) || currentAmount < 0) {
+            currentAmount = 0;
         }
 
         // Ensure current amount doesn't exceed target
-        if (goalData.currentAmount > goalData.targetAmount) {
+        if (currentAmount > targetAmount) {
             throw new Error('Current saved amount cannot exceed target amount');
         }
 
         // Validate category
-        if (!goalData.category) {
+        if (!category) {
             throw new Error('Please select a goal category');
         }
 
         // Validate target date
-        const targetDate = new Date(goalData.targetDate);
+        const targetDateObj = new Date(targetDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        if (targetDate <= today) {
+        if (targetDateObj <= today) {
             throw new Error('Target date must be in the future');
         }
 
-        // Save the data
-        saveGoalData(goalData);
+        // Build the goal payload matching backend GoalRequest DTO
+        const goalPayload = {
+            title: name,
+            description: description || '',
+            targetAmount: targetAmount,
+            currentAmount: currentAmount,
+            targetDate: targetDate,
+            priority: (priority || 'MEDIUM').toUpperCase()
+        };
+
+        // Send goal to backend API
+        const token = sessionStorage.getItem('fintrackr_token');
+        if (!token) {
+            throw new Error('You must be logged in to add a goal. Please log in first.');
+        }
+
+        const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.GOALS), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(goalPayload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.message || 'Failed to add goal');
+        }
 
         // Show success message
         showNotification('Goal added successfully!', 'success');

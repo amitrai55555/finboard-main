@@ -256,8 +256,48 @@
     color: var(--text-secondary);
 }
 
-[data-theme="dark"] .exchange-trends h3{
+[data-theme="dark"] .exchange-trends h3,
+[data-theme="dark"] .currency-converter-section h3{
     color: var(--text-secondary);
+}
+
+[data-theme="dark"] .currency-converter-section .converter-box{
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .currency-converter-section .converter-field label{
+    color: var(--text-tertiary);
+}
+
+[data-theme="dark"] .currency-converter-section .converter-currency-input,
+[data-theme="dark"] .currency-converter-section .converter-amount-input{
+    background: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .currency-converter-section .converter-result-input{
+    background: var(--card-bg);
+}
+
+[data-theme="dark"] .currency-dropdown{
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .currency-dropdown-option .currency-code{
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .currency-dropdown-option .currency-name{
+    color: var(--text-tertiary);
+}
+
+[data-theme="dark"] .currency-dropdown-option:hover,
+[data-theme="dark"] .currency-dropdown-option.selected{
+    background: var(--hover-bg);
+    color: var(--primary);
 }
 
 [data-theme="dark"] .summary-card h4{

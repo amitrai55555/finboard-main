@@ -98,10 +98,6 @@
                     <h1>FinBoard</h1>
                 </div>
                 <div class="header-right">
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search Finance.....">
-                    </div>
                     <div class="profile-section">
                         <img src="avatar1.jpg" alt="Profile" class="profile-image" id="profileImage">
                         <div class="profile-dropdown" id="profileDropdown">
@@ -142,7 +138,7 @@
                         <div class="balance-card">
                             <div class="balance-main">
                                 <div class="balance-item-main">
-                                    <h3>₹0</h3>
+                                    <h3 style="color: #4299e1;">₹0</h3>
                                     <p>Total Balance</p>
                                 </div>
                                 <div class="balance-item-main">
@@ -150,14 +146,15 @@
                                     <p>Total Investment</p>
                                 </div>
                             </div>
+                            <hr style="height: 2px; border: solid rgb(131, 126, 120) 2px;">
                             <div class="balance-details">
                                 <div class="balance-item">
                                     <span class="label">Income</span>
-                                    <span class="amount">₹0</span>
+                                    <span class="amount" style="color: #0feda3;">₹0</span>
                                 </div>
                                 <div class="balance-item">
                                     <span class="label">Expenses</span>
-                                    <span class="amount">₹0</span>
+                                    <span class="amount" style="color: #ff4e4e;">₹0</span>
                                 </div>
                             </div>
                         </div>
@@ -314,15 +311,15 @@
                     <h3>Goal Performance Analytics</h3>
                     <div class="performance-metrics">
                         <div class="metric-item">
-                            <div class="metric-number">0</div>
+                            <div class="metric-number" id="activeGoalsCount">0</div>
                             <div class="metric-label">Active Goals</div>
                         </div>
                         <div class="metric-item">
-                            <div class="metric-number">₹0</div>
+                            <div class="metric-number" id="monthlySavingsGoal">₹0</div>
                             <div class="metric-label">Monthly Savings</div>
                         </div>
                         <div class="metric-item">
-                            <div class="metric-number">0</div>
+                            <div class="metric-number" id="avgMonthsToGoal">0</div>
                             <div class="metric-label">Avg Months to Goal</div>
                         </div>
                     </div>
@@ -334,13 +331,6 @@
                 <div class="section-header">
                     <h2>Multi-Currency Portfolio</h2>
                     <div class="header-actions">
-                        <select class="currency-filter">
-                            <option value="all">All Currencies</option>
-                            <option value="inr">INR</option>
-                            <option value="usd">USD</option>
-                            <option value="eur">EUR</option>
-                            <option value="gbp">GBP</option>
-                        </select>
                         <button class="add-currency-btn">
                             <i class="fas fa-plus"></i>
                             Add Currency
@@ -348,97 +338,48 @@
                     </div>
                 </div>
 
-                <div class="currency-grid">
-                    <div class="currency-card inr">
-                        <div class="currency-flag">₹</div>
-                        <div class="currency-content">
-                            <h3>INR</h3>
-                            <div class="currency-amount">₹0</div>
-                            <div class="currency-label">Indian Rupee</div>
-                            <div class="currency-change positive">+0%</div>
-                        </div>
-                    </div>
-
-                    <div class="currency-card usd">
-                        <div class="currency-flag">$</div>
-                        <div class="currency-content">
-                            <h3>USD</h3>
-                            <div class="currency-amount">$0</div>
-                            <div class="currency-label">US Dollar</div>
-                            <div class="currency-change positive">+0%</div>
-                        </div>
-                    </div>
-
-                    <div class="currency-card eur">
-                        <div class="currency-flag">€</div>
-                        <div class="currency-content">
-                            <h3>EUR</h3>
-                            <div class="currency-amount">€0</div>
-                            <div class="currency-label">Euro</div>
-                            <div class="currency-change negative">+0%</div>
-                        </div>
-                    </div>
-
-                    <div class="currency-card gbp">
-                        <div class="currency-flag">£</div>
-                        <div class="currency-content">
-                            <h3>GBP</h3>
-                            <div class="currency-amount">£0</div>
-                            <div class="currency-label">British Pound</div>
-                            <div class="currency-change positive">+0%</div>
-                        </div>
+                <div class="currency-grid" id="currencyGrid">
+                    <!-- Populated dynamically by loadCurrencyRates() with live USD, EUR, GBP, CNY vs INR -->
+                    <div class="loading-currency">
+                        <i class="fas fa-spinner fa-spin"></i> Loading rates...
                     </div>
                 </div>
 
-                <div class="exchange-trends">
-                    <h3>Exchange Rate Trends</h3>
-                    <div class="trends-container">
-                        <div class="trends-chart">
-                            <div class="chart-lines">
-                                <svg viewBox="0 0 400 200" class="trend-svg">
-                                    <path d="M20,180 Q60,160 100,140 T180,120 T260,100 T340,80" stroke="#4F46E5"
-                                        stroke-width="2" fill="none" />
-                                    <path d="M20,160 Q60,150 100,130 T180,110 T260,120 T340,110" stroke="#10B981"
-                                        stroke-width="2" fill="none" />
-                                    <path d="M20,170 Q60,155 100,145 T180,135 T260,125 T340,115" stroke="#F59E0B"
-                                        stroke-width="2" fill="none" />
-                                    <path d="M20,165 Q60,158 100,148 T180,138 T260,128 T340,118" stroke="#EF4444"
-                                        stroke-width="2" fill="none" />
-                                </svg>
+                <div class="currency-converter-section">
+                    <h3>Currency Converter</h3>
+                    <div class="converter-box">
+                        <div class="converter-row">
+                            <div class="converter-field">
+                                <label>From</label>
+                                <div class="currency-select-wrap">
+                                    <input type="text" id="converterFromInput" class="converter-currency-input" placeholder="Type to search currency..." autocomplete="off" />
+                                    <input type="hidden" id="converterFromCode" value="" />
+                                    <div id="converterFromDropdown" class="currency-dropdown" aria-hidden="true"></div>
+                                </div>
                             </div>
-                            <div class="chart-labels">
-                                <span>Jan 24</span>
-                                <span>Mar 24</span>
-                                <span>May 24</span>
-                                <span>Jul 24</span>
-                                <span>Now</span>
+                            <div class="converter-field">
+                                <label>To</label>
+                                <div class="currency-select-wrap">
+                                    <input type="text" id="converterToInput" class="converter-currency-input" placeholder="Type to search currency..." autocomplete="off" />
+                                    <input type="hidden" id="converterToCode" value="" />
+                                    <div id="converterToDropdown" class="currency-dropdown" aria-hidden="true"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="trends-legend">
-                            <div class="legend-item">
-                                <div class="legend-color inr"></div>
-                                <span>INR</span>
-                                <span class="legend-value">72.5%</span>
+                        <div class="converter-row converter-amounts">
+                            <div class="converter-field">
+                                <label>Amount</label>
+                                <input type="number" id="converterAmount" class="converter-amount-input" placeholder="0.00" min="0" step="any" />
                             </div>
-                            <div class="legend-item">
-                                <div class="legend-color usd"></div>
-                                <span>USD</span>
-                                <span class="legend-value">15.2%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color eur"></div>
-                                <span>EUR</span>
-                                <span class="legend-value">8.7%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color gbp"></div>
-                                <span>GBP</span>
-                                <span class="legend-value">3.6%</span>
+                            <div class="converter-field">
+                                <label>Converted amount</label>
+                                <input type="text" id="converterResult" class="converter-amount-input converter-result-input" readonly placeholder="0.00" />
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
 
             <!-- Investment Portfolio Section -->
             <section id="investments" class="investment-portfolio-section">
@@ -856,7 +797,6 @@
                 </div>
             </section>
 
-
         </main>
     </div>
 
@@ -1075,8 +1015,68 @@
         </div>
     </div>
 
+    <!-- Update Goal Modal -->
+    <div class="modal-overlay" id="updateGoalModal">
+        <div class="update-goal-modal-content">
+            <div class="update-goal-modal-header">
+                <div class="update-goal-modal-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h2>Update Goal</h2>
+                <p id="updateGoalTitle" style="color: #718096; margin-top: 4px;">Goal Title</p>
+            </div>
+
+            <div class="update-goal-modal-body">
+                <div class="update-goal-field">
+                    <label for="updateGoalAddAmount">
+                        <i class="fas fa-plus-circle" style="color: #38a169;"></i>
+                        Add Amount to Savings
+                    </label>
+                    <input type="number" id="updateGoalAddAmount" min="0" step="0.01"
+                        placeholder="Enter amount to add (e.g. 5000)">
+                    <span class="field-hint">This amount will be added to your current savings</span>
+                </div>
+
+                <div class="update-goal-field">
+                    <label for="updateGoalNewTarget">
+                        <i class="fas fa-bullseye" style="color: #4299e1;"></i>
+                        New Target Amount
+                    </label>
+                    <input type="number" id="updateGoalNewTarget" min="0" step="0.01"
+                        placeholder="Enter new target amount (optional)">
+                    <span class="field-hint">Leave empty to keep the current target amount</span>
+                </div>
+
+                <div class="update-goal-field">
+                    <label for="updateGoalNewDate">
+                        <i class="fas fa-calendar-alt" style="color: #d69e2e;"></i>
+                        New Target Date
+                    </label>
+                    <input type="date" id="updateGoalNewDate">
+                    <span class="field-hint">Leave empty to keep the current target date</span>
+                </div>
+
+                <p id="updateGoalError" style="color: #ef4444; text-align: center; display: none; margin-top: 10px;">
+                </p>
+                <p id="updateGoalSuccess" style="color: #38a169; text-align: center; display: none; margin-top: 10px;">
+                </p>
+            </div>
+
+            <div class="update-goal-modal-actions">
+                <button class="update-goal-btn-primary" id="confirmUpdateGoal">
+                    <i class="fas fa-check"></i>
+                    Update Goal
+                </button>
+                <button class="update-goal-btn-secondary" id="cancelUpdateGoal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- API Configuration and Service Scripts -->
     <script src="js/config.js"></script>
+    <script src="js/currencies.js"></script>
     <script src="js/api-service.js"></script>
     <script src="js/data-service.js"></script>
     <script src="js/profile-handler.js"></script>

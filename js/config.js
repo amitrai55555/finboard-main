@@ -85,6 +85,7 @@ const API_CONFIG = {
         GOAL_PROGRESS: (id) => `/api/goals/${id}/progress`,
         GOAL_ADD_PROGRESS: (id) => `/api/goals/${id}/add-progress`,
         GOAL_STATUS: (id) => `/api/goals/${id}/status`,
+        GOAL_QUICK_UPDATE: (id) => `/api/goals/${id}/quick-update`,
 
         // Investments
         INVESTMENTS: '/api/investments',
@@ -112,6 +113,13 @@ const API_CONFIG = {
         ADMIN_STATS: '/api/admin/stats',
         ADMIN_USERS: '/api/admin/users',
         ADMIN_USER_BY_ID: (id) => `/api/admin/users/${id}`,
+
+        // Currency
+        CURRENCY_RATES: '/api/currency/rates',
+        CURRENCY_ALL_RATES: '/api/currency/all-rates',
+
+        // Securities (NSE/BSE search for add investment)
+        SECURITIES_SEARCH: '/api/securities/search',
 
         // Reports
         REPORTS_MONTHLY: '/api/reports/monthly',

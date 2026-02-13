@@ -24,7 +24,17 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeDashboard();
 
     // Initial load of transactions
+    // Initial load of transactions
     loadTransactions(0);
+
+    // Load Currency Rates for cards (initial + refresh every 1 hour)
+    loadCurrencyRates();
+    setInterval(loadCurrencyRates, 3600000); // 1 hour
+
+    // Load all rates for converter (world currencies) and init converter UI
+    loadAllRatesForConverter();
+    setInterval(loadAllRatesForConverter, 3600000); // 1 hour
+    initCurrencyConverter();
 });
 
 // DOM Elements
@@ -1956,6 +1966,8 @@ async function loadGoals() {
 
         if (goals.length === 0) {
             goalsGrid.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No financial goals yet. Add your first goal to start tracking!</p>';
+            // Reset analytics to 0
+            updateGoalAnalytics([], 0);
             return;
         }
 
@@ -1967,15 +1979,24 @@ async function loadGoals() {
             const daysLeft = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
 
             const item = document.createElement('div');
-            item.className = `goal-card priority-${goal.priority || 'medium'}`;
+            const priorityClass = (goal.priority || 'medium').toLowerCase();
+            item.className = `goal-card priority-${priorityClass}`;
             item.innerHTML = `
                 <div class="goal-header">
                     <div class="goal-icon">
                         <i class="fas fa-bullseye"></i>
                     </div>
                     <div class="goal-info">
-                        <h3>${goal.name}</h3>
-                        <p>${goal.category ? goal.category.charAt(0).toUpperCase() + goal.category.slice(1) : 'Goal'}</p>
+                        <h3 style="position:relative; top:20px;">${goal.title || goal.name || 'Goal'}</h3>
+                        <p style="position:relative; top:20px;">${goal.description || 'Goal'}</p>
+                    <button class="updateGoal" style="position:relative; top:-20px;"
+                        data-goal-id="${goal.id}"
+                        data-goal-title="${goal.title || goal.name || 'Goal'}"
+                        data-goal-current="${goal.currentAmount}"
+                        data-goal-target="${goal.targetAmount}"
+                        data-goal-date="${goal.targetDate || ''}">
+                        Update Goal
+                    </button>
                     </div>
                 </div>
                 <div class="goal-progress">
@@ -2000,9 +2021,67 @@ async function loadGoals() {
             `;
             goalsGrid.appendChild(item);
         });
+
+        // Attach click handlers to all Update Goal buttons
+        document.querySelectorAll('.updateGoal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openUpdateGoalModal(btn.dataset);
+            });
+        });
+
+        // Update Goal Performance Analytics
+        try {
+            const summary = await dataService.getDashboardSummary();
+            const monthlyIncome = summary.monthlyIncome || 0;
+            const monthlyExpenses = summary.monthlyExpenses || 0;
+            const monthlySavings = monthlyIncome - monthlyExpenses;
+            updateGoalAnalytics(goals, monthlySavings);
+        } catch (summaryErr) {
+            console.log('Could not fetch summary for goal analytics, using 0 savings');
+            updateGoalAnalytics(goals, 0);
+        }
     } catch (error) {
         console.error('Error loading goals:', error);
         goalsGrid.innerHTML = '<p style="text-align: center; color: #ff6b6b; padding: 40px;">Error loading goals. Please try again later.</p>';
+    }
+}
+
+// Calculate and display Goal Performance Analytics
+function updateGoalAnalytics(goals, monthlySavings) {
+    // 1. Active Goals count
+    const activeGoals = goals.filter(g => {
+        const status = (g.status || 'ACTIVE').toUpperCase();
+        return status === 'ACTIVE';
+    });
+    const activeGoalsEl = document.getElementById('activeGoalsCount');
+    if (activeGoalsEl) {
+        activeGoalsEl.textContent = activeGoals.length;
+    }
+
+    // 2. Monthly Savings
+    const monthlySavingsEl = document.getElementById('monthlySavingsGoal');
+    if (monthlySavingsEl) {
+        monthlySavingsEl.textContent = `₹${Math.max(0, monthlySavings).toLocaleString()}`;
+    }
+
+    // 3. Avg Months to Goal
+    const avgMonthsEl = document.getElementById('avgMonthsToGoal');
+    if (avgMonthsEl) {
+        if (monthlySavings > 0 && activeGoals.length > 0) {
+            let totalMonths = 0;
+            activeGoals.forEach(goal => {
+                const remaining = (goal.targetAmount || 0) - (goal.currentAmount || 0);
+                if (remaining > 0) {
+                    totalMonths += remaining / monthlySavings;
+                }
+                // If remaining <= 0, this goal is essentially complete, contributes 0 months
+            });
+            const avgMonths = totalMonths / activeGoals.length;
+            avgMonthsEl.textContent = avgMonths < 1 ? '< 1' : Math.ceil(avgMonths);
+        } else {
+            avgMonthsEl.textContent = monthlySavings <= 0 ? '∞' : '0';
+        }
     }
 }
 
@@ -2740,3 +2819,312 @@ function resetUserData() {
 }
 
 
+// ==========================================
+// Update Goal Modal Logic
+// ==========================================
+
+let currentUpdateGoalId = null;
+
+function openUpdateGoalModal(goalData) {
+    currentUpdateGoalId = goalData.goalId;
+    const modal = document.getElementById('updateGoalModal');
+
+    // Set title
+    document.getElementById('updateGoalTitle').textContent = goalData.goalTitle || 'Goal';
+
+    // Clear inputs
+    document.getElementById('updateGoalAddAmount').value = '';
+    document.getElementById('updateGoalNewTarget').value = '';
+    document.getElementById('updateGoalNewDate').value = goalData.goalDate || '';
+
+    // Clear messages
+    document.getElementById('updateGoalError').style.display = 'none';
+    document.getElementById('updateGoalSuccess').style.display = 'none';
+
+    // Show modal
+    modal.classList.add('active');
+}
+
+function closeUpdateGoalModal() {
+    const modal = document.getElementById('updateGoalModal');
+    modal.classList.remove('active');
+    currentUpdateGoalId = null;
+}
+
+// Cancel button
+document.getElementById('cancelUpdateGoal')?.addEventListener('click', closeUpdateGoalModal);
+
+// Click overlay to close
+document.getElementById('updateGoalModal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+        closeUpdateGoalModal();
+    }
+});
+
+// Submit button
+document.getElementById('confirmUpdateGoal')?.addEventListener('click', async () => {
+    const errorEl = document.getElementById('updateGoalError');
+    const successEl = document.getElementById('updateGoalSuccess');
+    const submitBtn = document.getElementById('confirmUpdateGoal');
+
+    errorEl.style.display = 'none';
+    successEl.style.display = 'none';
+
+    const addAmount = document.getElementById('updateGoalAddAmount').value.trim();
+    const newTarget = document.getElementById('updateGoalNewTarget').value.trim();
+    const newDate = document.getElementById('updateGoalNewDate').value.trim();
+
+    // At least one field must be filled
+    if (!addAmount && !newTarget && !newDate) {
+        errorEl.textContent = 'Please fill at least one field to update.';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    // Validate amounts
+    if (addAmount && (isNaN(addAmount) || Number(addAmount) <= 0)) {
+        errorEl.textContent = 'Add amount must be a positive number.';
+        errorEl.style.display = 'block';
+        return;
+    }
+    if (newTarget && (isNaN(newTarget) || Number(newTarget) <= 0)) {
+        errorEl.textContent = 'Target amount must be a positive number.';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    // Build request payload
+    const payload = {};
+    if (addAmount) payload.addAmount = Number(addAmount);
+    if (newTarget) payload.targetAmount = Number(newTarget);
+    if (newDate) payload.targetDate = newDate;
+
+    try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+
+        await apiService.quickUpdateGoal(currentUpdateGoalId, payload);
+
+        successEl.textContent = 'Goal updated successfully!';
+        successEl.style.display = 'block';
+
+        // Clear goals cache and reload
+        if (typeof dataService !== 'undefined') {
+            dataService.clearCache('goals');
+        }
+
+        // Close modal after short delay and refresh
+        setTimeout(async () => {
+            closeUpdateGoalModal();
+            await loadGoals();
+            if (typeof showNotification === 'function') {
+                showNotification('Goal updated successfully!', 'success');
+            }
+        }, 800);
+    } catch (error) {
+        console.error('Error updating goal:', error);
+        errorEl.textContent = error.message || 'Failed to update goal. Please try again.';
+        errorEl.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Update Goal';
+    }
+});
+
+// ==========================================
+// Multi-Currency Portfolio
+// ==========================================
+
+async function loadCurrencyRates() {
+    const grid = document.getElementById('currencyGrid');
+    if (!grid) return;
+
+    try {
+        const rates = await apiService.getCurrencyRates();
+
+        if (!rates || rates.length === 0) {
+            grid.innerHTML = '<div class="loading-currency">No currency data available.</div>';
+            return;
+        }
+
+        // Cards only show USD, EUR, GBP, CNY (rates already filtered by backend)
+
+        grid.innerHTML = rates.map(c => {
+            const isPositive = c.change >= 0;
+            const changeClass = isPositive ? 'positive' : 'negative';
+            const changeIcon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
+            const changeSign = isPositive ? '+' : '';
+
+            // Map currency code to country flag URL (using a CDN)
+            const flagMap = {
+                'USD': 'us',
+                'EUR': 'eu',
+                'GBP': 'gb',
+                'CNY': 'cn',
+                'JPY': 'jp'
+            };
+            const countryCode = flagMap[c.code] || 'un';
+            const flagUrl = `https://flagcdn.com/w40/${countryCode}.png`;
+
+            const rateNum = typeof c.rate === 'number' ? c.rate : (c.rate && c.rate.value != null ? c.rate.value : parseFloat(c.rate) || 0);
+            const changeNum = typeof c.change === 'number' ? c.change : (c.change && c.change.value != null ? c.change.value : parseFloat(c.change) || 0);
+            return `
+                <div class="currency-card ${(c.code || '').toLowerCase()}">
+                    <div class="currency-header">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${flagUrl}" alt="${c.code}" class="currency-flag">
+                            <span class="currency-code">${c.code} / INR</span>
+                        </div>
+                        <div class="currency-change ${changeClass}" title="vs yesterday">
+                            <i class="fas ${changeIcon}"></i>
+                            ${changeSign}${Math.abs(changeNum).toFixed(2)}%
+                        </div>
+                    </div>
+                    <div class="currency-rate">
+                        <span class="currency-rate-label">1 ${c.code} =</span>
+                        <span class="currency-rate-value">₹${rateNum.toFixed(2)}</span>
+                    </div>
+                    <div class="currency-rate-sub">vs yesterday</div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Error loading currency rates:', error);
+        grid.innerHTML = `
+            <div class="loading-currency" style="color: #e53e3e;">
+                <i class="fas fa-exclamation-circle"></i> Failed to load rates
+            </div>
+        `;
+    }
+}
+
+// Full currency list from js/currencies.js (window.CONVERTER_CURRENCIES)
+function getConverterCurrencyList() {
+    return window.CONVERTER_CURRENCIES || [];
+}
+
+// Cached rates from API (1 unit = X INR). Set when loadAllRatesForConverter runs.
+let cachedConverterRates = { INR: 1 };
+
+async function loadAllRatesForConverter() {
+    try {
+        const rates = await apiService.getCurrencyAllRates();
+        if (rates && typeof rates === 'object') {
+            cachedConverterRates = { INR: 1, ...rates };
+        }
+    } catch (e) {
+        console.warn('Converter rates not loaded:', e.message);
+    }
+}
+
+function getRatesForConverter() {
+    return cachedConverterRates;
+}
+
+function filterCurrencies(query) {
+    const list = getConverterCurrencyList();
+    const q = (query || '').trim().toLowerCase();
+    if (!q) return list.slice();
+    return list.filter(c =>
+        c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)
+    );
+}
+
+function setupCurrencyTypeahead(inputEl, hiddenEl, dropdownEl) {
+    function showDropdown(matches) {
+        dropdownEl.innerHTML = '';
+        if (!matches.length) {
+            dropdownEl.innerHTML = '<div class="currency-dropdown-no-match">No matching currency</div>';
+        } else {
+            matches.forEach(c => {
+                const opt = document.createElement('div');
+                opt.className = 'currency-dropdown-option';
+                opt.setAttribute('data-code', c.code);
+                opt.innerHTML = `<span class="currency-code">${c.code}</span><span class="currency-name">${c.name}</span>`;
+                // Use mousedown so selection runs before input blur closes the dropdown
+                opt.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hiddenEl.value = c.code;
+                    inputEl.value = `${c.code} - ${c.name}`;
+                    dropdownEl.classList.remove('is-open');
+                    dropdownEl.setAttribute('aria-hidden', 'true');
+                    runConverter();
+                });
+                dropdownEl.appendChild(opt);
+            });
+        }
+        dropdownEl.classList.add('is-open');
+        dropdownEl.setAttribute('aria-hidden', 'false');
+    }
+
+    inputEl.addEventListener('input', () => {
+        const matches = filterCurrencies(inputEl.value);
+        showDropdown(matches);
+    });
+    inputEl.addEventListener('focus', () => {
+        const v = inputEl.value.trim();
+        showDropdown(v ? filterCurrencies(v) : getConverterCurrencyList().slice());
+    });
+    inputEl.addEventListener('blur', () => {
+        setTimeout(() => dropdownEl.classList.remove('is-open'), 200);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!inputEl.contains(e.target) && !dropdownEl.contains(e.target))
+            dropdownEl.classList.remove('is-open');
+    });
+}
+
+function runConverter() {
+    const fromCode = document.getElementById('converterFromCode')?.value;
+    const toCode = document.getElementById('converterToCode')?.value;
+    const amountInput = document.getElementById('converterAmount');
+    const resultInput = document.getElementById('converterResult');
+    if (!fromCode || !toCode || !amountInput || !resultInput) return;
+
+    const amount = parseFloat(amountInput.value);
+    if (isNaN(amount) || amount < 0) {
+        resultInput.value = '';
+        return;
+    }
+
+    const rates = getRatesForConverter();
+    const fromRate = rates[fromCode];
+    const toRate = rates[toCode];
+    if (fromRate == null || toRate == null) {
+        resultInput.value = 'Rate unavailable';
+        return;
+    }
+    if (toRate === 0) {
+        resultInput.value = '';
+        return;
+    }
+    const result = amount * fromRate / toRate;
+    resultInput.value = result.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 20 });
+}
+
+function initCurrencyConverter() {
+    const fromInput = document.getElementById('converterFromInput');
+    const toInput = document.getElementById('converterToInput');
+    const fromHidden = document.getElementById('converterFromCode');
+    const toHidden = document.getElementById('converterToCode');
+    const fromDropdown = document.getElementById('converterFromDropdown');
+    const toDropdown = document.getElementById('converterToDropdown');
+    const amountInput = document.getElementById('converterAmount');
+
+    if (!fromInput || !toInput || !fromDropdown || !toDropdown) return;
+
+    // Default selection
+    fromHidden.value = 'USD';
+    fromInput.value = 'USD - US Dollar';
+    toHidden.value = 'INR';
+    toInput.value = 'INR - Indian Rupee';
+
+    setupCurrencyTypeahead(fromInput, fromHidden, fromDropdown);
+    setupCurrencyTypeahead(toInput, toHidden, toDropdown);
+
+    amountInput.addEventListener('input', runConverter);
+    amountInput.addEventListener('change', runConverter);
+}

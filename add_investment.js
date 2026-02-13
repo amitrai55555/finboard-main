@@ -36,6 +36,76 @@ function saveInvestmentData(investmentData) {
 // Set default date to today
 document.getElementById('investmentDate').valueAsDate = new Date();
 
+// ——— Securities (NSE/BSE) typeahead for Investment Name ———
+(function initSecuritiesTypeahead() {
+    const input = document.getElementById('investmentName');
+    const dropdown = document.getElementById('investmentNameDropdown');
+    const wrap = document.querySelector('.investment-name-wrap');
+    if (!input || !dropdown || !wrap) return;
+
+    let debounceTimer;
+    const MIN_CHARS = 2;
+
+    function hideDropdown() {
+        dropdown.classList.remove('is-open');
+        dropdown.innerHTML = '';
+        dropdown.setAttribute('aria-hidden', 'true');
+    }
+
+    function showDropdown(items) {
+        dropdown.innerHTML = '';
+        if (!items || items.length === 0) {
+            dropdown.innerHTML = '<div class="securities-dropdown-empty">No matching securities. Try another search.</div>';
+        } else {
+            items.forEach(function (item) {
+                const opt = document.createElement('div');
+                opt.className = 'securities-dropdown-option';
+                opt.innerHTML = '<span class="securities-symbol">' + (item.symbol || '') + '</span>' +
+                    '<span class="securities-name">' + (item.name || '') + '</span>' +
+                    (item.type ? '<span class="securities-type">' + item.type + '</span>' : '');
+                opt.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.value = (item.symbol && item.name) ? (item.symbol + ' - ' + item.name) : (item.name || item.symbol);
+                    hideDropdown();
+                });
+                dropdown.appendChild(opt);
+            });
+        }
+        dropdown.classList.add('is-open');
+        dropdown.setAttribute('aria-hidden', 'false');
+    }
+
+    function doSearch() {
+        const q = input.value.trim();
+        if (q.length < MIN_CHARS) {
+            hideDropdown();
+            return;
+        }
+        if (typeof apiService === 'undefined') {
+            hideDropdown();
+            return;
+        }
+        apiService.searchSecurities(q, MIN_CHARS)
+            .then(function (list) { showDropdown(list); })
+            .catch(function () { showDropdown([]); });
+    }
+
+    input.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(doSearch, 280);
+    });
+    input.addEventListener('focus', function () {
+        if (input.value.trim().length >= MIN_CHARS) doSearch();
+    });
+    input.addEventListener('blur', function () {
+        setTimeout(hideDropdown, 180);
+    });
+    document.addEventListener('click', function (e) {
+        if (!wrap.contains(e.target)) hideDropdown();
+    });
+})();
+
 // Auto-fill current value with invested amount if empty
 document.getElementById('investmentAmount').addEventListener('input', function () {
     const currentValueField = document.getElementById('currentValue');

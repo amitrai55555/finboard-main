@@ -152,6 +152,77 @@ form {
     font-size: 1.1rem;
 }
 
+/* Investment name typeahead (NSE/BSE) */
+.investment-name-wrap {
+    position: relative;
+}
+
+.securities-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: none;
+}
+
+.securities-dropdown.is-open {
+    display: block;
+}
+
+.securities-dropdown-option {
+    padding: 10px 12px;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px 12px;
+    align-items: center;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.95rem;
+}
+
+.securities-dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.securities-dropdown-option:hover {
+    background: #e6fffa;
+}
+
+.securities-symbol {
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.securities-name {
+    color: #4a5568;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.securities-type {
+    font-size: 0.75rem;
+    color: #718096;
+    background: #edf2f7;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.securities-dropdown-empty {
+    padding: 12px;
+    text-align: center;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="date"],

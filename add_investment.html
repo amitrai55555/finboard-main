@@ -46,10 +46,13 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="investmentName">Investment Name *</label>
-                                <div class="input-wrapper">
-                                    <i class="fas fa-chart-line"></i>
-                                    <input type="text" id="investmentName" name="name"
-                                        placeholder="e.g., Reliance Industries" required>
+                                <div class="investment-name-wrap">
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-chart-line"></i>
+                                        <input type="text" id="investmentName" name="name"
+                                            placeholder="Security Name" required autocomplete="off">
+                                    </div>
+                                    <div id="investmentNameDropdown" class="securities-dropdown" aria-hidden="true"></div>
                                 </div>
                             </div>
 
@@ -143,8 +146,9 @@
         </main>
     </div>
 
+    <script src="js/config.js"></script>
+    <script src="js/api-service.js"></script>
     <script src="darkmode.js"></script>
-    <script src="dashboard.js"></script>
     <script src="add_investment.js"></script>
 </body>
 
